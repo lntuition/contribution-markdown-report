@@ -2,13 +2,18 @@ import pytablewriter as ptw
 
 from datetime import datetime, timedelta
 from pytablewriter.style import Style as ptwStyle
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 DATE_IDX = 0
 
 
 def _get_formatted_dt(year: str, week: str) -> str:
-    return f"Week {week} of {year}"
+    return f"{year}/{week}"
+
+
+def _get_unformatted_dt(string: str) -> Tuple[str, str]:
+    year, week = string.split("/")
+    return year, week
 
 
 def append_csv_data(target: str, path: str, commits: List[Dict[str, Any]]) -> None:
@@ -25,7 +30,7 @@ def append_csv_data(target: str, path: str, commits: List[Dict[str, Any]]) -> No
 
     for commit in reversed(commits):
         if commit["data-date"] == target:
-            writer.value_matrix[-1][day] = "X" if commit["data-count"] == "0" else "O"
+            writer.value_matrix[-1][day] = int(commit["data-count"])
             break
     else:
         raise Exception("Cannot find target date from commit")
@@ -61,7 +66,7 @@ def generate_csv_data(start: str, target: str, path: str, commits: List[Dict[str
         if not writer.value_matrix or writer.value_matrix[-1][DATE_IDX] != formatted_dt:
             writer.value_matrix.append([formatted_dt] + [""] * 7)
 
-        writer.value_matrix[-1][day] = "X" if commits[commit_idx]["data-count"] == "0" else "O"
+        writer.value_matrix[-1][day] = int(commits[commit_idx]["data-count"])
 
         start_dt += timedelta(days=1)
         commit_idx += 1
@@ -74,8 +79,13 @@ def generate_csv_data(start: str, target: str, path: str, commits: List[Dict[str
 def generate_markdown_table(data_path: str, table_path: str) -> None:
     writer = ptw.MarkdownTableWriter()
     writer.from_csv(data_path)
+    writer.table_name = "Contribution diary"
     writer.column_styles = [ptwStyle(align="center")] * 8
     writer.margin = 1
+
+    for value in writer.value_matrix:
+        year, week = _get_unformatted_dt(value[DATE_IDX])
+        value[DATE_IDX] = f"Week {week} of {year}"
 
     with open(table_path, "w") as table:
         writer.stream = table
