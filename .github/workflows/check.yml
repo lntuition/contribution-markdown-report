@@ -1,4 +1,4 @@
-name: Daily commit checker
+name: Daily contribution checker
 
 on:
   # If you want to develop this repo, uncommenting push section will help you.
@@ -24,13 +24,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Run daily commit checker
+    - name: Run daily contribution checker
       run: |
         python src/main.py ${{ github.actor }} ${{ env.start-date }} $(date -d '1 day ago' '+%Y-%m-%d')
     - name: Commit result with bot
       run: |
-        git config --local user.name "Daily commit check bot"
+        git config --local user.name "Daily contribution check bot"
         git config --local user.email "<>"
         git add result/data.csv result/README.md
-        git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') commit check result" || echo "No changes to commit"
+        git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') contribution check result" || echo "No changes to commit"
         git push origin master
