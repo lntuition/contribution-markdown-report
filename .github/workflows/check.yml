@@ -31,6 +31,6 @@ jobs:
       run: |
         git config --local user.name "Daily contribution check bot"
         git config --local user.email "<>"
-        git add result/data.csv result/README.md
+        git add result/README.md
         git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') contribution check result" || echo "No changes to commit"
         git push origin master
