@@ -1,6 +1,7 @@
 import os
 import pytablewriter as ptw
 import requests
+import statistics
 
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
@@ -55,44 +56,55 @@ class DataManager():
             If you have any question or problem, please report [here](https://github.com/lntuition/daily-contribution-checker/issues).
             I hope this report will be a companion for your contribution trip :airplane:
 
-            ---
         """)
 
         # Summary Section
-        avg_cnt = 0
+        max_dt = self.start_dt
         max_cnt = 0
 
         continous_start = self.start_dt
         continous_len = 0
-        calc_continous_start = self.start_dt
-        calc_continous_len = 0
+        tmp_continous_start = self.start_dt
+        tmp_continous_len = 0
 
         for dt, cnt in raw_data.items():
-            avg_cnt += cnt
             if cnt > max_cnt:
+                max_dt = dt
                 max_cnt = cnt
 
             if cnt > 0:
-                calc_continous_len += 1
-                if calc_continous_len == 1:
-                    calc_continous_start = dt
+                tmp_continous_len += 1
+                if tmp_continous_len == 1:
+                    tmp_continous_start = dt
             else:
-                calc_continous_len = 0
-            if calc_continous_len > continous_len:
-                continous_start = calc_continous_start
-                continous_len = calc_continous_len
+                tmp_continous_len = 0
 
-        avg_cnt /= len(raw_data)
-        continous_end = continous_start + timedelta(days=continous_len-1)
+            if tmp_continous_len > continous_len:
+                continous_start = tmp_continous_start
+                continous_len = tmp_continous_len
+        continous_end = continous_start + timedelta(days=max(continous_len-1,0))
+
+        cnt_list = [value for value in raw_data.values()]
+        
+        cur_len = 0
+        for cnt in reversed(cnt_list):
+            if cnt == 0:
+                break
+            cur_len += 1
+        cur_start = self.end_dt - timedelta(days=max(cur_len-1, 0))
 
         summary = dedent(f"""
             ## Summary
-            - **{self.end}** is **{(self.end_dt - self.start_dt).days + 1}th day** since the start of this trip :walking:
-            - During the trip, average contribution count is **{avg_cnt:.2f}** and daily maximum contribution count is **{max_cnt:d}**.
-            - From **{continous_start.strftime(self.DATE_FORMAT)}** to **{continous_end.strftime(self.DATE_FORMAT)}**
-            was longest continuous contribution trip in **{continous_len}** days :running:
-            - There was **{raw_data[self.end_dt] if raw_data[self.end_dt] > 0 else "NO"}** new contribution at **{self.end}**.
-            {"Good job :+1:" if raw_data[self.end_dt] > 0 else "Cheer up :muscle:"}
+            - **{self.end}** is **{(self.end_dt - self.start_dt).days + 1}th day** since the start of trip
+            - During the trip, total contribution count is **{sum(cnt_list)}** 
+            and average contribution count is **{statistics.mean(cnt_list):.2f}**
+            - daily maximum contribution day is **{max_dt.strftime(self.DATE_FORMAT)}**, which is **{max_cnt:d}**.
+            - Longest continous contribution trip was **{continous_len}** days 
+            From **{continous_start.strftime(self.DATE_FORMAT)}** to **{continous_end.strftime(self.DATE_FORMAT)}** :walking:
+            - Current continous contribution trip is **{cur_len}** days 
+            From **{cur_start.strftime(self.DATE_FORMAT)}** :running:
+            - There was **{cnt_list[-1] if cnt_list[-1] > 0 else "NO"}** new contribution at **{self.end}**.
+            {"Good job :+1:" if cnt_list[-1] > 0 else "Cheer up :muscle:"}
         """)
 
         # TODO : Graph Section
