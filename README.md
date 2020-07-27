@@ -1,6 +1,7 @@
 # Daily contribution chekcer
-![License](https://img.shields.io/github/license/lntuition/daily-contribution-checker)
-![Action](https://github.com/lntuition/daily-contribution-checker/workflows/Daily%20contribution%20checker/badge.svg)  
+[![License](https://img.shields.io/github/license/lntuition/daily-contribution-checker)](https://github.com/lntuition/daily-contribution-checker/blob/master/LICENSE)
+[![Action](https://github.com/lntuition/daily-contribution-checker/workflows/Daily%20contribution%20checker/badge.svg)](https://github.com/lntuition/daily-contribution-checker/actions?query=workflow%3A%22Daily+contribution+checker%22)
+
 Automatically check daily contribution with `Python` & `Github Actions`.
 Every day at 9am, github action will check your contribution and update result.
 
@@ -13,6 +14,10 @@ env:
   start-date: '2020-07-01'
 ```
 3. Enjoy daily contribution checker :tada:
+
+## Report
+- With new information, daily report is created at **result/README.md**. 
+- Report has summary, graph, table section. See example report [here](https://github.com/lntuition/daily-contribution-checker/tree/master/result/README.md)
 
 ## Notification
 - We track your contribution history from your public profile with anonymous user.
