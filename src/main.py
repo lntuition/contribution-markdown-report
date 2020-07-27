@@ -10,4 +10,4 @@ if __name__ == "__main__":
         end=sys.argv[3],
     )
 
-    data.generate_report(save_path="result/README.md")
+    data.generate_report(save_path="result/README.md", asset_path="result/asset")

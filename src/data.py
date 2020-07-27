@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import os
 import pytablewriter as ptw
 import requests
@@ -46,7 +47,9 @@ class DataManager():
 
         return raw_data
 
-    def generate_report(self, save_path: str) -> None:
+    def generate_report(self, save_path: str, asset_path: str) -> None:
+        os.makedirs(asset_path, exist_ok=True)
+        
         raw_data = self._crawl_data()
 
         # Header Section
@@ -82,10 +85,11 @@ class DataManager():
             if tmp_continous_len > continous_len:
                 continous_start = tmp_continous_start
                 continous_len = tmp_continous_len
-        continous_end = continous_start + timedelta(days=max(continous_len-1,0))
+        continous_end = continous_start + \
+            timedelta(days=max(continous_len-1, 0))
 
         cnt_list = [value for value in raw_data.values()]
-        
+
         cur_len = 0
         for cnt in reversed(cnt_list):
             if cnt == 0:
@@ -95,10 +99,10 @@ class DataManager():
 
         summary = dedent(f"""
             ## Summary
-            - **{self.end}** is **{(self.end_dt - self.start_dt).days + 1}th day** since the start of trip
+            - **{self.end}** is **{(self.end_dt - self.start_dt).days + 1}th day** since the start of trip :sweat_smile:
             - During the trip, total contribution count is **{sum(cnt_list)}** 
             and average contribution count is **{statistics.mean(cnt_list):.2f}**
-            - daily maximum contribution day is **{max_dt.strftime(self.DATE_FORMAT)}**, which is **{max_cnt:d}**.
+            - Daily maximum contribution day is **{max_dt.strftime(self.DATE_FORMAT)}**, which is **{max_cnt:d}**.
             - Longest continous contribution trip was **{continous_len}** days 
             From **{continous_start.strftime(self.DATE_FORMAT)}** to **{continous_end.strftime(self.DATE_FORMAT)}** :walking:
             - Current continous contribution trip is **{cur_len}** days 
@@ -108,9 +112,38 @@ class DataManager():
         """)
 
         # TODO : Graph Section
+        _, ax = plt.subplots(figsize=(8, 4), subplot_kw={"aspect": "equal"})
+        pie_legend = ["0", "1-2", "3-4", "5-6", "7+"]
+        pie_cnt = [0, 0, 0, 0, 0]
+        for cnt in cnt_list:
+            if cnt < 1:
+                pie_cnt[0] += 1
+            elif cnt < 3:
+                pie_cnt[1] += 1
+            elif cnt < 5:
+                pie_cnt[2] += 1
+            elif cnt < 7:
+                pie_cnt[3] += 1
+            else:
+                pie_cnt[4] += 1
+        pie_cnt_sum = sum(pie_cnt)
+
+        plt.title("Number of daily contribution")
+        wedges, _, autotexts = ax.pie(
+            pie_cnt, startangle=90, counterclock=False, autopct="", textprops={"color": "w"})
+        for i, a in enumerate(autotexts):
+            pct = pie_cnt[i]*100/pie_cnt_sum
+            if pct > 10:
+                a.set_text(f"{pie_cnt[i]}\n({pct:.1f}%)")
+        ax.legend(wedges, pie_legend, title="Daily contribution count",
+                  loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+        plt.setp(autotexts, size=10, weight="roman")
+        ax.set_title("Percentage of daily contribution count")
+        plt.savefig(f"{asset_path}/pie_graph", dpi=400, bbox_inches="tight")
+
         graph = dedent(f"""
             ## Graph
-            - Graph is not implemented yet, please wait a moment :sweat_smile: 
+            <img src="asset/pie_graph.png" alt="pie" width="60%">
         """)
 
         # Table Section
