@@ -1,3 +1,4 @@
 beautifulsoup4
+matplotlib
 pytablewriter[all]
 requests
