@@ -12,12 +12,20 @@ Every day at 9am, github action will check your contribution and update result.
 env:
   # Change below variable to date you want to start tracking.
   start-date: '2020-07-01'
+  auto-update: true
 ```
 3. Enjoy daily contribution checker :tada:
 
-## Report
+## Feature
+### Report
 - With new information, daily report is created at **result/README.md**. 
 - Report has summary, graph, table section. See example report [here](https://github.com/lntuition/daily-contribution-checker/tree/master/result/README.md)
+
+### Auto update
+- Automatic updates can be turned on and off through `auto-update` value in **workflows/check.yml**.
+- With enable automatic updates, updated features will be automatically reflected to your repo.
+- Forked **workflows/check.yml** does not automatically updated because it has personal settings
+- Unfortunately, If there are some changes to workflows, you have to update it manually. But don't worry. I'll notice to every user.
 
 ## Notification
 - We track your contribution history from your public profile with anonymous user.

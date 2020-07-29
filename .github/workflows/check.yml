@@ -10,6 +10,7 @@ on:
 
 env:
   start-date: '2020-07-01'
+  auto-update: true
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -20,6 +21,19 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.8'
+    - name: Auto update
+      if: ${{ env.auto-update }}
+      run: |
+        git clone https://github.com/lntuition/daily-contribution-checker.git
+        rsync -zavh --exclude "result" --exclude ".git*" ./daily-contribution-checker/ .
+        rm -rf ./daily-contribution-checker
+        git diff
+        git config --local user.name "Daily contribution check bot"
+        git config --local user.email "<>"
+        git add --all
+        git reset result/*
+        git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') auto update" || echo "No changes to commit"
+        git push origin master
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
