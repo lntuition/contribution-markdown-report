@@ -6,15 +6,15 @@ I hope this report will be a companion for your contribution trip :airplane:
 
 
 ## Summary
-- **2020-07-28** is **28th day** since the start of trip :sweat_smile:
-- During the trip, total contribution count is **70** 
-and average contribution count is **2.50**
+- **2020-07-29** is **29th day** since the start of trip :sweat_smile:
+- During the trip, total contribution count is **74** 
+and average contribution count is **2.55**
 - Daily maximum contribution day is **2020-07-16**, which is **5**.
-- Longest continous contribution trip was **28** days 
-From **2020-07-01** to **2020-07-28** :walking:
-- Current continous contribution trip is **28** days 
+- Longest continous contribution trip was **29** days 
+From **2020-07-01** to **2020-07-29** :walking:
+- Current continous contribution trip is **29** days 
 From **2020-07-01** :running:
-- There was **5** new contribution at **2020-07-28**.
+- There was **4** new contribution at **2020-07-29**.
 Good job :+1:
 
 ## Graph
@@ -27,6 +27,6 @@ Good job :+1:
 | Week 28 of 2020 |  3  |  2  |  1  |  1  |  1  |  1  |  1  |
 | Week 29 of 2020 |  3  |  3  |  2  |  5  |  3  |  1  |  2  |
 | Week 30 of 2020 |  4  |  5  |  3  |  4  |  3  |  2  |  1  |
-| Week 31 of 2020 |  5  |  5  |     |     |     |     |     |
+| Week 31 of 2020 |  5  |  5  |  4  |     |     |     |     |
 
         
