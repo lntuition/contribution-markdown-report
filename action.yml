@@ -1,0 +1,37 @@
+name: "Daily contribution checker"
+description: "Daily contribution checker with github action"
+author: "lntuition"
+branding:
+  icon: "check"
+  color: "blue"
+inputs:
+  github_token: 
+    description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
+    required: true
+  start-date:
+    description: "Start date for tracking to begin"
+    required: true
+  branch:
+    description: ""
+    required: true
+    default: "master"
+  path:
+    description: "Root path where the report will be located"
+    required: true
+    default: ""
+  author_email:
+    description: "Email used to configure user.email in `git config`."
+    default: "github-actions[bot]@users.noreply.github.com"
+    required: false  
+  author_name:
+    description: "Name used to configure user.name in `git config`."
+    default: "github-actions[bot]"
+    required: false  
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.github_token }}
+    - ${{ inputs.branch }}
+    - ${{ inputs.path }}
+    - ${{ inputs.start_date }}
