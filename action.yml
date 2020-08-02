@@ -8,7 +8,7 @@ inputs:
   github_token: 
     description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
     required: true
-  start-date:
+  start_date:
     description: "Start date for tracking to begin"
     required: true
   branch:

@@ -170,7 +170,7 @@ class DataManager():
         os.makedirs(root_path, exist_ok=True)
 
         asset_path = f"{root_path}/asset"
-        os.makedirs(asset_path)
+        os.makedirs(asset_path, exist_ok=True)
 
         raw_data = self._crawl_data()
 
