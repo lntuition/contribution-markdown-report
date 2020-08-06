@@ -36,5 +36,8 @@ Whenever you want, github action will check your contribution and update result.
 ## Bug report & Feature request
 - Please leave an [issue](https://github.com/lntuition/daily-contribution-checker/issues). Reporting makes the software more robust :+1:
 
+## Article
+- [Korean : Github Actions 로 Daily Contribution checker 만들기](https://medium.com/@ekffu200098/python-github-actions-%EB%A1%9C-daily-contribution-checker-%EB%A7%8C%EB%93%A4%EA%B8%B0-2fa7f306de46)
+
 ## License
 - [MIT LICENSE](https://github.com/lntuition/daily-contribution-checker/blob/master/LICENSE)
