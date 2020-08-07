@@ -18,13 +18,13 @@ inputs:
   path:
     description: "Root path where the report will be located"
     required: true
-    default: ""
+    default: "."
   author_email:
-    description: "Email used to configure user.email in `git config`."
+    description: "Email used to configure user.email in `git config`"
     default: "github-actions[bot]@users.noreply.github.com"
     required: false  
   author_name:
-    description: "Name used to configure user.name in `git config`."
+    description: "Name used to configure user.name in `git config`"
     default: "github-actions[bot]"
     required: false  
 runs:
