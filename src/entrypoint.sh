@@ -4,6 +4,11 @@
 cd /actions
 python src/main.py
 
+if [ $? -ne 0 ]; then
+    echo "Generate date failed, check python trackback"
+    exit 1
+fi
+
 # Commit data
 git config http.sslVerify false
 git config --global user.email "${INPUT_AUTHOR_EMAIL}"
@@ -19,3 +24,8 @@ cp -rf /actions/result/* ${INPUT_PATH}
 git add -A
 git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') contribution check result" || echo "No changes to commit"
 git push "${remote_repo}" HEAD:"${INPUT_BRANCH}"
+
+if [ $? -ne 0 ]; then
+    echo "Commit data failed, check commit bash script"
+    exit 1
+fi

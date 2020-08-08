@@ -32,6 +32,7 @@ Whenever you want, github action will check your contribution and update result.
 - We track your contribution history from your public profile with anonymous user.
   So, if you turn off `Contribution Settings > Private contributions`, private contribution will not be tracked.
 - Contribution of the public profile is based on UTC. It should be different from your login profile.
+- If you are using this Action from marketplace, please press star or watch. If you do so, I will tell you about some important changes.
 
 ## Bug report & Feature request
 - Please leave an [issue](https://github.com/lntuition/daily-contribution-checker/issues). Reporting makes the software more robust :+1:
