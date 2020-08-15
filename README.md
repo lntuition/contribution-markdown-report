@@ -1,6 +1,7 @@
 # Daily contribution chekcer
 [![License](https://img.shields.io/github/license/lntuition/daily-contribution-checker)](https://github.com/lntuition/daily-contribution-checker/blob/master/LICENSE)
 [![Action](https://github.com/lntuition/daily-contribution-checker/workflows/Daily%20contribution%20checker/badge.svg)](https://github.com/lntuition/daily-contribution-checker/actions?query=workflow%3A%22Daily+contribution+checker%22)
+[![Korean](https://img.shields.io/badge/README-Korean-brightgreen)](https://github.com/lntuition/daily-contribution-checker/blob/master/README-ko.md)
 
 Automatically check daily contribution with `Python` & `Github Actions`.
 Whenever you want, github action will check your contribution and update result.
@@ -25,7 +26,7 @@ Whenever you want, github action will check your contribution and update result.
 
 ## Feature
 ### Report
-- With new information, daily report is created at **result/README.md**. 
+- With new information, daily report is created at `path`.
 - Report has summary, graph, table section. See example report [here](https://github.com/lntuition/daily-contribution-checker/tree/master/result/README.md)
 
 ## Notification
@@ -36,9 +37,6 @@ Whenever you want, github action will check your contribution and update result.
 
 ## Bug report & Feature request
 - Please leave an [issue](https://github.com/lntuition/daily-contribution-checker/issues). Reporting makes the software more robust :+1:
-
-## Article
-- [Korean : Github Actions 로 Daily Contribution checker 만들기](https://medium.com/@ekffu200098/python-github-actions-%EB%A1%9C-daily-contribution-checker-%EB%A7%8C%EB%93%A4%EA%B8%B0-2fa7f306de46)
 
 ## License
 - [MIT LICENSE](https://github.com/lntuition/daily-contribution-checker/blob/master/LICENSE)
