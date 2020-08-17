@@ -4,14 +4,14 @@ from requests import get
 from typing import Dict
 
 
-CrawledData = Dict[datetime, int]
+CrawledDataType = Dict[datetime, int]
 
 
 class RequestException(Exception):
     pass
 
 
-def crawl_data(username: str, start_date_str: str) -> CrawledData:
+def crawl_data(username: str, start_date_str: str) -> CrawledDataType:
     data = {}
 
     date_format = "%Y-%m-%d"

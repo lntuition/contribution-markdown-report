@@ -2,14 +2,15 @@ import matplotlib.pyplot as plt
 
 from textwrap import dedent
 
-from base.crawler import CrawledData
+from base.crawler import CrawledDataType
+from report.base import ConfigType
 
 
 class GraphGenerator():
-    def _config_graph(self, **kwargs) -> str:
+    def _config_graph(self) -> ConfigType:
         raise NotImplementedError()
 
-    def generate_graph(self, data: CrawledData) -> str:
+    def generate_graph(self, data: CrawledDataType) -> str:
         config = self._config_graph()
         
         _, ax = plt.subplots(figsize=(8, 4), subplot_kw={"aspect": "equal"})

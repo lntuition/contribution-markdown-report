@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
 
-from base.crawler import CrawledData
+from base.crawler import CrawledDataType
+from report.base import ConfigType
 
 
 class SummaryGenerator():
-    def _formatted_summary(self, **kwargs) -> str:
+    def _formatted_summary(self, config: ConfigType) -> str:
         raise NotImplementedError()
 
-    def generate_summary(self, data: CrawledData) -> str:
+    def generate_summary(self, data: CrawledDataType) -> str:
         iter_data = list(data.items())
 
         config = {

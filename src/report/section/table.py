@@ -3,14 +3,15 @@ import pytablewriter as ptw
 from textwrap import dedent
 from pytablewriter.style import Style as ptwStyle
 
-from base.crawler import CrawledData
+from base.crawler import CrawledDataType
+from report.base import ConfigType
 
 
 class TableGenerator():
-    def _config_table(self, **kwargs) -> str:
+    def _config_table(self) -> ConfigType:
         raise NotImplementedError()
 
-    def generate_table(self, data: CrawledData) -> str:
+    def generate_table(self, data: CrawledDataType) -> str:
         config = self._config_table()
 
         writer = ptw.MarkdownTableWriter()
