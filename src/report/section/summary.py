@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
-from base.crawler import CrawledDataType
-from report.base import ConfigType
+from base.type import ConfigType, CrawledDataType
 
 
 class SummaryGenerator():
@@ -61,4 +60,4 @@ class SummaryGenerator():
             if isinstance(value, datetime):
                 config[key] = value.strftime("%Y-%m-%d")
 
-        return self._formatted_summary(**config)
+        return self._formatted_summary(config=config)

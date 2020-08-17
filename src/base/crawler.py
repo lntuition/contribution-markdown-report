@@ -1,10 +1,8 @@
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from requests import get
-from typing import Dict
 
-
-CrawledDataType = Dict[datetime, int]
+from base.type import CrawledDataType
 
 
 class RequestException(Exception):

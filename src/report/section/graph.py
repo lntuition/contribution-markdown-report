@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 
 from textwrap import dedent
 
-from base.crawler import CrawledDataType
-from report.base import ConfigType
+from base.type import ConfigType, CrawledDataType
 
 
 class GraphGenerator():
@@ -12,7 +11,7 @@ class GraphGenerator():
 
     def generate_graph(self, data: CrawledDataType) -> str:
         config = self._config_graph()
-        
+
         _, ax = plt.subplots(figsize=(8, 4), subplot_kw={"aspect": "equal"})
         pie_legend = ["0", "1-2", "3-4", "5-6", "7+"]
         pie_cnt = [0, 0, 0, 0, 0]
@@ -41,7 +40,8 @@ class GraphGenerator():
                   loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
         plt.setp(autotexts, size=10, weight="roman")
         ax.set_title(config["title"])
-        plt.savefig(f"result/asset/pie_graph.png", dpi=400, bbox_inches="tight")
+        plt.savefig(f"result/asset/pie_graph.png",
+                    dpi=400, bbox_inches="tight")
 
         return dedent(f"""
             ## Graph

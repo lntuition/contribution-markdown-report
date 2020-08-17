@@ -1,4 +1,4 @@
-from report.base import ConfigType
+from base.type import ConfigType
 
 
 class HeaderGenerator():

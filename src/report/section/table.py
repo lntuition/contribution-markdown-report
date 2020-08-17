@@ -3,8 +3,7 @@ import pytablewriter as ptw
 from textwrap import dedent
 from pytablewriter.style import Style as ptwStyle
 
-from base.crawler import CrawledDataType
-from report.base import ConfigType
+from base.type import ConfigType, CrawledDataType
 
 
 class TableGenerator():

@@ -1,8 +1,8 @@
 from textwrap import dedent
 from typing import Any, Dict
 
+from base.type import ConfigType
 from report.base import BaseReportManager
-from report.base import ConfigType
 
 
 class EnglishReportManager(BaseReportManager):
