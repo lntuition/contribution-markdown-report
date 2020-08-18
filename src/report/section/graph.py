@@ -1,49 +1,60 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 
 from textwrap import dedent
+from typing import Tuple
 
-from base.type import ConfigType, CrawledDataType
+from base.type import ConfigType
 
 
 class GraphGenerator():
     def _config_graph(self) -> ConfigType:
         raise NotImplementedError()
 
-    def generate_graph(self, data: CrawledDataType) -> str:
-        config = self._config_graph()
+    def _get_graph_path(self, config: ConfigType, filename: str) -> Tuple[str, str]:
+        return (
+            f"{config['root_path']}/{config['asset_dir']}/{filename}",
+            f"{config['asset_dir']}/{filename}"
+        )
 
-        _, ax = plt.subplots(figsize=(8, 4), subplot_kw={"aspect": "equal"})
-        pie_legend = ["0", "1-2", "3-4", "5-6", "7+"]
-        pie_cnt = [0, 0, 0, 0, 0]
+    def _save_count_based_graph(self, config: ConfigType, data: pd.DataFrame) -> str:
+        save_path, src_path = self._get_graph_path(
+            config=config, filename="count_based_graph.png")
 
-        cnt_list = [value for value in data.values()]
-        for cnt in cnt_list:
-            if cnt < 1:
-                pie_cnt[0] += 1
-            elif cnt < 3:
-                pie_cnt[1] += 1
-            elif cnt < 5:
-                pie_cnt[2] += 1
-            elif cnt < 7:
-                pie_cnt[3] += 1
-            else:
-                pie_cnt[4] += 1
-        pie_cnt_sum = sum(pie_cnt)
+        daily_count = pd.cut(
+            data["count"],
+            bins=[-1, 0, 2, 4, 6, np.inf],
+            labels=["0", "1-2", "3-4", "5-6", "7+"]
+        )
+        total_count = len(daily_count.index)
 
-        wedges, _, autotexts = ax.pie(
-            pie_cnt, startangle=90, counterclock=False, autopct="", textprops={"color": "w"})
-        for i, a in enumerate(autotexts):
-            pct = pie_cnt[i]*100/pie_cnt_sum
-            if pct > 10:
-                a.set_text(f"{pie_cnt[i]}\n({pct:.1f}%)")
-        ax.legend(wedges, pie_legend, title=config["box_title"],
-                  loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
-        plt.setp(autotexts, size=10, weight="roman")
-        ax.set_title(config["title"])
-        plt.savefig(f"result/asset/pie_graph.png",
-                    dpi=400, bbox_inches="tight")
+        ax = sns.countplot(x=daily_count, palette="pastel")
+        ax.set(title=config["count_based_title"],
+               xlabel=config["count_based_x"],
+               ylabel=config["count_based_y"])
+        for p in ax.patches:
+            count = p.get_height()
+            ax.annotate(
+                f"{count:.0f} ({100 * count / total_count:.1f}%)",
+                (p.get_x() + p.get_width() / 2, count + 0.3),
+                ha="center"
+            )
+        sns.set_style("whitegrid")
+        sns.despine(top=True, right=True)
+
+        plt.savefig(save_path, dpi=200, bbox_inches="tight")
+        return src_path
+
+    def generate_graph(self, data: pd.DataFrame, root_path: str, asset_dir: str) -> str:
+        config = {
+            "root_path": root_path,
+            "asset_dir": asset_dir,
+            **self._config_graph()
+        }
 
         return dedent(f"""
-            ## Graph
-            <img src="asset/pie_graph.png" alt="pie" width="60%">
+            ## {config["section_name"]}
+            <img src="{self._save_count_based_graph(config, data)}" width="45%">
         """)

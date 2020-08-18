@@ -31,8 +31,10 @@ class EnglishReportManager(BaseReportManager):
 
     def _config_graph(self) -> ConfigType:
         return {
-            "title": "Percentage of daily contribution count",
-            "box_title": "Daily contribution count",
+            "section_name": "Graph",
+            "count_based_title": "Number of contribution count per daily",
+            "count_based_x": "contribution count",
+            "count_based_y": "day",
         }
 
     def _config_table(self) -> ConfigType:

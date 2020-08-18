@@ -1,4 +1,3 @@
-beautifulsoup4 
-matplotlib 
-pytablewriter[all] 
+beautifulsoup4
 requests
+seaborn
