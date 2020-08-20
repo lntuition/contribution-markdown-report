@@ -1,5 +1,5 @@
-name: "Daily contribution checker"
-description: "Daily contribution checker with github action"
+name: "Contribution markdown report"
+description: "Contribution markdwon report generate with python & github action"
 author: "lntuition"
 branding:
   icon: "check"

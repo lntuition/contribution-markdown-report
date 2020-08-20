@@ -1,4 +1,4 @@
-name: Daily contribution checker
+name: Contribution markdown report
 
 on:
   # push:
@@ -13,8 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Daily contribuition checker
-      uses: lntuition/daily-contribution-checker@master
+    - name: Contribution markdown report
+      uses: lntuition/contribution-markdown-report@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         start_date: "2020-07-01"

@@ -10,33 +10,11 @@ I hope this report will be a companion for your contribution trip :airplane:
 at **2020-08-19**. Good job :+1:
 - During the trip, total contribution count is **127** and average contribution count 
 is **2.54**
-<<<<<<< HEAD
-- Daily maximum contribution day is **2020-08-07**, which is **5**.
-=======
 - Daily maximum contribution day is **2020-07-16**, which is **5**.
->>>>>>> c9b8f64... Refactor: use pandas dataframe
 - Longest continous contribution trip was **50** days 
 From **2020-07-01** to **2020-08-19** :walking:
 - Current continous contribution trip is **50** days 
 From **2020-07-01** :running:
 
 ## Graph
-<<<<<<< HEAD
-<img src="asset/pie_graph.png" alt="pie" width="60%">
-
-## Contribution table
-|      DATE       | MON | TUE | WED | THU | FRI | SAT | SUN |
-|:---------------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Week 27 of 2020 |     |     |  2  |  1  |  1  |  1  |  4  |
-| Week 28 of 2020 |  3  |  2  |  1  |  1  |  1  |  1  |  1  |
-| Week 29 of 2020 |  3  |  3  |  2  |  5  |  3  |  1  |  2  |
-| Week 30 of 2020 |  4  |  5  |  3  |  4  |  3  |  2  |  1  |
-| Week 31 of 2020 |  5  |  5  |  4  |  3  |  4  |  1  |  3  |
-| Week 32 of 2020 |  2  |  3  |  2  |  5  |  5  |  2  |  1  |
-| Week 33 of 2020 |  3  |  1  |  2  |  3  |  3  |  1  |  2  |
-| Week 34 of 2020 |  2  |  3  |  2  |     |     |     |     |
-
-        
-=======
 <img src="asset/count_based_graph.png" width="75%">
->>>>>>> c9b8f64... Refactor: use pandas dataframe
