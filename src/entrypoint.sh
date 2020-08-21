@@ -2,7 +2,6 @@
 
 # Generate data
 cd ${DEFAULT_DIR}
-mkdir -p result/asset
 python main.py
 
 if [ $? -ne 0 ]; then
@@ -17,8 +16,9 @@ git config --global user.name "${INPUT_AUTHOR_NAME}"
 
 remote_repo="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-git clone --single-branch --branch "${INPUT_BRANCH}" "${remote_repo}" /target
+git clone --branch "${INPUT_BRANCH}" --single-branch "${remote_repo}" /target
 cd /target
+git log -2
 mkdir -p ${INPUT_PATH}
 cp -rf ${DEFAULT_DIR}/result/* ${INPUT_PATH}
 

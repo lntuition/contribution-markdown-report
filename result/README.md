@@ -17,4 +17,10 @@ From **2020-07-01** to **2020-08-20** :walking:
 From **2020-07-01** :running:
 
 ## Graph
-<img src="asset/count_based_graph.png" width="45%">
+| Number of days per contribution up to the last 4 weeks         | Number of days per contribution          |
+|:------------------------------------------------:|:-----------------------------------------------:|
+| ![](asset/count_sum_recent.png)                      | ![](asset/count_sum_full.png)                       |
+| **Number of contribution per day of week up to the last 12 weeks** | **Average of contribution per day of week** |
+| ![](asset/dayofweek_sum_recent.png)                  | ![](asset/dayofweek_mean_full.png)                  |
+| **Number of contribution per month up to the last year**     | **Average of contribution per month**     |
+| ![](asset/month_sum_recent.png)                      | ![](asset/month_mean_full.png)                      |

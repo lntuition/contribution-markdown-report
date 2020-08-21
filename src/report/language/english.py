@@ -32,16 +32,30 @@ class EnglishReportManager(BaseReportManager):
     def _config_graph(self) -> ConfigType:
         return {
             "section_name": "Graph",
-            "count_based_title": "Number of contribution count per daily",
-            "count_based_x": "contribution count",
-            "count_based_y": "day",
-        }
-
-    def _config_table(self) -> ConfigType:
-        def formatter(year: int, week: int):
-            return f"Week {week} of {year}"
-
-        return {
-            "headers": ["DATE", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
-            "formatter": formatter
+            "count": {
+                "x": "contribution",
+                "y": "day",
+                "title": {
+                    "sum_recent": "Number of days per contribution up to the last 4 weeks",
+                    "sum_full": "Number of days per contribution",
+                },
+            },
+            "dayofweek": {
+                "label": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                "x": "day of week",
+                "y": "contribution",
+                "title": {
+                    "sum_recent": "Number of contribution per day of week up to the last 12 weeks",
+                    "mean_full": "Average of contribution per day of week",
+                },
+            },
+            "month": {
+                "label": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                "x": "month",
+                "y": "contribution",
+                "title": {
+                    "sum_recent": "Number of contribution per month up to the last year",
+                    "mean_full": "Average of contribution per month",
+                },
+            },
         }

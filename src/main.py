@@ -12,11 +12,18 @@ if __name__ == "__main__":
         start_date_str = os.environ["INPUT_START_DATE"]
 
         # Fetch date from github
-        data = crawl_data(username, start_date_str)
+        data = crawl_data(
+            username=username,
+            start_date_str=start_date_str
+        )
 
         # Generate report
         report = EnglishReportManager()
-        report.generate(username, data)
+        report.generate(
+            username=username,
+            data=data,
+            workdir="result"
+        )
 
         sys.exit(0)
     except Exception:
