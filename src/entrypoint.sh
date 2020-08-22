@@ -1,32 +1,45 @@
-#!/bin/sh
+#!/bin/bash
 
-# Generate data
-cd ${DEFAULT_DIR}
-python main.py
+VAR_RESULT_DIR="result"
+VAR_REMOTE_REPO="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+VAR_TARGET_DIR="target"
 
-if [ $? -ne 0 ]; then
-    echo "Generate data failed, check python trackback"
-    exit 1
-fi
+function FUNC_GENERATE_REPORT
+{
+    cd ${INPUT_WORKDIR}
+    python main.py ${GITHUB_ACTOR} ${INPUT_START_DATE} ${VAR_RESULT_DIR}
 
-# Commit data
-git config http.sslVerify false
-git config --global user.email "${INPUT_AUTHOR_EMAIL}"
-git config --global user.name "${INPUT_AUTHOR_NAME}"
+    if [ $? -ne 0 ]
+    then
+        echo "Generate data failed, check python trackback"
+        exit 1
+    fi
+}
 
-remote_repo="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+function FUNC_PROCESS_REPORT
+{
+    # Setup git configuration
+    git config http.sslVerify false
+    git config --global user.email "${INPUT_AUTHOR_EMAIL}"
+    git config --global user.name "${INPUT_AUTHOR_NAME}"
 
-git clone --branch "${INPUT_BRANCH}" --single-branch "${remote_repo}" /target
-cd /target
-git log -2
-mkdir -p ${INPUT_PATH}
-cp -rf ${DEFAULT_DIR}/result/* ${INPUT_PATH}
+    # Move report to target repository
+    git clone --branch "${INPUT_BRANCH}" --single-branch "${VAR_REMOTE_REPO}" ${VAR_TARGET_DIR}
+    cd ${VAR_TARGET_DIR}
+    mkdir -p ${INPUT_PATH}
+    cp -rf ${VAR_RESULT_DIR}/* ${INPUT_PATH}
 
-git add -A
-git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') contribution check result" || echo "No changes to commit"
-git push "${remote_repo}" HEAD:"${INPUT_BRANCH}"
+    # Commit & push to target repository
+    git add -A
+    git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') contribution check result" || echo "No changes to commit"
+    git log -2
+    git push "${VAR_REMOTE_REPO}" HEAD:"${INPUT_BRANCH}"
 
-if [ $? -ne 0 ]; then
-    echo "Commit data failed, check commit bash script"
-    exit 1
-fi
+    if [ $? -ne 0 ]
+    then
+        echo "Commit data failed, check commit bash script"
+        exit 1
+    fi
+}
+
+FUNC_GENERATE_REPORT && FUNC_PROCESS_REPORT

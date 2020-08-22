@@ -1,4 +1,3 @@
-import os
 import sys
 import traceback
 
@@ -8,8 +7,7 @@ from report.language.english import EnglishReportManager
 
 if __name__ == "__main__":
     try:
-        username = os.environ["GITHUB_ACTOR"]
-        start_date_str = os.environ["INPUT_START_DATE"]
+        _, username, start_date_str, workdir = sys.argv
 
         # Fetch date from github
         data = crawl_data(
@@ -22,7 +20,7 @@ if __name__ == "__main__":
         report.generate(
             username=username,
             data=data,
-            workdir="result"
+            workdir=workdir
         )
 
         sys.exit(0)
