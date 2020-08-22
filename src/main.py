@@ -7,12 +7,13 @@ from report.language.english import EnglishReportManager
 
 if __name__ == "__main__":
     try:
-        _, username, start_date_str, workdir = sys.argv
+        _, username, start, end, workdir = sys.argv
 
         # Fetch date from github
         data = crawl_data(
             username=username,
-            start_date_str=start_date_str
+            start=start,
+            end=end,
         )
 
         # Generate report

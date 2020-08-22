@@ -1,5 +1,6 @@
 #!/bin/bash
 
+VAR_END_DATE=$(date -d '1 day ago' '+%Y-%m-%d')
 VAR_RESULT_DIR="result"
 VAR_REMOTE_REPO="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 VAR_TARGET_DIR="target"
@@ -7,7 +8,7 @@ VAR_TARGET_DIR="target"
 function FUNC_GENERATE_REPORT
 {
     cd ${INPUT_WORKDIR}
-    python main.py ${GITHUB_ACTOR} ${INPUT_START_DATE} ${VAR_RESULT_DIR}
+    python main.py ${GITHUB_ACTOR} ${INPUT_START_DATE} ${VAR_END_DATE} ${VAR_RESULT_DIR}
 
     if [ $? -ne 0 ]
     then
@@ -31,7 +32,7 @@ function FUNC_PROCESS_REPORT
 
     # Commit & push to target repository
     git add -A
-    git commit -m "BOT: $(date -d '1 day ago' '+%Y-%m-%d') contribution check result" || echo "No changes to commit"
+    git commit -m "BOT: ${VAR_END_DATE} contribution check result" || echo "No changes to commit"
     git log -2
     git push "${VAR_REMOTE_REPO}" HEAD:"${INPUT_BRANCH}"
 
