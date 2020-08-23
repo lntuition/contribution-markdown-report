@@ -28,7 +28,7 @@ function FUNC_PROCESS_REPORT
     git clone --branch "${INPUT_BRANCH}" --single-branch "${VAR_REMOTE_REPO}" ${VAR_TARGET_DIR}
     cd ${VAR_TARGET_DIR}
     mkdir -p ${INPUT_PATH}
-    cp -rf ${VAR_RESULT_DIR}/* ${INPUT_PATH}
+    cp -rfv ${INPUT_WORKDIR}/${VAR_RESULT_DIR}/* ${INPUT_PATH}
 
     # Commit & push to target repository
     git add -A
