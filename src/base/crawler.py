@@ -3,6 +3,7 @@ import requests
 
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+from functools import reduce
 from typing import Dict, Iterable
 
 
@@ -14,7 +15,7 @@ class RequestException(Exception):
     pass
 
 
-def _create_date_year_interval(start: str, end: str) -> Iterable[int]:
+def _iterate_year(start: str, end: str) -> Iterable[int]:
     fmt = "%Y-%m-%d"
 
     try:
@@ -44,22 +45,21 @@ def _fetch_raw_data(url: str) -> Iterable[Dict[str, str]]:
 
 
 def crawl_data(username: str, start: str, end: str) -> pd.DataFrame:
-    counts = []
-
-    for year in _create_date_year_interval(start=start, end=end):
-        counts.extend(
-            map(
-                lambda x: int(x["data-count"]),
-                filter(
-                    lambda x: start <= x["data-date"] <= end,
-                    _fetch_raw_data(
-                        url=f"https://github.com/{username}?from={year}-01-01"
+    return pd.DataFrame({
+        "count": map(
+            lambda x: int(x["data-count"]),
+            filter(
+                lambda x: start <= x["data-date"] <= end,
+                reduce(
+                    lambda a, b: a + b,
+                    map(
+                        lambda x: _fetch_raw_data(
+                            f"https://github.com/{username}?from={x}-01-01"
+                        ),
+                        _iterate_year(start=start, end=end)
                     )
                 )
             )
-        )
-
-    return pd.DataFrame({
-        "count": counts,
+        ),
         "date": pd.date_range(start, end),
     })
