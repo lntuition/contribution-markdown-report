@@ -19,8 +19,8 @@ def _iterate_year(start: str, end: str) -> Iterable[int]:
     fmt = "%Y-%m-%d"
 
     try:
-        begin = datetime.strptime(start, fmt).year
-        end = datetime.strptime(end, fmt).year + 1
+        begin = datetime.strptime(start, fmt)
+        end = datetime.strptime(end, fmt)
     except ValueError:
         raise ParameterException(
             f"date string must follow such format({fmt})")
@@ -29,7 +29,7 @@ def _iterate_year(start: str, end: str) -> Iterable[int]:
         raise ParameterException(
             f"start({start}) must be earlier than end({end})")
 
-    return range(begin, end)
+    return range(begin.year, end.year + 1)
 
 
 def _fetch_raw_data(url: str) -> Iterable[Dict[str, str]]:
