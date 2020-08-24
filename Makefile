@@ -1,3 +1,4 @@
+WORKDIR="/workdir"
 IMAGE="contribution-markdown-report"
 
 build:
@@ -5,4 +6,6 @@ build:
 clean:
 	docker rmi -f ${IMAGE}
 debug: build
-	docker run -it --entrypoint '' ${IMAGE} bash
+	docker run -it --workdir ${WORKDIR} --entrypoint "" ${IMAGE} bash
+test: build
+	docker run -it --workdir ${WORKDIR} --entrypoint "" ${IMAGE} pytest -v
