@@ -1,27 +1,29 @@
 import sys
 import traceback
 
-from base.crawler import crawl_data
-from report.language.english import EnglishReportManager
-
+from lib.collect.crawler import crawl_data
+from lib.base.writer import ReportWriter
 
 if __name__ == "__main__":
     try:
         _, username, start, end, workdir = sys.argv
 
-        # Fetch date from github
+        # Crawl data
         data = crawl_data(
             username=username,
             start=start,
             end=end,
         )
 
-        # Generate report
-        report = EnglishReportManager()
-        report.generate(
+        # Write report
+        report = ReportWriter(
             username=username,
             data=data,
-            workdir=workdir
+            language="english"
+        )
+        report.write(
+            workdir=workdir,
+            filename="README.md",
         )
 
         sys.exit(0)
