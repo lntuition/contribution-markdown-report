@@ -1,7 +1,7 @@
 # Contribution markdown report
 [![License](https://img.shields.io/github/license/lntuition/contribution-markdown-report)](https://github.com/lntuition/contribution-markdown-report/blob/master/LICENSE)
 [![Action](https://github.com/lntuition/contribution-markdown-report/workflows/Contribution%20markdown%20report/badge.svg)](https://github.com/lntuition/contribution-markdown-report/actions?query=workflow%3A%22Contribution+markdown+report%22)
-[![Korean](https://img.shields.io/badge/README-Korean-brightgreen)](https://github.com/lntuition/contribution-markdown-report/blob/master/README-ko.md)
+[![Korean](https://img.shields.io/badge/README-Korean-brightgreen)](https://github.com/lntuition/contribution-markdown-report/blob/master/docs/README-ko.md)
 
 Automatically generate contribution report by markdown with `Python` & `Github Actions`.
 Whenever you want, github action will check your contribution and update result.
