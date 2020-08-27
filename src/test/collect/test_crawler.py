@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import requests
 
-from base.crawler import ParameterException, RequestException, crawl_data
+from lib.collect.crawler import ParameterException, RequestException, crawl_data
 
 
 username = "lntuition"

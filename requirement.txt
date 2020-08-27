@@ -3,3 +3,4 @@ requests
 seaborn
 
 pytest
+pytest-cov

@@ -8,4 +8,4 @@ clean:
 debug: build
 	docker run -it --workdir ${WORKDIR} --entrypoint "" ${IMAGE} bash
 test: build
-	docker run -it --workdir ${WORKDIR} --entrypoint "" ${IMAGE} pytest -v
+	docker run -it --workdir ${WORKDIR} --entrypoint "" ${IMAGE} pytest -v --cov=lib
