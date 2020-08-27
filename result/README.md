@@ -5,22 +5,22 @@ If you have any question or problem, please report [here](https://github.com/lnt
 I hope this report will be a companion for your contribution trip :airplane:
 
 ## Summary
-- **2020-08-25** is **56th day** since the start of trip :sweat_smile:
-- There was **1** new contribution 
-at **2020-08-25**. Good job :+1:
-- During the trip, total contribution count is **141** and average contribution count 
-is **2.52**
+- **2020-08-26** is **57th day** since the start of trip :sweat_smile:
+- There was **3** new contribution 
+at **2020-08-26**. Good job :+1:
+- During the trip, total contribution count is **144** and average contribution count 
+is **2.53**
 - Daily maximum contribution day is **2020-07-16**, which is **5**.
-- Longest continous contribution trip was **56** days 
-From **2020-07-01** to **2020-08-25** :walking:
-- Current continous contribution trip is **56** days 
+- Longest continous contribution trip was **57** days 
+From **2020-07-01** to **2020-08-26** :walking:
+- Current continous contribution trip is **57** days 
 From **2020-07-01** :running:
 
 ## Graph
-| Number of days per contribution up to the last 4 weeks         | Number of days per contribution          |
-|:------------------------------------------------:|:-----------------------------------------------:|
-| ![](asset/count_sum_recent.png)                      | ![](asset/count_sum_full.png)                       |
+| **Number of days per contribution up to the last 4 weeks** | **Number of days per contribution** |
+|:------------------------:|:------------------------:|
+| ![](asset/count_sum_recent.png)  | ![](asset/count_sum_full.png)  |
 | **Number of contribution per day of week up to the last 12 weeks** | **Average of contribution per day of week** |
-| ![](asset/dayofweek_sum_recent.png)                  | ![](asset/dayofweek_mean_full.png)                  |
-| **Number of contribution per month up to the last year**     | **Average of contribution per month**     |
-| ![](asset/month_sum_recent.png)                      | ![](asset/month_mean_full.png)                      |
+| ![](asset/dayofweek_sum_recent.png)  | ![](asset/dayofweek_mean_full.png)  |
+| **Number of contribution per month up to the last year** | **Average of contribution per month** |
+| ![](asset/month_sum_recent.png)  | ![](asset/month_mean_full.png)  |
