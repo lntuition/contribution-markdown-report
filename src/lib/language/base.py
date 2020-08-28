@@ -1,12 +1,17 @@
+from abc import ABCMeta, abstractmethod
+
 from lib.base.type import ConfigType
 
 
-class LanguageSetting():
-    def format_header(self, config: ConfigType) -> str:
-        raise NotImplementedError()
+class BaseLanguageSetting(metaclass=ABCMeta):
+    @abstractmethod
+    def format_header(self, config: ConfigType) -> str:  # pragma: no cover
+        pass
 
-    def format_summary(self, config: ConfigType) -> str:
-        raise NotImplementedError()
+    @abstractmethod
+    def format_summary(self, config: ConfigType) -> str:  # pragma: no cover
+        pass
 
-    def config_graph(self) -> ConfigType:
-        raise NotImplementedError()
+    @abstractmethod
+    def config_graph(self) -> ConfigType:  # pragma: no cover
+        pass

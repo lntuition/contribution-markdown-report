@@ -3,12 +3,12 @@ import pandas as pd
 from datetime import datetime
 
 from lib.base.type import ConfigType
-from lib.language.base import LanguageSetting
-from lib.section.base import SectionGenerator
+from lib.language.base import BaseLanguageSetting
+from lib.section.base import BaseSectionGenerator
 
 
-class SummaryGenerator(SectionGenerator):
-    def __init__(self, data: pd.DataFrame, setting: LanguageSetting) -> None:
+class SummaryGenerator(BaseSectionGenerator):
+    def __init__(self, data: pd.DataFrame, setting: BaseLanguageSetting) -> None:
         self.data = data
         self.setting = setting
 

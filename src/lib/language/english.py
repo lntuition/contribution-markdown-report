@@ -1,10 +1,10 @@
 from textwrap import dedent
 
 from lib.base.type import ConfigType
-from lib.language.base import LanguageSetting
+from lib.language.base import BaseLanguageSetting
 
 
-class EnglishSetting(LanguageSetting):
+class EnglishSetting(BaseLanguageSetting):
     def format_header(self, config: ConfigType) -> str:
         return dedent(f"""
             # Welcome to {config["username"]}'s Contribution Report

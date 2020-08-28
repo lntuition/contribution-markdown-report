@@ -1,10 +1,10 @@
 from lib.base.type import ConfigType
-from lib.language.base import LanguageSetting
-from lib.section.base import SectionGenerator
+from lib.language.base import BaseLanguageSetting
+from lib.section.base import BaseSectionGenerator
 
 
-class HeaderGenerator(SectionGenerator):
-    def __init__(self, username: str, setting: LanguageSetting) -> None:
+class HeaderGenerator(BaseSectionGenerator):
+    def __init__(self, username: str, setting: BaseLanguageSetting) -> None:
         self.username = username
         self.setting = setting
 
