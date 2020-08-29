@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 from unittest.mock import MagicMock
@@ -22,3 +23,14 @@ class SkeletonLanguageSetting(BaseLanguageSetting):
 @pytest.fixture(scope="module")
 def mock_language_setting():
     return MagicMock(wrap=SkeletonLanguageSetting)
+
+
+@pytest.fixture()
+def mock_data():
+    def _mock_data(count):
+        return pd.DataFrame({
+            "count": count,
+            "date": pd.date_range("2013-01-01", periods=len(count)),
+        })
+
+    return _mock_data

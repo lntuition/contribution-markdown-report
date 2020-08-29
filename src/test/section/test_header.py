@@ -25,7 +25,6 @@ def test_header_process(mock_language_setting):
         setting=mock_language_setting
     )
 
-    config = header.configure()
-    header.process(config=config)
+    header.process(config={})
 
     mock_language_setting.format_header.assert_called()

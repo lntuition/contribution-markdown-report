@@ -13,7 +13,7 @@ class SummaryGenerator(BaseSectionGenerator):
         self.setting = setting
 
     @staticmethod
-    def format_date(date: datetime) -> str:
+    def __format_date(date: datetime) -> str:
         return date.strftime("%Y-%m-%d")
 
     def day_based_configure(self) -> ConfigType:
@@ -21,7 +21,7 @@ class SummaryGenerator(BaseSectionGenerator):
 
         return {
             "today": {
-                "date": self.format_date(
+                "date": self.__format_date(
                     today["date"]
                 ),
                 "count": today["count"],
@@ -39,7 +39,7 @@ class SummaryGenerator(BaseSectionGenerator):
                 "average": counts.mean(),
             },
             "max": {
-                "date": self.format_date(
+                "date": self.__format_date(
                     maximum["date"]
                 ),
                 "count": maximum["count"],
@@ -60,16 +60,16 @@ class SummaryGenerator(BaseSectionGenerator):
             "continuous": {
                 "current": {
                     "length": cur_len,
-                    "start": self.format_date(
+                    "start": self.__format_date(
                         self.data.iloc[-1 - max(0, cur_len-1)]["date"]
                     ),
                 },
                 "max": {
                     "length": max_len,
-                    "start": self.format_date(
+                    "start": self.__format_date(
                         self.data.iloc[max_idx - max(0, max_len-1)]["date"]
                     ),
-                    "end": self.format_date(
+                    "end": self.__format_date(
                         self.data.iloc[max_idx]["date"]
                     ),
                 },
