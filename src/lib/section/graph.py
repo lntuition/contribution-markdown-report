@@ -18,9 +18,6 @@ class GraphGenerator(BaseSectionGenerator):
         self.setting = setting
         self.workdir = workdir
 
-    def configure(self) -> ConfigType:
-        return self.setting.config_graph()
-
     def save_barplot(self, series: pd.Series, config: ConfigType, percent: bool, filename: str) -> None:
         sns.set_style("whitegrid")
 
@@ -103,7 +100,9 @@ class GraphGenerator(BaseSectionGenerator):
             )
         )
 
-    def process(self, config: ConfigType) -> str:
+    def generate(self) -> str:
+        config = self.setting.config_graph()
+
         assets = []
         with change_workdir(self.workdir):
             for info, title in config["title"].items():

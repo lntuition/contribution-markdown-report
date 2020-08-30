@@ -8,10 +8,7 @@ class HeaderGenerator(BaseSectionGenerator):
         self.username = username
         self.setting = setting
 
-    def configure(self) -> ConfigType:
-        return {
-            "username": self.username,
-        }
-
-    def process(self, config: ConfigType) -> str:
-        return self.setting.format_header(config=config)
+    def generate(self) -> str:
+        return self.setting.format_header(
+            username=self.username
+        )

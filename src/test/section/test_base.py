@@ -8,10 +8,12 @@ from lib.language.base import BaseLanguageSetting
 
 
 class SkeletonLanguageSetting(BaseLanguageSetting):
-    def format_header(self, config: ConfigType) -> str:
+    def format_header(self, username: str) -> str:
         return ""
 
-    def format_summary(self, config: ConfigType) -> str:
+    def format_summary(
+        self, today: ConfigType, maximum: ConfigType, total: ConfigType, continuous: ConfigType
+    ) -> str:
         return ""
 
     def config_graph(self) -> ConfigType:
