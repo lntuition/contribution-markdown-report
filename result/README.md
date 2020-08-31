@@ -5,15 +5,15 @@ If you have any question or problem, please report [here](https://github.com/lnt
 I hope this report will be a companion for your contribution trip :airplane:
 
 ## Summary
-- **2020-08-29** is **60th day** since the start of trip :sweat_smile:
-- There was **3** new contribution 
-at **2020-08-29**. Good job :+1:
-- During the trip, total contribution count is **150** and average contribution count 
-is **2.50**
+- **2020-08-30** is **61th day** since the start of trip :sweat_smile:
+- There was **2** new contribution
+at **2020-08-30**. Good job :+1:
+- During the trip, total contribution count is **152** and
+average contribution count is **2.49**
 - Daily maximum contribution day is **2020-07-16**, which is **5**.
-- Longest continous contribution trip was **60** days 
-From **2020-07-01** to **2020-08-29** :walking:
-- Current continous contribution trip is **60** days 
+- Longest continuous contribution trip was **61** days
+From **2020-07-01** to **2020-08-30** :walking:
+- Current continuous contribution trip is **61** days
 From **2020-07-01** :running:
 
 ## Graph
