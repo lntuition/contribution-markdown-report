@@ -1,6 +1,6 @@
 @startuml
 'Section
-Interface SectionGenerator
+Abstract SectionGenerator
 Class HeaderGenerator
 Class SummaryGenerator
 Class GraphGenerator
@@ -16,22 +16,23 @@ Class LanguageSettingFactory
 Class EnglishSetting
 Class KoreanSetting
 
-Client --> LanguageSettingFactory
-Client --> SectionGenerator
+Client --> HeaderGenerator
+Client --> SummaryGenerator
+Client --> GraphGenerator
 
-SectionGenerator <|.. HeaderGenerator
-SectionGenerator <|.. SummaryGenerator
-SectionGenerator <|.. GraphGenerator
+Client ---> LanguageSettingFactory
+
+HeaderGenerator ..|> SectionGenerator
+SummaryGenerator ..|> SectionGenerator
+GraphGenerator ..|> SectionGenerator
+
+SectionGenerator ---> LanguageSetting
 
 HeaderSetting <|.. LanguageSetting
 SummarySetting <|.. LanguageSetting
 GraphSetting <|.. LanguageSetting
 
-HeaderGenerator ---> LanguageSetting
-SummaryGenerator ---> LanguageSetting
-GraphGenerator ---> LanguageSetting
-
-LanguageSetting <- LanguageSettingFactory
+LanguageSettingFactory -> LanguageSetting
 
 LanguageSetting <|.. EnglishSetting
 LanguageSetting <|.. KoreanSetting
