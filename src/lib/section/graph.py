@@ -7,15 +7,15 @@ from textwrap import dedent
 from typing import Iterable, Optional
 
 from lib.base.type import ConfigType
-from lib.language.base import BaseLanguageSetting
-from lib.section.base import BaseSectionGenerator
+from lib.language.base import LanguageSetting
+from lib.section.base import SectionGenerator
 from lib.util.directory import change_workdir
 
 
-class GraphGenerator(BaseSectionGenerator):
-    def __init__(self, data: pd.DataFrame, setting: BaseLanguageSetting, workdir: str = "asset") -> None:
+class GraphGenerator(SectionGenerator):
+    def __init__(self, data: pd.DataFrame, setting: LanguageSetting, workdir: str = "asset") -> None:
+        super().__init__(setting=setting)
         self.data = data
-        self.setting = setting
         self.workdir = workdir
 
     def save_barplot(self, series: pd.Series, config: ConfigType, percent: bool, filename: str) -> None:

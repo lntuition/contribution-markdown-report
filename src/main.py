@@ -1,30 +1,48 @@
 import sys
 import traceback
 
+from functools import reduce
+
 from lib.collect.crawler import crawl_data
-from lib.base.writer import ReportWriter
+from lib.language.factory import FactoryLanguageSetting
+from lib.section.graph import GraphGenerator
+from lib.section.header import HeaderGenerator
+from lib.section.summary import SummaryGenerator
+from lib.util.directory import change_workdir
+
 
 if __name__ == "__main__":
     try:
         _, username, start, end, workdir = sys.argv
 
-        # Crawl data
-        data = crawl_data(
-            username=username,
-            start=start,
-            end=end,
-        )
+        # Setup
+        data = crawl_data(username=username, start=start, end=end)
+        setting = FactoryLanguageSetting().get_setting(language="english")
 
-        # Write report
-        report = ReportWriter(
-            username=username,
-            data=data,
-            language="english"
-        )
-        report.write(
-            workdir=workdir,
-            filename="README.md",
-        )
+        # Generate
+        with change_workdir(workdir), open("README.md", "w") as fp:
+            fp.write(
+                reduce(
+                    lambda a, b: a + b,
+                    map(
+                        lambda x: x.generate(),
+                        [
+                            HeaderGenerator(
+                                username=username,
+                                setting=setting,
+                            ),
+                            SummaryGenerator(
+                                data=data,
+                                setting=setting,
+                            ),
+                            GraphGenerator(
+                                data=data,
+                                setting=setting,
+                            )
+                        ]
+                    )
+                )
+            )
 
         sys.exit(0)
     except Exception:

@@ -4,10 +4,10 @@ import pytest
 from unittest.mock import MagicMock
 
 from lib.base.type import ConfigType
-from lib.language.base import BaseLanguageSetting
+from lib.language.base import LanguageSetting
 
 
-class SkeletonLanguageSetting(BaseLanguageSetting):
+class SkeletonLanguageSetting(LanguageSetting):
     def format_header(self, username: str) -> str:
         return ""
 

@@ -1,9 +1,12 @@
 from abc import ABCMeta, abstractmethod
 
-from lib.base.type import ConfigType
+from lib.language.base import LanguageSetting
 
 
-class BaseSectionGenerator(metaclass=ABCMeta):
+class SectionGenerator(metaclass=ABCMeta):
+    def __init__(self, setting: LanguageSetting) -> None:
+        self.setting = setting
+
     @abstractmethod
-    def generate(self) -> str:  # pragma: no cover
+    def generate(self) -> str:
         pass

@@ -3,14 +3,14 @@ import pandas as pd
 from datetime import datetime
 
 from lib.base.type import ConfigType
-from lib.language.base import BaseLanguageSetting
-from lib.section.base import BaseSectionGenerator
+from lib.language.base import LanguageSetting
+from lib.section.base import SectionGenerator
 
 
-class SummaryGenerator(BaseSectionGenerator):
-    def __init__(self, data: pd.DataFrame, setting: BaseLanguageSetting) -> None:
+class SummaryGenerator(SectionGenerator):
+    def __init__(self, data: pd.DataFrame, setting: LanguageSetting) -> None:
+        super().__init__(setting=setting)
         self.data = data
-        self.setting = setting
 
     @staticmethod
     def __format_date(date: datetime) -> str:

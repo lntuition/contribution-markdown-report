@@ -23,5 +23,5 @@ class GraphSetting(metaclass=ABCMeta):
         pass
 
 
-class BaseLanguageSetting(HeaderSetting, SummarySetting, GraphSetting, metaclass=ABCMeta):
+class LanguageSetting(HeaderSetting, SummarySetting, GraphSetting, metaclass=ABCMeta):
     pass
