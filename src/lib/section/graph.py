@@ -6,7 +6,6 @@ import seaborn as sns
 from textwrap import dedent
 from typing import Iterable, Optional
 
-from lib.base.type import ConfigType
 from lib.language.base import LanguageSetting
 from lib.section.base import SectionGenerator
 from lib.util.directory import change_workdir
@@ -18,7 +17,7 @@ class GraphGenerator(SectionGenerator):
         self.data = data
         self.workdir = workdir
 
-    def save_barplot(self, series: pd.Series, config: ConfigType, percent: bool, filename: str) -> None:
+    def save_barplot(self, series: pd.Series, config, percent: bool, filename: str) -> None:
         sns.set_style("whitegrid")
 
         label = config.get("label", None)

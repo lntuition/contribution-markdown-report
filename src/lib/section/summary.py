@@ -1,10 +1,15 @@
 import pandas as pd
 
 from datetime import datetime
+from textwrap import dedent
+from typing import Any, Callable, Dict, TypeVar, Union
 
-from lib.base.type import ConfigType
 from lib.language.base import LanguageSetting
 from lib.section.base import SectionGenerator
+
+
+T = TypeVar("T")
+Config = Dict[str, Any]
 
 
 class SummaryGenerator(SectionGenerator):
@@ -13,41 +18,55 @@ class SummaryGenerator(SectionGenerator):
         self.data = data
 
     @staticmethod
-    def __format_date(date: datetime) -> str:
-        return date.strftime("%Y-%m-%d")
+    def __formatize_for_markdown(arg: Any) -> str:
+        if isinstance(arg, datetime):
+            arg = arg.strftime("%Y-%m-%d")
+        elif isinstance(arg, float):
+            arg = round(arg, 2)
 
-    def today_configure(self) -> ConfigType:
+        # Markdown bold
+        return f"**{arg}**"
+
+    def __generate_with_setting(
+        self,
+        setting: Callable[..., T],
+        config: Union[Callable[..., Config], Config]
+    ) -> T:
+        if callable(config):
+            config = config()
+
+        return setting(
+            **{k: self.__formatize_for_markdown(v) for k, v in config.items()}
+        )
+
+    def today_configure(self) -> Config:
         today = self.data.iloc[-1]
 
         return {
-            "date": self.__format_date(
-                today["date"]
-            ),
+            "today": today["date"],
+            "length": len(self.data.index),
             "count": today["count"],
         }
 
-    def max_configure(self) -> ConfigType:
+    def maximum_configure(self) -> Config:
         maximum = self.data.iloc[
             self.data["count"].idxmax()
         ]
 
         return {
-            "date": self.__format_date(
-                maximum["date"]
-            ),
+            "date": maximum["date"],
             "count": maximum["count"],
         }
 
-    def total_configure(self) -> ConfigType:
+    def total_configure(self) -> Config:
         counts = self.data["count"]
 
         return {
-            "length": len(counts.index),
             "sum": counts.sum(),
-            "average": counts.mean(),
+            "avg": counts.mean(),
         }
 
-    def continuous_configure(self) -> ConfigType:
+    def peak_configure(self) -> Config:
         exist = pd.Series(data=(self.data["count"] > 0))
         continuous = exist * (exist.groupby(
             (exist != exist.shift()).cumsum()
@@ -58,28 +77,48 @@ class SummaryGenerator(SectionGenerator):
         max_len = continuous.iloc[max_idx]
 
         return {
-            "current": {
-                "length": cur_len,
-                "start": self.__format_date(
-                    self.data.iloc[-1 - max(0, cur_len-1)]["date"]
-                ),
-                # current end = today date
-            },
-            "max": {
+            "peak": {
                 "length": max_len,
-                "start": self.__format_date(
-                    self.data.iloc[max_idx - max(0, max_len-1)]["date"]
-                ),
-                "end": self.__format_date(
-                    self.data.iloc[max_idx]["date"]
-                ),
+                "start": self.data.iloc[max_idx - max(0, max_len-1)]["date"],
+                "end": self.data.iloc[max_idx]["date"],
+            },
+            "cur_peak": {
+                "length": cur_len,
+                "start": self.data.iloc[-1 - max(0, cur_len-1)]["date"]
             },
         }
 
     def generate(self) -> str:
-        return self.setting.format_summary(
-            today=self.today_configure(),
-            maximum=self.max_configure(),
-            total=self.total_configure(),
-            continuous=self.continuous_configure(),
+        title = self.setting.summary_title()
+
+        today = self.__generate_with_setting(
+            setting=self.setting.summary_today,
+            config=self.today_configure,
         )
+        maximum = self.__generate_with_setting(
+            setting=self.setting.summary_maximum,
+            config=self.maximum_configure,
+        )
+        total = self.__generate_with_setting(
+            setting=self.setting.summary_total,
+            config=self.total_configure,
+        )
+
+        peak_config = self.peak_configure()
+        peak = self.__generate_with_setting(
+            setting=self.setting.summary_peak,
+            config=peak_config["peak"],
+        )
+        cur_peak = self.__generate_with_setting(
+            setting=self.setting.summary_cur_peak,
+            config=peak_config["cur_peak"],
+        )
+
+        return dedent(f"""
+            ## {title}
+            - {today} :+1:
+            - {maximum} :muscle:
+            - {total} :clap:
+            - {peak} :walking:
+            - {cur_peak} :running:
+        """)
