@@ -22,7 +22,7 @@ class GraphGenerator(SectionGenerator):
 
         label = config.get("label", None)
         if label:
-            series.rename(index=lambda x: label[x])
+            series = series.rename(index=lambda x: label[x])
 
         ax = sns.barplot(x=series.index, y=series, palette="pastel")
         ax.set(xlabel=config["x"], ylabel=config["y"])
@@ -84,18 +84,18 @@ class GraphGenerator(SectionGenerator):
             max(-365, -len(self.data.index)):
         ].groupby(
             self.data["date"].dt.month
-        )["count"].sum()
+        )["count"].sum().rename(lambda x: x - 1)
 
     def month_mean_full_series(self) -> pd.Series:
         month_groupby = self.data.groupby(
             self.data["date"].dt.month
         )["count"]
 
-        return month_groupby.mean().multiply(
+        return month_groupby.mean().rename(lambda x: x - 1).multiply(
             pd.Series(
                 [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
             ).combine(
-                month_groupby.count(), min, fill_value=0
+                month_groupby.count().rename(lambda x: x - 1), min, fill_value=0
             )
         )
 
