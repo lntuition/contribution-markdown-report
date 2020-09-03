@@ -13,10 +13,10 @@ from lib.util.directory import change_workdir
 
 if __name__ == "__main__":
     try:
-        _, username, start, end, workdir = sys.argv
+        _, username, start, finish, workdir = sys.argv
 
         # Setup
-        data = crawl_data(username=username, start=start, end=end)
+        data = crawl_data(username=username, start=start, finish=finish)
         setting = FactoryLanguageSetting().get_setting(language="english")
 
         # Generate

@@ -4,3 +4,4 @@ seaborn
 
 pytest
 pytest-cov
+mypy

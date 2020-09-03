@@ -4,7 +4,10 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from functools import reduce
-from typing import Dict, Iterable
+from typing import cast, Dict, List, Sequence
+
+
+RawData = List[Dict[str, str]]
 
 
 class ParameterException(Exception):
@@ -15,24 +18,24 @@ class RequestException(Exception):
     pass
 
 
-def _iterate_year(start: str, end: str) -> Iterable[int]:
+def _iterate_year(start: str, finish: str) -> Sequence[int]:
     fmt = "%Y-%m-%d"
 
     try:
         begin = datetime.strptime(start, fmt)
-        end = datetime.strptime(end, fmt)
+        end = datetime.strptime(finish, fmt)
     except ValueError:
         raise ParameterException(
             f"date string must follow such format({fmt})")
 
     if begin > end:
         raise ParameterException(
-            f"start({start}) must be earlier than end({end})")
+            f"start({start}) must be earlier than finish({finish})")
 
     return range(begin.year, end.year + 1)
 
 
-def _fetch_raw_data(url: str) -> Iterable[Dict[str, str]]:
+def _fetch_raw_data(url: str) -> RawData:
     response = requests.get(url)
 
     status = response.status_code
@@ -44,22 +47,22 @@ def _fetch_raw_data(url: str) -> Iterable[Dict[str, str]]:
     return BeautifulSoup(response.text, "html.parser").select(".day")
 
 
-def crawl_data(username: str, start: str, end: str) -> pd.DataFrame:
+def crawl_data(username: str, start: str, finish: str) -> pd.DataFrame:
     return pd.DataFrame({
         "count": map(
             lambda x: int(x["data-count"]),
             filter(
-                lambda x: start <= x["data-date"] <= end,
+                lambda x: start <= x["data-date"] <= finish,
                 reduce(
-                    lambda a, b: a + b,
+                    lambda a, b: cast(RawData, a) + cast(RawData, b),
                     map(
                         lambda x: _fetch_raw_data(
                             f"https://github.com/{username}?from={x}-01-01"
                         ),
-                        _iterate_year(start=start, end=end)
-                    )
+                        _iterate_year(start=start, finish=finish)
+                    ),
                 )
             )
         ),
-        "date": pd.date_range(start, end),
+        "date": pd.date_range(start, finish),
     })
