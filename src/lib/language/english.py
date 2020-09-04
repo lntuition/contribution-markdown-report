@@ -1,3 +1,5 @@
+from typing import List
+
 from lib.language.base import LanguageSetting
 
 
@@ -29,61 +31,41 @@ class EnglishSetting(LanguageSetting):
     def summary_cur_peak(self, length: str, start: str) -> str:
         return f"Current continuous contribution trip is {length} days from {start}."
 
-    def config_graph(self):
-        return {
-            "section": {
-                "title": "Graph"
-            },
-            "bar": {
-                "count": {
-                    "x": "contribution",
-                    "y": "day",
-                    "sum": {
-                        "recent": {
-                            "title": "Number of days per contribution up to the last 4 weeks",
-                        },
-                        "full": {
-                            "title": "Number of days per contribution",
-                        },
-                    },
-                },
-                "dayofweek": {
-                    "label": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                    "x": "day of week",
-                    "y": "contribution",
-                    "sum": {
-                        "recent": {
-                            "title": "Number of contribution per day of week up to the last 12 weeks",
-                        },
-                    },
-                    "mean": {
-                        "full": {
-                            "title": "Average of contribution per day of week",
-                        }
-                    }
-                },
-                "month": {
-                    "label": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                    "x": "month",
-                    "y": "contribution",
-                    "sum": {
-                        "recent": {
-                            "title": "Number of contribution per month up to the last year",
-                        },
-                    },
-                    "mean": {
-                        "full": {
-                            "title": "Average of contribution per month",
-                        },
-                    },
-                },
-            },
-            "title": {
-                "bar:count:sum:recent": "Number of days per contribution up to the last 4 weeks",
-                "bar:count:sum:full": "Number of days per contribution",
-                "bar:dayofweek:sum:recent": "Number of contribution per day of week up to the last 12 weeks",
-                "bar:dayofweek:mean:full": "Average of contribution per day of week",
-                "bar:month:sum:recent": "Number of contribution per month up to the last year",
-                "bar:month:mean:full": "Average of contribution per month",
-            },
-        }
+    def graph_title(self) -> str:
+        return "Graph"
+
+    def graph_dayofweek_label(self) -> List[str]:
+        return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+    def graph_month_label(self) -> List[str]:
+        return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+    def graph_contribution_axis(self) -> str:
+        return "contribution count"
+
+    def graph_day_axis(self) -> str:
+        return "day"
+
+    def graph_dayofweek_axis(self) -> str:
+        return "day of week"
+
+    def graph_month_axis(self) -> str:
+        return "month"
+
+    def graph_count_sum_recent_title(self) -> str:
+        return "Number of days per contribution up to the last 4 weeks"
+
+    def graph_count_sum_full_title(self) -> str:
+        return "Number of days per contribution"
+
+    def graph_dayofweek_sum_recent_title(self) -> str:
+        return "Number of contribution per day of week up to the last 12 weeks"
+
+    def graph_dayofweek_mean_full_title(self) -> str:
+        return "Average of contribution per day of week"
+
+    def graph_month_sum_recent_title(self) -> str:
+        return "Number of contribution per month up to the last year"
+
+    def graph_month_mean_full_title(self) -> str:
+        return "Average of contribution per month"

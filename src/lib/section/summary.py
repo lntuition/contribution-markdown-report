@@ -17,15 +17,13 @@ class SummaryGenerator(SectionGenerator):
         super().__init__(setting=setting)
         self.data = data
 
-    @staticmethod
-    def __formatize_for_markdown(arg: Any) -> str:
+    def __formatize_for_markdown(self, arg: Any) -> str:
         if isinstance(arg, datetime):
             arg = arg.strftime("%Y-%m-%d")
         elif isinstance(arg, float):
             arg = round(arg, 2)
 
-        # Markdown bold
-        return f"**{arg}**"
+        return self._bold_markdown(arg)
 
     def __generate_with_setting(
         self,

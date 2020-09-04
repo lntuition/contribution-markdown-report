@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from textwrap import dedent
-from typing import Iterable, Optional
+from matplotlib.axes import Axes
+from typing import Any, List, Optional, Tuple
 
 from lib.language.base import LanguageSetting
 from lib.section.base import SectionGenerator
@@ -17,41 +17,71 @@ class GraphGenerator(SectionGenerator):
         self.data = data
         self.workdir = workdir
 
-    def save_barplot(self, series: pd.Series, config, percent: bool, filename: str) -> None:
+    def __label_series(self, series: pd.Series, label: List[str]) -> pd.Series:
+        return series.rename(index=lambda x: label[x])
+
+    def __draw_barplot(self, series: pd.Series) -> Axes:
         sns.set_style("whitegrid")
-
-        label = config.get("label", None)
-        if label:
-            series = series.rename(index=lambda x: label[x])
-
         ax = sns.barplot(x=series.index, y=series, palette="pastel")
-        ax.set(xlabel=config["x"], ylabel=config["y"])
         sns.despine(ax=ax, top=True, right=True)
 
-        if percent:
-            total = series.sum()
+        return ax
 
+    def __label_axis(self, ax: Axes, xlabel: str, ylabel: str) -> None:
+        ax.set(xlabel=xlabel, ylabel=ylabel)
+
+    def __annotate_axis(self, ax: Axes) -> None:
         for p in ax.patches:
             height = p.get_height()
             if math.isclose(height, 0.0):
                 continue
 
-            annotation = f"{height:.2f}"
-            if height.is_integer():
-                annotation = f"{height:.0f}"
-
-            if percent:
-                annotation += f"({100 * height / total:.1f}%)"
-
             ax.annotate(
-                annotation,
+                f"{height:.0f}" if height.is_integer() else f"{height:.2f}",
                 (p.get_x() + p.get_width() / 2, height * 1.02),
                 ha="center"
             )
 
-        fig = ax.get_figure()
-        fig.savefig(filename, dpi=200, bbox_inches="tight")
-        fig.clf()
+    def __save_barplot(self, ax: Axes, filename: str) -> None:
+        with change_workdir(self.workdir):
+            fig = ax.get_figure()
+            fig.savefig(filename, dpi=200, bbox_inches="tight")
+            fig.clf()
+
+    def __generate_with_setting(
+        self,
+        series: pd.Series,
+        xlabel: str,
+        ylabel: str,
+        title: str,
+        filename: str,
+        label: Optional[List[str]] = None,
+    ) -> Tuple[str, str]:
+        if label:
+            self.__label_series(series=series, label=label)
+        ax = self.__draw_barplot(series=series)
+
+        self.__label_axis(ax=ax, xlabel=xlabel, ylabel=ylabel)
+        self.__annotate_axis(ax=ax)
+        self.__save_barplot(ax=ax, filename=filename)
+
+        return (
+            self._bold_markdown(title), 
+            self._image_markdown(f"{self.workdir}/{filename}")
+        )
+
+    def __formatize_table(self, info: List[Tuple[str, str]]) -> str:        
+        table = []
+        for idx in range(0, len(info), 2):
+            front_title, front_image = info[idx]
+            back_title, back_image = info[idx+1]
+
+            table.append(f"| {front_title} | {back_title} |")
+            table.append(f"| {front_image} | {back_image} |")
+
+        table.insert(1, "|:--:|:--:|")
+
+        return "\n".join(table)
 
     def count_sum_recent_series(self) -> pd.Series:
         return pd.cut(
@@ -77,7 +107,7 @@ class GraphGenerator(SectionGenerator):
     def dayofweek_mean_full_series(self) -> pd.Series:
         return self.data.groupby(
             self.data["date"].dt.dayofweek
-        )["count"].sum()
+        )["count"].mean()
 
     def month_sum_recent_series(self) -> pd.Series:
         return self.data[
@@ -100,36 +130,58 @@ class GraphGenerator(SectionGenerator):
         )
 
     def generate(self) -> str:
-        config = self.setting.config_graph()
+        title = self.setting.graph_title()
 
-        assets = []
-        with change_workdir(self.workdir):
-            for info, title in config["title"].items():
-                plot, based, reducer, bounds = info.split(":")
-                filename = f"{based}_{reducer}_{bounds}.png"
+        params = [
+            {
+                "series": self.count_sum_recent_series(),
+                "xlabel": self.setting.graph_contribution_axis(),
+                "ylabel": self.setting.graph_day_axis(),
+                "title": self.setting.graph_count_sum_recent_title(),
+                "filename": "count_sum_recent.png",
+            },
+            {
+                "series": self.count_sum_full_series(),
+                "xlabel": self.setting.graph_contribution_axis(),
+                "ylabel": self.setting.graph_day_axis(),
+                "title": self.setting.graph_count_sum_full_title(),
+                "filename": "count_sum_full.png",
+            },
+            {
+                "series": self.dayofweek_sum_recent_series(),
+                "label": self.setting.graph_dayofweek_label(),
+                "xlabel": self.setting.graph_dayofweek_axis(),
+                "ylabel": self.setting.graph_contribution_axis(),
+                "title": self.setting.graph_dayofweek_sum_recent_title(),
+                "filename": "dayofweek_sum_recent.png",
+            },
+            {
+                "series": self.dayofweek_mean_full_series(),
+                "label": self.setting.graph_dayofweek_label(),
+                "xlabel": self.setting.graph_dayofweek_axis(),
+                "ylabel": self.setting.graph_contribution_axis(),
+                "title": self.setting.graph_dayofweek_mean_full_title(),
+                "filename": "dayofweek_mean_full.png",
+            },
+            {
+                "series": self.month_sum_recent_series(),
+                "label": self.setting.graph_month_label(),
+                "xlabel": self.setting.graph_month_axis(),
+                "ylabel": self.setting.graph_contribution_axis(),
+                "title": self.setting.graph_month_sum_recent_title(),
+                "filename": "month_sum_recent.png",
+            },
+            {
+                "series": self.month_mean_full_series(),
+                "label": self.setting.graph_month_label(),
+                "xlabel": self.setting.graph_month_axis(),
+                "ylabel": self.setting.graph_contribution_axis(),
+                "title": self.setting.graph_month_mean_full_title(),
+                "filename": "month_mean_full.png",
+            },
+        ]
+        table = self.__formatize_table(
+            info = list(map(lambda x: self.__generate_with_setting(**x), params))
+        )
 
-                self.save_barplot(
-                    series=getattr(
-                        self,
-                        f"{based}_{reducer}_{bounds}_series"
-                    )(),
-                    config=config[plot][based],
-                    percent=(reducer == "sum"),
-                    filename=filename,
-                )
-
-                assets.append({
-                    "title": title,
-                    "src": f"{self.workdir}/{filename}",
-                })
-
-        return dedent(f"""
-            ## {config["section"]["title"]}
-            | **{assets[0]["title"]}** | **{assets[1]["title"]}** |
-            |:------------------------:|:------------------------:|
-            | ![]({assets[0]["src"]})  | ![]({assets[1]["src"]})  |
-            | **{assets[2]["title"]}** | **{assets[3]["title"]}** |
-            | ![]({assets[2]["src"]})  | ![]({assets[3]["src"]})  |
-            | **{assets[4]["title"]}** | **{assets[5]["title"]}** |
-            | ![]({assets[4]["src"]})  | ![]({assets[5]["src"]})  |
-        """)
+        return f"## {title}\n{table}"
