@@ -1,9 +1,10 @@
 import os
 from contextlib import contextmanager
+from typing import Iterator
 
 
 @contextmanager
-def change_workdir(workdir: str) -> None:
+def change_workdir(workdir: str) -> Iterator[None]:
     prev_workdir = os.getcwd()
     os.makedirs(workdir, exist_ok=True)
 

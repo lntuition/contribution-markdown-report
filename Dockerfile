@@ -9,8 +9,11 @@ ENV PYTHONPATH "$PYTHONPATH:${INPUT_WORKDIR}"
 
 COPY requirement.txt .
 RUN pip install -r requirement.txt
+RUN rm -f requirement.txt
 
 COPY src ${INPUT_WORKDIR}
+COPY .mypy.ini ${INPUT_WORKDIR}
+
 # Copied entrypoint.sh doesn't have execution permission
 # entrypoint script must be LF format, at windows default format is CRLF and it makes me suck :(
 RUN chmod +x ${INPUT_WORKDIR}/entrypoint.sh

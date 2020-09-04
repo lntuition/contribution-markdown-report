@@ -48,7 +48,7 @@ class GraphSetting(metaclass=ABCMeta):
         pass
 
     def graph_month_label(self) -> List[str]:
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        return ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
 
     @abstractmethod
     def graph_contribution_axis(self) -> str:
