@@ -7,12 +7,9 @@ LABEL maintainter "ekffu200098@gmail.com"
 ENV INPUT_WORKDIR "/workdir"
 ENV PYTHONPATH "$PYTHONPATH:${INPUT_WORKDIR}"
 
-COPY requirement.txt .
-RUN pip install -r requirement.txt
-RUN rm -f requirement.txt
-
+COPY config ${INPUT_WORKDIR}
 COPY src ${INPUT_WORKDIR}
-COPY .mypy.ini ${INPUT_WORKDIR}
+RUN pip install -r ${INPUT_WORKDIR}/requirement.txt
 
 # Copied entrypoint.sh doesn't have execution permission
 # entrypoint script must be LF format, at windows default format is CRLF and it makes me suck :(
