@@ -2,6 +2,8 @@ beautifulsoup4
 requests
 seaborn
 
+black
+pylint
 pytest
 pytest-cov
 mypy

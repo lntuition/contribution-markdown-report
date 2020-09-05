@@ -1,0 +1,10 @@
+[MASTER]
+jobs = 4
+
+[MESSAGES CONTROL]
+disable = C0330, C0326, # black adapation
+          C0114, C0115, C0116, # ignore docstring
+          R0903, R0904 # ignore public method counts
+
+[format]
+max-line-length = 88

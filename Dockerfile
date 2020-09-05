@@ -8,8 +8,8 @@ ENV INPUT_WORKDIR "/workdir"
 ENV PYTHONPATH "$PYTHONPATH:${INPUT_WORKDIR}"
 
 COPY config ${INPUT_WORKDIR}
-COPY src ${INPUT_WORKDIR}
 RUN pip install -r ${INPUT_WORKDIR}/requirement.txt
+COPY src ${INPUT_WORKDIR}
 
 # Copied entrypoint.sh doesn't have execution permission
 # entrypoint script must be LF format, at windows default format is CRLF and it makes me suck :(
