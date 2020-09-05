@@ -6,17 +6,16 @@ If you have any question or problem, please report [here](https://github.com/lnt
 I hope this report will be a companion for your contribution trip. :airplane:
 
 ## Summary
-- **2020-09-03** was **65**th day since the start of trip, and there was **4** new contribution. :+1:
+- **2020-09-04** was **66**th day since the start of trip, and there was **1** new contribution. :+1:
 - Daily maximum contribution day is **2020-07-16**, which is **5**. :muscle:
-- During the trip, total contribuition count is **160** and average contribution count is **2.46**. :clap:
-- Longest continuous contribution trip was **65** days from **2020-07-01** to **2020-09-03**. :walking:
-- Current continuous contribution trip is **65** days from **2020-07-01**. :running:
-
+- During the trip, total contribuition count is **161** and average contribution count is **2.44**. :clap:
+- Longest continuous contribution trip was **66** days from **2020-07-01** to **2020-09-04**. :walking:
+- Current continuous contribution trip is **66** days from **2020-07-01**. :running:
 ## Graph
 | **Number of days per contribution up to the last 4 weeks** | **Number of days per contribution** |
-|:------------------------:|:------------------------:|
-| ![](asset/count_sum_recent.png)  | ![](asset/count_sum_full.png)  |
+|:--:|:--:|
+| ![](asset/count_sum_recent.png) | ![](asset/count_sum_full.png) |
 | **Number of contribution per day of week up to the last 12 weeks** | **Average of contribution per day of week** |
-| ![](asset/dayofweek_sum_recent.png)  | ![](asset/dayofweek_mean_full.png)  |
+| ![](asset/dayofweek_sum_recent.png) | ![](asset/dayofweek_mean_full.png) |
 | **Number of contribution per month up to the last year** | **Average of contribution per month** |
-| ![](asset/month_sum_recent.png)  | ![](asset/month_mean_full.png)  |
+| ![](asset/month_sum_recent.png) | ![](asset/month_mean_full.png) |
