@@ -66,11 +66,11 @@ class GraphGenerator(SectionGenerator):
         self.__save_barplot(ax=ax, filename=filename)
 
         return (
-            self._bold_markdown(title), 
+            self._bold_markdown(title),
             self._image_markdown(f"{self.workdir}/{filename}")
         )
 
-    def __formatize_table(self, info: List[Tuple[str, str]]) -> str:        
+    def __formatize_table(self, info: List[Tuple[str, str]]) -> str:
         table = []
         for idx in range(0, len(info), 2):
             front_title, front_image = info[idx]
@@ -181,7 +181,7 @@ class GraphGenerator(SectionGenerator):
             },
         ]
         table = self.__formatize_table(
-            info = list(map(lambda x: self.__generate_with_setting(**x), params))
+            info=list(map(lambda x: self.__generate_with_setting(**x), params))
         )
 
         return f"## {title}\n{table}"
