@@ -18,12 +18,12 @@ def factory():
         "English",
     ]
 )
-def test_create_setting(factory, language, expected_type):
-    setting = factory.create_setting(language=language)
+def test_get_setting(factory, language, expected_type):
+    setting = factory.get_setting(language=language)
 
     assert isinstance(setting, expected_type)
 
 
 def test_not_supported_create_setting(factory):
     with pytest.raises(NotSupportedException):
-        factory.create_setting(language="not supported")
+        factory.get_setting(language="not supported")

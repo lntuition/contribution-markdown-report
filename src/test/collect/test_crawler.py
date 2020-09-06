@@ -27,25 +27,25 @@ def test_wrong_start_date_fmt():
         crawl_data(
             username=username,
             start="2020/01/01",
-            end="2020-07-01",
+            finish="2020-07-01",
         )
 
 
-def test_wrong_end_date_fmt():
+def test_wrong_finish_date_fmt():
     with pytest.raises(ParameterException):
         crawl_data(
             username=username,
             start="2020-01-01",
-            end="2020/07/01",
+            finish="2020/07/01",
         )
 
 
-def test_early_end_than_start():
+def test_early_finish_than_start():
     with pytest.raises(ParameterException):
         crawl_data(
             username=username,
             start="2020-12-25",
-            end="2020-07-01",
+            finish="2020-07-01",
         )
 
 
@@ -55,7 +55,7 @@ def test_not_exist_username():
         crawl_data(
             username="ItShouldBeNeverExist",
             start="2020-07-01",
-            end="2020-12-25",
+            finish="2020-12-25",
         )
 
 
@@ -65,13 +65,13 @@ def test_crawl_data_on_dead_server():
         crawl_data(
             username=username,
             start="2020-07-01",
-            end="2020-12-25",
+            finish="2020-12-25",
         )
 
 
 @live_test
 @pytest.mark.parametrize(
-    ("start, end"),
+    ("start, finish"),
     [
         ("2019-07-01", "2019-07-01"),
         ("2019-06-03", "2019-06-18"),
@@ -89,15 +89,15 @@ def test_crawl_data_on_dead_server():
         "Many years",
     ]
 )
-def test_crawl_data_on_live_server(start, end):
+def test_crawl_data_on_live_server(start, finish):
     data = crawl_data(
         username=username,
         start=start,
-        end=end,
+        finish=finish,
     )
 
     assert pd.Timestamp(start) == data.iloc[0]["date"]
-    assert pd.Timestamp(end) == data.iloc[-1]["date"]
+    assert pd.Timestamp(finish) == data.iloc[-1]["date"]
 
     assert isinstance(data.iloc[0]["count"], np.integer)
     assert isinstance(data.iloc[-1]["count"], np.integer)

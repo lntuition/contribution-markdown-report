@@ -7,7 +7,6 @@ from lib.util.directory import change_workdir
 @pytest.fixture()
 def cleanup_dir():
     def _cleanup_dir(path):
-        print(path)
         os.removedirs(path)
 
     yield _cleanup_dir
