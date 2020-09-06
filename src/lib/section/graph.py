@@ -17,20 +17,24 @@ class GraphGenerator(SectionGenerator):
         self.data = data
         self.workdir = workdir
 
-    def __label_series(self, series: pd.Series, label: List[str]) -> pd.Series:
+    @staticmethod
+    def __label_series(series: pd.Series, label: List[str]) -> pd.Series:
         return series.rename(index=lambda x: label[x])
 
-    def __draw_barplot(self, series: pd.Series) -> Axes:
+    @staticmethod
+    def __draw_barplot(series: pd.Series) -> Axes:
         sns.set_style("whitegrid")
         ax = sns.barplot(x=series.index, y=series, palette="pastel")
         sns.despine(ax=ax, top=True, right=True)
 
         return ax
 
-    def __label_axis(self, ax: Axes, xlabel: str, ylabel: str) -> None:
+    @staticmethod
+    def __label_axis(ax: Axes, xlabel: str, ylabel: str) -> None:
         ax.set(xlabel=xlabel, ylabel=ylabel)
 
-    def __annotate_axis(self, ax: Axes) -> None:
+    @staticmethod
+    def __annotate_axis(ax: Axes) -> None:
         for p in ax.patches:
             height = p.get_height()
             if math.isclose(height, 0.0):
@@ -70,7 +74,8 @@ class GraphGenerator(SectionGenerator):
             self._image_markdown(f"{self.workdir}/{filename}")
         )
 
-    def __formatize_table(self, info: List[Tuple[str, str]]) -> str:
+    @staticmethod
+    def __formatize_table(info: List[Tuple[str, str]]) -> str:
         table = []
         for idx in range(0, len(info), 2):
             front_title, front_image = info[idx]
