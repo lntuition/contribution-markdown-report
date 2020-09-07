@@ -13,5 +13,5 @@ COPY src ${INPUT_WORKDIR}
 
 # Copied entrypoint.sh doesn't have execution permission
 # entrypoint script must be LF format, at windows default format is CRLF and it makes me suck :(
-RUN chmod +x ${INPUT_WORKDIR}/entrypoint.sh
-ENTRYPOINT ["/workdir/entrypoint.sh"]
+RUN chmod -R +x ${INPUT_WORKDIR}/script
+ENTRYPOINT ["/workdir/script/entrypoint.sh"]

@@ -3,6 +3,7 @@ requests
 seaborn
 
 black
+isort
 pylint
 pytest
 pytest-cov
