@@ -1,6 +1,5 @@
 import sys
 import traceback
-
 from functools import reduce
 
 from lib.collect.crawler import crawl_data
@@ -9,7 +8,6 @@ from lib.section.graph import GraphGenerator
 from lib.section.header import HeaderGenerator
 from lib.section.summary import SummaryGenerator
 from lib.util.directory import change_workdir
-
 
 if __name__ == "__main__":
     try:

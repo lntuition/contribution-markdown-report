@@ -1,11 +1,10 @@
-import pandas as pd
-import requests
-
-from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from functools import reduce
-from typing import cast, Dict, List, Sequence
+from typing import Dict, List, Sequence, cast
 
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
 
 RawData = List[Dict[str, str]]
 
