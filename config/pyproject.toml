@@ -1,0 +1,18 @@
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v"
+
+[tool.black]
+line-length = 120
+target-version = ["py38"]
+
+[tool.pylint."MASTER"]
+jobs = 4
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = ["C0330", "C0326", # black adapation
+           "C0114", "C0115", "C0116", # ignore docstring
+           "R0903", "R0904"] # ignore public method counts
+
+[tool.pylint."FORMAT"]
+max-line-length = 120
