@@ -6,7 +6,7 @@ class NotSupportedException(Exception):
     pass
 
 
-class FactoryLanguageSetting():
+class FactoryLanguageSetting:
     @staticmethod
     def get_setting(language: str) -> LanguageSetting:
         if language == "english":

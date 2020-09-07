@@ -43,7 +43,7 @@ class GraphGenerator(SectionGenerator):
             ax.annotate(
                 f"{height:.0f}" if height.is_integer() else f"{height:.2f}",
                 (p.get_x() + p.get_width() / 2, height * 1.02),
-                ha="center"
+                ha="center",
             )
 
     def __save_barplot(self, ax: Axes, filename: str) -> None:
@@ -71,7 +71,7 @@ class GraphGenerator(SectionGenerator):
 
         return (
             self._bold_markdown(title),
-            self._image_markdown(f"{self.workdir}/{filename}")
+            self._image_markdown(f"{self.workdir}/{filename}"),
         )
 
     @staticmethod
@@ -79,7 +79,7 @@ class GraphGenerator(SectionGenerator):
         table = []
         for idx in range(0, len(info), 2):
             front_title, front_image = info[idx]
-            back_title, back_image = info[idx+1]
+            back_title, back_image = info[idx + 1]
 
             table.append(f"| {front_title} | {back_title} |")
             table.append(f"| {front_image} | {back_image} |")
@@ -90,47 +90,42 @@ class GraphGenerator(SectionGenerator):
 
     def count_sum_recent_series(self) -> pd.Series:
         return pd.cut(
-            self.data[max(-28, -len(self.data.index)):]["count"],
+            self.data[max(-28, -len(self.data.index)) :]["count"],
             bins=[-1, 0, 2, 4, 6, np.inf],
-            labels=["0", "1-2", "3-4", "5-6", "7+"]
+            labels=["0", "1-2", "3-4", "5-6", "7+"],
         ).value_counts()
 
     def count_sum_full_series(self) -> pd.Series:
         return pd.cut(
             self.data["count"],
             bins=[-1, 0, 2, 4, 6, np.inf],
-            labels=["0", "1-2", "3-4", "5-6", "7+"]
+            labels=["0", "1-2", "3-4", "5-6", "7+"],
         ).value_counts()
 
     def dayofweek_sum_recent_series(self) -> pd.Series:
-        return self.data[
-            max(-112, -len(self.data.index)):
-        ].groupby(
-            self.data["date"].dt.dayofweek
-        )["count"].sum()
+        return self.data[max(-112, -len(self.data.index)) :].groupby(self.data["date"].dt.dayofweek)["count"].sum()
 
     def dayofweek_mean_full_series(self) -> pd.Series:
-        return self.data.groupby(
-            self.data["date"].dt.dayofweek
-        )["count"].mean()
+        return self.data.groupby(self.data["date"].dt.dayofweek)["count"].mean()
 
     def month_sum_recent_series(self) -> pd.Series:
-        return self.data[
-            max(-365, -len(self.data.index)):
-        ].groupby(
-            self.data["date"].dt.month
-        )["count"].sum().rename(lambda x: x - 1)
+        return (
+            self.data[max(-365, -len(self.data.index)) :]
+            .groupby(self.data["date"].dt.month)["count"]
+            .sum()
+            .rename(lambda x: x - 1)
+        )
 
     def month_mean_full_series(self) -> pd.Series:
-        month_groupby = self.data.groupby(
-            self.data["date"].dt.month
-        )["count"]
+        month_groupby = self.data.groupby(self.data["date"].dt.month)["count"]
 
-        return month_groupby.mean().rename(lambda x: x - 1).multiply(
-            pd.Series(
-                [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-            ).combine(
-                month_groupby.count().rename(lambda x: x - 1), min, fill_value=0
+        return (
+            month_groupby.mean()
+            .rename(lambda x: x - 1)
+            .multiply(
+                pd.Series([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]).combine(
+                    month_groupby.count().rename(lambda x: x - 1), min, fill_value=0
+                )
             )
         )
 
@@ -185,8 +180,6 @@ class GraphGenerator(SectionGenerator):
                 "filename": "month_mean_full.png",
             },
         ]
-        table = self.__formatize_table(
-            info=list(map(lambda x: self.__generate_with_setting(**x), params))
-        )
+        table = self.__formatize_table(info=list(map(lambda x: self.__generate_with_setting(**x), params)))
 
         return f"## {title}\n{table}"

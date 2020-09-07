@@ -12,15 +12,12 @@ class HeaderGenerator(SectionGenerator):
     def generate(self) -> str:
         repo_url = "https://github.com/lntuition/contribution-markdown-report"
 
-        greeting = self.setting.header_greeting(
-            username=self.username
-        )
-        notice = self.setting.header_notice(
-            repo_url=repo_url,
-            issue_url=f"{repo_url}/issues"
-        )
+        greeting = self.setting.header_greeting(username=self.username)
+        notice = self.setting.header_notice(repo_url=repo_url, issue_url=f"{repo_url}/issues")
 
-        return dedent(f"""
+        return dedent(
+            f"""
             # {greeting}
             {notice} :airplane:
-        """)
+        """
+        )

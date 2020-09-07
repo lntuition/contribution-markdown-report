@@ -25,17 +25,11 @@ class SummaryGenerator(SectionGenerator):
 
         return self._bold_markdown(arg)
 
-    def __generate_with_setting(
-        self,
-        setting: Callable[..., T],
-        config: Union[Callable[..., Config], Config]
-    ) -> T:
+    def __generate_with_setting(self, setting: Callable[..., T], config: Union[Callable[..., Config], Config]) -> T:
         if callable(config):
             config = config()
 
-        return setting(
-            **{k: self.__formatize_for_markdown(v) for k, v in config.items()}
-        )
+        return setting(**{k: self.__formatize_for_markdown(v) for k, v in config.items()})
 
     def today_configure(self) -> Config:
         today = self.data.iloc[-1]
@@ -47,9 +41,7 @@ class SummaryGenerator(SectionGenerator):
         }
 
     def maximum_configure(self) -> Config:
-        maximum = self.data.iloc[
-            self.data["count"].idxmax()
-        ]
+        maximum = self.data.iloc[self.data["count"].idxmax()]
 
         return {
             "date": maximum["date"],
@@ -66,9 +58,7 @@ class SummaryGenerator(SectionGenerator):
 
     def peak_configure(self) -> Config:
         exist = pd.Series(data=(self.data["count"] > 0))
-        continuous = exist * (exist.groupby(
-            (exist != exist.shift()).cumsum()
-        ).cumcount() + 1)
+        continuous = exist * (exist.groupby((exist != exist.shift()).cumsum()).cumcount() + 1)
 
         cur_len = continuous.iloc[-1]
         max_idx = continuous.idxmax()
@@ -77,12 +67,12 @@ class SummaryGenerator(SectionGenerator):
         return {
             "peak": {
                 "length": max_len,
-                "start": self.data.iloc[max_idx - max(0, max_len-1)]["date"],
+                "start": self.data.iloc[max_idx - max(0, max_len - 1)]["date"],
                 "end": self.data.iloc[max_idx]["date"],
             },
             "cur_peak": {
                 "length": cur_len,
-                "start": self.data.iloc[-1 - max(0, cur_len-1)]["date"]
+                "start": self.data.iloc[-1 - max(0, cur_len - 1)]["date"],
             },
         }
 
@@ -112,11 +102,13 @@ class SummaryGenerator(SectionGenerator):
             config=peak_config["cur_peak"],
         )
 
-        return dedent(f"""
+        return dedent(
+            f"""
             ## {title}
             - {today} :+1:
             - {maximum} :muscle:
             - {total} :clap:
             - {peak} :walking:
             - {cur_peak} :running:
-        """)
+        """
+        )

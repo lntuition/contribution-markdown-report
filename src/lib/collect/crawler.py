@@ -25,12 +25,10 @@ def _iterate_year(start: str, finish: str) -> Sequence[int]:
         begin = datetime.strptime(start, fmt)
         end = datetime.strptime(finish, fmt)
     except ValueError:
-        raise ParameterException(
-            f"date string must follow such format({fmt})")
+        raise ParameterException(f"date string must follow such format({fmt})")
 
     if begin > end:
-        raise ParameterException(
-            f"start({start}) must be earlier than finish({finish})")
+        raise ParameterException(f"start({start}) must be earlier than finish({finish})")
 
     return range(begin.year, end.year + 1)
 
@@ -48,21 +46,21 @@ def _fetch_raw_data(url: str) -> RawData:
 
 
 def crawl_data(username: str, start: str, finish: str) -> pd.DataFrame:
-    return pd.DataFrame({
-        "count": map(
-            lambda x: int(x["data-count"]),
-            filter(
-                lambda x: start <= x["data-date"] <= finish,
-                reduce(
-                    lambda a, b: cast(RawData, a) + cast(RawData, b),
-                    map(
-                        lambda x: _fetch_raw_data(
-                            f"https://github.com/{username}?from={x}-01-01"
+    return pd.DataFrame(
+        {
+            "count": map(
+                lambda x: int(x["data-count"]),
+                filter(
+                    lambda x: start <= x["data-date"] <= finish,
+                    reduce(
+                        lambda a, b: cast(RawData, a) + cast(RawData, b),
+                        map(
+                            lambda x: _fetch_raw_data(f"https://github.com/{username}?from={x}-01-01"),
+                            _iterate_year(start=start, finish=finish),
                         ),
-                        _iterate_year(start=start, finish=finish)
                     ),
-                )
-            )
-        ),
-        "date": pd.date_range(start, finish),
-    })
+                ),
+            ),
+            "date": pd.date_range(start, finish),
+        }
+    )

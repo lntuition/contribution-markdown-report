@@ -38,9 +38,9 @@ if __name__ == "__main__":
                             GraphGenerator(
                                 data=data,
                                 setting=setting,
-                            )
-                        ]
-                    )
+                            ),
+                        ],
+                    ),
                 )
             )
 

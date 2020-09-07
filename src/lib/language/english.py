@@ -38,7 +38,20 @@ class EnglishSetting(LanguageSetting):
         return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
     def graph_month_label(self) -> List[str]:
-        return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        return [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ]
 
     def graph_contribution_axis(self) -> str:
         return "contribution count"
