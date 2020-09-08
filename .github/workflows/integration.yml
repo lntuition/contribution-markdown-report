@@ -1,0 +1,21 @@
+name: Continous Integration
+
+on:
+  push:
+    branches: 
+     - develop
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github actions checkout@v2
+        uses: actions/checkout@v2
+
+      - name: Live test
+        uses: lntuition/contribution-markdown-report@develop
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          start_date: "2020-07-01"
+          branch: "develop"
+          path: "result"

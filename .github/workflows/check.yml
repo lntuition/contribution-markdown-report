@@ -1,9 +1,7 @@
 name: Contribution markdown report
 
 on:
-  # push:
-  #   branches: 
-  #    - master
+  # Github actions will generate report daily 09:00 AM UTC.
   schedule:
     - cron: "0 9 * * *"
 
@@ -13,10 +11,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Contribution markdown report
+    - name: Contribuition markdown report
+      # You should use concrete marketplace version instead of master.
       uses: lntuition/contribution-markdown-report@master
       with:
+        # Do not change this value unless you know what you are doing now.
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        # Change below variable to date you want to start tracking.
         start_date: "2020-07-01"
+        # Branch where the result will be. Default branch is master.
         branch: "master"
+        # Path where the result will be. Default path is "." which is root directory of repo.
         path: "result"
