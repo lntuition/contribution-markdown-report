@@ -1,0 +1,31 @@
+name: Automation test
+
+on:
+  push:
+    branches: 
+     - develop
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github actions checkout@v2
+        uses: actions/checkout@v2
+
+      - name: Build docker image
+        run: make build
+
+      - name: Check format with isort
+        run: make test_isort
+
+      - name: Check format with black
+        run: make test_black
+
+      - name: Check lint with pylint
+        run: make test_pylint
+
+      - name: Check typing with mypy
+        run: make test_mypy
+
+      - name: Check unittest with pytest
+        run: make test_pytest

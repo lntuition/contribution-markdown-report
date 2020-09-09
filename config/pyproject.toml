@@ -1,6 +1,6 @@
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-v"
+addopts = "--verbose"
 
 [tool.isort]
 multi_line_output = 3
@@ -16,6 +16,7 @@ target-version = ["py38"]
 
 [tool.pylint."MASTER"]
 jobs = 4
+fail-under = 9
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = ["C0330", "C0326", # black adapation
