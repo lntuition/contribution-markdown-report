@@ -11,11 +11,11 @@ from lib.util.directory import change_workdir
 
 if __name__ == "__main__":
     try:
-        _, username, start, finish, workdir = sys.argv
+        _, username, start, finish, workdir, language = sys.argv
 
         # Setup
         data = crawl_data(username=username, start=start, finish=finish)
-        setting = FactoryLanguageSetting().get_setting(language="english")
+        setting = FactoryLanguageSetting().get_setting(language=language)
 
         # Generate
         with change_workdir(workdir), open("README.md", "w") as fp:

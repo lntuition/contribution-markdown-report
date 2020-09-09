@@ -8,7 +8,7 @@ VAR_TARGET_DIR="target"
 function FUNC_GENERATE_REPORT
 {
     cd ${INPUT_WORKDIR}
-    python client/main.py ${GITHUB_ACTOR} ${INPUT_START_DATE} ${VAR_END_DATE} ${VAR_RESULT_DIR}
+    python client/main.py ${GITHUB_ACTOR} ${INPUT_START_DATE} ${VAR_END_DATE} ${VAR_RESULT_DIR} ${INPUT_LANGUAGE}
 
     if [ $? -ne 0 ]
     then

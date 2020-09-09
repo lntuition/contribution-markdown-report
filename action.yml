@@ -5,20 +5,29 @@ branding:
   icon: "check"
   color: "blue"
 inputs:
-  github_token: 
-    description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
-    required: true
+  # Report inputs
   start_date:
-    description: "Start date for tracking to begin"
+    description: "Start date in report"
     required: true
+  language:
+    description: "Language used in report"
+    required: true
+    default: "english"
+
+  # Enviroment inputs
   branch:
-    description: ""
+    description: "Branch where report will be generated"
     required: true
     default: "master"
   path:
-    description: "Root path where the report will be located"
+    description: "Path where the report will be generated"
     required: true
     default: "."
+
+  # Commit inputs
+  github_token:
+    description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
+    required: true
   author_email:
     description: "Email used to configure user.email in `git config`"
     default: "github-actions[bot]@users.noreply.github.com"
@@ -35,3 +44,4 @@ runs:
     - ${{ inputs.branch }}
     - ${{ inputs.path }}
     - ${{ inputs.start_date }}
+    - ${{ inputs.language }}
