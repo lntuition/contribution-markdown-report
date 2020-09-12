@@ -6,7 +6,7 @@ on:
     - cron: "0 9 * * *"
 
 jobs:
-  check:
+  example:
     runs-on: ubuntu-latest
 
     steps:

@@ -1,19 +1,13 @@
-# Common settings
-IMAGE = "contribution-markdown-report" 
+IMAGE = "contribution-markdown-report"
+
+HOST_SOURCEPATH = "${CURDIR}/src"
+CONTAINER_SOURCEPATH = "/action/src"
 
 LIB_DIR = "lib"
 CLIENT_DIR = "client"
-TEST_DIR = "test"
 
-# Host settings
-HOST_WORKDIR_PATH = "${CURDIR}/src"
-HOST_LIB_PATH = "${HOST_WORKDIR_PATH}/${LIB_DIR}"
-HOST_CLIENT_PATH = "${HOST_WORKDIR_PATH}/${CLIENT_DIR}"
-
-# Container settings
-CONTAINER_WORKDIR_PATH = "/workdir"
-CONTAINER_LIB_PATH = "${CONTAINER_WORKDIR_PATH}/${LIB_DIR}"
-CONTAINER_CLIENT_PATH = "${CONTAINER_WORKDIR_PATH}/${CLIENT_DIR}"
+VOLUME_LIB = "${CONTAINER_SOURCEPATH}/${LIB_DIR}:/${HOST_SOURCEPATH}/${LIB_DIR}"
+VOLUME_CLIENT = "${CONTAINER_SOURCEPATH}/${CLIENT_DIR}:/${HOST_SOURCEPATH}/${CLIENT_DIR}"
 
 build:
 	docker build -t ${IMAGE} .
@@ -23,59 +17,57 @@ clean:
 
 debug: build
 	docker run -it \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
 	${IMAGE} \
 	bash
 
 test_isort:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
 	${IMAGE} \
 	isort --check-only ${LIB_DIR} ${CLIENT_DIR}
 test_black:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
 	${IMAGE} \
 	black --check ${LIB_DIR} ${CLIENT_DIR}
 test_pylint:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
 	${IMAGE} \
 	pylint ${LIB_DIR} ${CLIENT_DIR}
 test_mypy:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
 	${IMAGE} \
 	mypy ${LIB_DIR} ${CLIENT_DIR}
 test_pytest:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
 	${IMAGE} \
-	pytest ${TEST_DIR} --cov=${LIB_DIR}
-
+	pytest --cov=${LIB_DIR}
 test: build test_isort test_black test_pylint test_mypy test_pytest
 	
 style_isort:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
-	--volume ${HOST_LIB_PATH}:${CONTAINER_LIB_PATH} \
-	--volume ${HOST_CLIENT_PATH}:${CONTAINER_CLIENT_PATH} \
+	--volume ${VOLUME_LIB}} \
+	--volume ${VOLUME_CLIENT} \
 	${IMAGE} \
 	isort ${LIB_DIR} ${CLIENT_DIR}
 style_black:
 	docker run \
-	--workdir ${CONTAINER_WORKDIR_PATH} \
+	--workdir ${CONTAINER_SOURCEPATH} \
 	--entrypoint "" \
-	--volume ${HOST_LIB_PATH}:${CONTAINER_LIB_PATH} \
-	--volume ${HOST_CLIENT_PATH}:${CONTAINER_CLIENT_PATH} \
+	--volume ${VOLUME_LIB}} \
+	--volume ${VOLUME_CLIENT} \
 	${IMAGE} \
 	black ${LIB_DIR} ${CLIENT_DIR}
-
 style: build style_isort style_black

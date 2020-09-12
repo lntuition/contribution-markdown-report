@@ -2,16 +2,15 @@ FROM python:3.8.5-buster
 
 LABEL maintainter "ekffu200098@gmail.com"
 
-# Github actions doesn't recommend to use workdir in dockerfile. So should set workdir env to image.
-# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions
-ENV INPUT_WORKDIR "/workdir"
-ENV PYTHONPATH "$PYTHONPATH:${INPUT_WORKDIR}"
+# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#workdir
+ENV ARTIFACT_PATH "/github/workspace/artifact"
+ENV SOURCE_PATH "/action/src"
+ENV REPO_PATH "/action/repo"
+ENV PYTHONPATH "$PYTHONPATH:${SOURCE_PATH}"
 
-COPY config ${INPUT_WORKDIR}
-RUN pip install -r ${INPUT_WORKDIR}/requirement.txt
-COPY src ${INPUT_WORKDIR}
+COPY config ${SOURCE_PATH}
+RUN pip install -r ${SOURCE_PATH}/requirement.txt
+COPY src ${SOURCE_PATH}
 
-# Copied entrypoint.sh doesn't have execution permission
-# entrypoint script must be LF format, at windows default format is CRLF and it makes me suck :(
-RUN chmod -R +x ${INPUT_WORKDIR}/script
-ENTRYPOINT ["/workdir/script/entrypoint.sh"]
+# https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action#writing-the-action-code
+ENTRYPOINT ["/action/src/script/entrypoint.sh"]
