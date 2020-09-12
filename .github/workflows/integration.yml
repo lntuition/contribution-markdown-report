@@ -1,4 +1,4 @@
-name: Automation test
+name: Continuous integration
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
      - develop
 
 jobs:
-  integration:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Github actions checkout@v2
@@ -29,3 +29,20 @@ jobs:
 
       - name: Check unittest with pytest
         run: make test_pytest
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate artifact
+        uses: lntuition/contribution-markdown-report@develop
+        with:
+          start_date: "2020-07-01"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_only: "yes"
+          branch: "develop"
+          path: "result"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: report
+          path: ${{ github.workspace }}/artifact

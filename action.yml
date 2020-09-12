@@ -14,34 +14,31 @@ inputs:
     required: true
     default: "english"
 
-  # Enviroment inputs
+  # Commit inputs
+  artifact_only:
+    description: "If this value is set, do not commit"
+    required: true
+    default: ""
   branch:
-    description: "Branch where report will be generated"
+    description: "Branch where the report will be updated"
     required: true
     default: "master"
   path:
-    description: "Path where the report will be generated"
+    description: "Path where the report will be updated"
     required: true
     default: "."
 
-  # Commit inputs
   github_token:
     description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
     required: true
   author_email:
     description: "Email used to configure user.email in `git config`"
+    required: false
     default: "github-actions[bot]@users.noreply.github.com"
-    required: false  
   author_name:
     description: "Name used to configure user.name in `git config`"
+    required: false
     default: "github-actions[bot]"
-    required: false  
 runs:
   using: "docker"
   image: "Dockerfile"
-  args:
-    - ${{ inputs.github_token }}
-    - ${{ inputs.branch }}
-    - ${{ inputs.path }}
-    - ${{ inputs.start_date }}
-    - ${{ inputs.language }}
