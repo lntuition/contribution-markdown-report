@@ -1,3 +1,4 @@
+import argparse
 import sys
 import traceback
 from functools import reduce
@@ -11,14 +12,20 @@ from lib.util.directory import change_workdir
 
 if __name__ == "__main__":
     try:
-        _, username, start, finish, workdir, language = sys.argv
+        parser = argparse.ArgumentParser(description="Contribution report generator")
+        parser.add_argument("username", type=str, metavar="Username", help="User who created report")
+        parser.add_argument("language", type=str, metavar="Language", help="Language used in report")
+        parser.add_argument("start", type=str, metavar="Start", help="Start date in report")
+        parser.add_argument("finish", type=str, metavar="Finish", help="Finish date in report")
+        parser.add_argument("workdir", type=str, metavar="Workdir", help="Directory where report will be generated")
 
         # Setup
-        data = crawl_data(username=username, start=start, finish=finish)
-        setting = FactoryLanguageSetting().get_setting(language=language)
+        args = parser.parse_args()
+        data = crawl_data(username=args.username, start=args.start, finish=args.finish)
+        setting = FactoryLanguageSetting().get_setting(language=args.language)
 
         # Generate
-        with change_workdir(workdir), open("README.md", "w") as fp:
+        with change_workdir(args.workdir), open("README.md", "w") as fp:
             fp.write(
                 reduce(
                     lambda a, b: a + b,
@@ -26,7 +33,7 @@ if __name__ == "__main__":
                         lambda x: x.generate(),
                         [
                             HeaderGenerator(
-                                username=username,
+                                username=args.username,
                                 setting=setting,
                             ),
                             SummaryGenerator(

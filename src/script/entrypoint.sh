@@ -1,46 +1,51 @@
 #!/bin/bash
 
-VAR_END_DATE=$(date -d '1 day ago' '+%Y-%m-%d')
-VAR_RESULT_DIR="result"
-VAR_REMOTE_REPO="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-VAR_TARGET_DIR="target"
+function GENERATE_REPORT {
+    END_DATE=$(date -d "1 day ago" "+%Y-%m-%d")
 
-function FUNC_GENERATE_REPORT
-{
-    cd ${INPUT_WORKDIR}
-    python client/main.py ${GITHUB_ACTOR} ${INPUT_START_DATE} ${VAR_END_DATE} ${VAR_RESULT_DIR} ${INPUT_LANGUAGE}
+    python ${SOURCE_PATH}/client/main.py \
+        ${GITHUB_ACTOR} ${INPUT_LANGUAGE} ${INPUT_START_DATE} ${END_DATE} ${ARTIFACT_PATH}
 
-    if [ $? -ne 0 ]
-    then
-        echo "Generate data failed, check python trackback"
+    if [ $? -ne 0 ]; then
+        echo "Generate report failed, check python trackback"
         exit 1
     fi
 }
 
-function FUNC_PROCESS_REPORT
-{
-    # Setup git configuration
+function CONFIG_REPORT {
     git config http.sslVerify false
     git config --global user.email "${INPUT_AUTHOR_EMAIL}"
     git config --global user.name "${INPUT_AUTHOR_NAME}"
+}
 
-    # Move report to target repository
-    git clone --branch "${INPUT_BRANCH}" --single-branch "${VAR_REMOTE_REPO}" ${VAR_TARGET_DIR}
-    cd ${VAR_TARGET_DIR}
+function COPY_REPORT {
+    REMOTE_URL="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+    git clone --branch "${INPUT_BRANCH}" --single-branch ${REMOTE_URL} ${REPO_PATH}
+    cd ${REPO_PATH}
     mkdir -p ${INPUT_PATH}
-    cp -rfv ${INPUT_WORKDIR}/${VAR_RESULT_DIR}/* ${INPUT_PATH}
+    cp -rfv ${ARTIFACT_PATH}/* ${INPUT_PATH}
+}
 
-    # Commit & push to target repository
+function COMMIT_REPORT {
     git add -A
-    git commit -m "BOT: ${VAR_END_DATE} contribution check result" || echo "No changes to commit"
-    git log -2
-    git push "${VAR_REMOTE_REPO}" HEAD:"${INPUT_BRANCH}"
+    git commit -m "BOT: ${END_DATE} contribution report"
+    if [ $? -ne 0 ]; then
+        echo "No changes to commit, pass left process"
+        exit 0
+    fi
+}
 
-    if [ $? -ne 0 ]
-    then
-        echo "Commit data failed, check commit bash script"
+function PUSH_REPORT {
+    git log -2
+    git push origin HEAD:"${INPUT_BRANCH}"
+    if [ $? -ne 0 ]; then
+        echo "Commit report failed, check bash script"
         exit 1
     fi
 }
 
-FUNC_GENERATE_REPORT && FUNC_PROCESS_REPORT
+GENERATE_REPORT
+if [ -z "${INPUT_ARTIFACT_ONLY}" ]; then
+    CONFIG_REPORT && COPY_REPORT && COMMIT_REPORT && PUSH_REPORT
+fi
