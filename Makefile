@@ -1,73 +1,67 @@
-IMAGE = "contribution-markdown-report"
+# Constant settings
+LIB_DIR = lib
+CLIENT_DIR = client
 
-HOST_SOURCEPATH = "${CURDIR}/src"
-CONTAINER_SOURCEPATH = "/action/src"
+HOST_SOURCE_PATH = ${CURDIR}/src
+HOST_LIB_PATH = ${HOST_SOURCE_PATH}/${LIB_DIR}
+HOST_CLIENT_PATH = ${HOST_SOURCE_PATH}/${CLIENT_DIR}
+HOST_ARTIFACT_PATH = ${CURDIR}/artifact
 
-LIB_DIR = "lib"
-CLIENT_DIR = "client"
+CONTAINER_SOURCE_PATH = /action/src
+CONTAINER_LIB_PATH = ${CONTAINER_SOURCE_PATH}/${LIB_DIR}
+CONTAINER_CLIENT_PATH = ${CONTAINER_SOURCE_PATH}/${CLIENT_DIR}
+CONTAINER_ARTIFACT_PATH = /github/workspace/artifact
 
-VOLUME_LIB = "${CONTAINER_SOURCEPATH}/${LIB_DIR}:/${HOST_SOURCEPATH}/${LIB_DIR}"
-VOLUME_CLIENT = "${CONTAINER_SOURCEPATH}/${CLIENT_DIR}:/${HOST_SOURCEPATH}/${CLIENT_DIR}"
+# Docker settings
+WORKDIR_DEFAULT= --workdir ${CONTAINER_SOURCE_PATH}
+ENTRYPOINT_DEFAULT = --entrypoint ''
+VOLUME_LIB = --volume ${HOST_LIB_PATH}:${CONTAINER_LIB_PATH}
+VOLUME_CLIENT = --volume ${HOST_CLIENT_PATH}:${CONTAINER_CLIENT_PATH}
+VOLUME_ARTIFACT = --volume ${HOST_ARTIFACT_PATH}:${CONTAINER_ARTIFACT_PATH}
+IMAGE_DEFAULT = contribution-markdown-report
 
+# Functions
+DOCKER_RUN = docker run ${1} ${IMAGE_DEFAULT}
+
+# Setup / Cleanup
 build:
-	docker build -t ${IMAGE} .
-
+	docker build -t ${IMAGE_DEFAULT} .
 clean:
-	docker rmi -f ${IMAGE}
+	docker rmi -f ${IMAGE_DEFAULT}
 
+# Debug
+DEBUG_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT} -it
+DEBUG_BASE = $(call DOCKER_RUN, ${DEBUG_OPTION})
 debug: build
-	docker run -it \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	${IMAGE} \
-	bash
+	${DEBUG_BASE} bash
 
+# Test
+TEST_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT}
+TEST_BASE = $(call DOCKER_RUN, ${TEST_OPTION})
 test_isort:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	${IMAGE} \
-	isort --check-only ${LIB_DIR} ${CLIENT_DIR}
+	${TEST_BASE} isort --check-only ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
 test_black:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	${IMAGE} \
-	black --check ${LIB_DIR} ${CLIENT_DIR}
+	${TEST_BASE} black --check ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
 test_pylint:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	${IMAGE} \
-	pylint ${LIB_DIR} ${CLIENT_DIR}
+	${TEST_BASE} pylint ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
 test_mypy:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	${IMAGE} \
-	mypy ${LIB_DIR} ${CLIENT_DIR}
+	${TEST_BASE} mypy ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
 test_pytest:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	${IMAGE} \
-	pytest --cov=${LIB_DIR}
+	${TEST_BASE} pytest --cov=${CONTAINER_LIB_PATH}
 test: build test_isort test_black test_pylint test_mypy test_pytest
-	
+
+# Style
+STYLE_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT} ${VOLUME_LIB} ${VOLUME_CLIENT}
+STYLE_BASE = $(call DOCKER_RUN, ${STYLE_OPTION})
 style_isort:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	--volume ${VOLUME_LIB}} \
-	--volume ${VOLUME_CLIENT} \
-	${IMAGE} \
-	isort ${LIB_DIR} ${CLIENT_DIR}
+	${STYLE_BASE} isort ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
 style_black:
-	docker run \
-	--workdir ${CONTAINER_SOURCEPATH} \
-	--entrypoint "" \
-	--volume ${VOLUME_LIB}} \
-	--volume ${VOLUME_CLIENT} \
-	${IMAGE} \
-	black ${LIB_DIR} ${CLIENT_DIR}
+	${STYLE_BASE} black ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
 style: build style_isort style_black
+
+# Artifact
+ARTIFACT_PARAM = -e GITHUB_ACTOR=${USERNAME} -e INPUT_LANGUAGE=${LANGUAGE} -e INPUT_START_DATE=${START_DATE}
+ARTIFACT_OPTION = ${WORKDIR_DEFAULT} ${VOLUME_ARTIFACT} -e INPUT_ARTIFACT_ONLY=TRUE ${ARTIFACT_PARAM}
+ARTIFACT_BASE = $(call DOCKER_RUN, ${ARTIFACT_OPTION})
+artifact: build
+	${ARTIFACT_BASE}
