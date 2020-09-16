@@ -1,7 +1,6 @@
 # Contribution markdown report
 [![License](https://img.shields.io/github/license/lntuition/contribution-markdown-report)](https://github.com/lntuition/contribution-markdown-report/blob/master/LICENSE)
 [![Action](https://github.com/lntuition/contribution-markdown-report/workflows/Contribution%20markdown%20report/badge.svg)](https://github.com/lntuition/contribution-markdown-report/actions?query=workflow%3A%22Contribution+markdown+report%22)
-[![Korean](https://img.shields.io/badge/README-Korean-brightgreen)](https://github.com/lntuition/contribution-markdown-report/blob/master/docs/README-ko.md)
 
 Automatically generate contribution report by markdown with `Python` & `Github Actions`.
 Whenever you want, github action will check your contribution and update result.
@@ -27,8 +26,6 @@ jobs:
       # You should use concrete marketplace version instead of master.
       uses: lntuition/contribution-markdown-report@master
       with:
-        # Do not change this value unless you know what you are doing now.
-        github_token: ${{ secrets.GITHUB_TOKEN }}
         # Change below variable to date you want to start tracking.
         start_date: "2020-07-01"
         # Branch where the result will be. Default branch is master.
@@ -41,7 +38,7 @@ jobs:
 ## Feature
 ### Report
 - With new information, report is created at `path`.
-- Report has summary, graph, table section. See example report [here](https://github.com/lntuition/contribution-markdown-report/tree/master/result/README.md)
+- Report has summary, graph section. See example report [here](https://github.com/lntuition/contribution-markdown-report/tree/master/result/README.md)
 
 ## Notification
 - We track your contribution history from your public profile with anonymous user.
