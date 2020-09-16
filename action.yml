@@ -30,8 +30,8 @@ inputs:
 
   github_token:
     description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
-    required: true
-    default: ""
+    required: false
+    default: ${{ github.token }}
   author_email:
     description: "Email used to configure user.email in `git config`"
     required: false
