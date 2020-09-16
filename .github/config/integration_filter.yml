@@ -1,0 +1,4 @@
+language:
+  - src/lib/language/**
+english:
+  - src/lib/language/english.py

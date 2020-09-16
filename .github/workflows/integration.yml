@@ -3,46 +3,61 @@ name: Continuous integration
 on:
   push:
     branches: 
-     - develop
+      - develop
+    paths:
+      - .github/config/**
+      - .github/workflows/**
+      - config/**
+      - src/**
+      - action.yml
+      - Dockerfile
+      - Makefile
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - .github/config/**
+      - .github/workflows/**
+      - config/**
+      - src/**
+      - action.yml
+      - Dockerfile
+      - Makefile
 
 jobs:
-  build:
+  integration:
     runs-on: ubuntu-latest
-    steps:
-      - name: Github actions checkout@v2
-        uses: actions/checkout@v2
 
-      - name: Build docker image
+    steps:
+      - uses: actions/checkout@v2
+      - name: "[SET UP] Setup filter"
+        uses: dorny/paths-filter@v2.2.1
+        id: filter
+        with:
+          filters: .github/config/integration_filter.yml
+      - name: "[SET UP] Build docker image"
         run: make build
 
-      - name: Check format with isort
+      - name: "[BUILD TEST] Format check - isort"
         run: make test_isort
-
-      - name: Check format with black
+      - name: "[BUILD TEST] Format check - black"
         run: make test_black
-
-      - name: Check lint with pylint
+      - name: "[BUILD TEST] Lint check - pylint"
         run: make test_pylint
-
-      - name: Check typing with mypy
+      - name: "[BUILD TEST] Typing check - mypy"
         run: make test_mypy
 
-      - name: Check unittest with pytest
+      - name: "[UNIT TEST] Unit test - pytest"
         run: make test_pytest
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate artifact
-        uses: lntuition/contribution-markdown-report@develop
-        with:
-          start_date: "2020-07-01"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_only: "yes"
-          branch: "develop"
-          path: "result"
-      - name: Upload artifact
+      - name: "[INTEGRATION TEST] Integration test - default"
+        run: make artifact \
+          USERNAME=${{ github.actor }} \
+          LANGUAGE=english \
+          START_DATE=2020-07-01 
+
+      - name: "[TEAR DOWN] Upload artifact"
         uses: actions/upload-artifact@v2
         with:
-          name: report
-          path: ${{ github.workspace }}/artifact
+          path: artifact
