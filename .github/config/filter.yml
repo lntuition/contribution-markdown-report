@@ -1,5 +1,0 @@
-language:
-  - src/lib/language/base.py
-  - src/lib/language/factory.py
-english:
-  - src/lib/language/english.py
