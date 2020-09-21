@@ -3,12 +3,12 @@ import sys
 import traceback
 from functools import reduce
 
-from lib.collect.crawler import crawl_data
-from lib.language.factory import FactoryLanguageSetting
-from lib.section.graph import GraphGenerator
-from lib.section.header import HeaderGenerator
-from lib.section.summary import SummaryGenerator
-from lib.util.directory import change_workdir
+from crawler import crawl_data
+from directory import change_workdir
+from language.factory import FactoryLanguageSetting
+from section.graph import GraphGenerator
+from section.header import HeaderGenerator
+from section.summary import SummaryGenerator
 
 if __name__ == "__main__":
     try:

@@ -1,7 +1,7 @@
 import pytest
 
-from lib.language.factory import FactoryLanguageSetting, NotSupportedException
-from lib.language.english import EnglishSetting
+from language.english import EnglishSetting
+from language.factory import FactoryLanguageSetting, NotSupportedException
 
 
 @pytest.fixture(scope="module")
@@ -16,7 +16,7 @@ def factory():
     ],
     ids=[
         "English",
-    ]
+    ],
 )
 def test_get_setting(factory, language, expected_type):
     setting = factory.get_setting(language=language)

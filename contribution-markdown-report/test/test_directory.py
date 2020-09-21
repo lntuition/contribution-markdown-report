@@ -1,7 +1,8 @@
 import os
+
 import pytest
 
-from lib.util.directory import change_workdir
+from directory import change_workdir
 
 
 @pytest.fixture()
@@ -21,7 +22,7 @@ def cleanup_dir():
     ids=[
         "Relative",
         "Absolute",
-    ]
+    ],
 )
 def test_change_workdir(workdir, cleanup_dir):
     current_workdir = os.getcwd()

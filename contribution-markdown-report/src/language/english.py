@@ -1,6 +1,6 @@
 from typing import List
 
-from lib.language.base import LanguageSetting
+from language.base import LanguageSetting
 
 
 class EnglishSetting(LanguageSetting):

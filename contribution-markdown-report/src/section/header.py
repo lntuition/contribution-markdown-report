@@ -1,7 +1,7 @@
 from textwrap import dedent
 
-from lib.language.base import LanguageSetting
-from lib.section.base import SectionGenerator
+from language.base import LanguageSetting
+from section.base import SectionGenerator
 
 
 class HeaderGenerator(SectionGenerator):

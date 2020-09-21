@@ -6,9 +6,9 @@ import pandas as pd
 import seaborn as sns
 from matplotlib.axes import Axes
 
-from lib.language.base import LanguageSetting
-from lib.section.base import SectionGenerator
-from lib.util.directory import change_workdir
+from directory import change_workdir
+from language.base import LanguageSetting
+from section.base import SectionGenerator
 
 
 class GraphGenerator(SectionGenerator):

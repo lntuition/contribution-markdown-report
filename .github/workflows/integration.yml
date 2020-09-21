@@ -40,24 +40,20 @@ jobs:
         run: make build
 
       - name: "[BUILD TEST] Format check - isort"
-        run: make test_isort
+        run: make test-isort
       - name: "[BUILD TEST] Format check - black"
-        run: make test_black
+        run: make test-black
       - name: "[BUILD TEST] Lint check - pylint"
-        run: make test_pylint
+        run: make test-pylint
       - name: "[BUILD TEST] Typing check - mypy"
-        run: make test_mypy
+        run: make test-mypy
 
       - name: "[UNIT TEST] Unit test - pytest"
-        run: make test_pytest
+        run: make test-pytest
 
-      - name: "[INTEGRATION TEST] Integration test - default"
-        run: make artifact \
-          USERNAME=${{ github.actor }} \
-          LANGUAGE=english \
-          START_DATE=2020-07-01 
-
-      - name: "[TEAR DOWN] Upload artifact"
-        uses: actions/upload-artifact@v2
+      - name: Live test
+        uses: lntuition/contribution-markdown-report@develop
         with:
-          path: artifact
+          start_date: "2020-07-01"
+          branch: "develop"
+          path: "result"

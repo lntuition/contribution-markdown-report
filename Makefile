@@ -1,36 +1,27 @@
-# Constant settings
-LIB_DIR = lib
-CLIENT_DIR = client
+# Constant setting
+HOST_HOME_PATH = ${CURDIR}/contribution-markdown-report
+CONTAINER_HOME_PATH = /action
 
-HOST_SOURCE_PATH = ${CURDIR}/src
-HOST_LIB_PATH = ${HOST_SOURCE_PATH}/${LIB_DIR}
-HOST_CLIENT_PATH = ${HOST_SOURCE_PATH}/${CLIENT_DIR}
-HOST_ARTIFACT_PATH = ${CURDIR}/artifact
-
-CONTAINER_SOURCE_PATH = /action/src
-CONTAINER_LIB_PATH = ${CONTAINER_SOURCE_PATH}/${LIB_DIR}
-CONTAINER_CLIENT_PATH = ${CONTAINER_SOURCE_PATH}/${CLIENT_DIR}
-CONTAINER_ARTIFACT_PATH = /github/workspace/artifact
-
-# Docker settings
-WORKDIR_DEFAULT= --workdir ${CONTAINER_SOURCE_PATH}
-ENTRYPOINT_DEFAULT = --entrypoint ""
-VOLUME_LIB = --volume ${HOST_LIB_PATH}:${CONTAINER_LIB_PATH}
-VOLUME_CLIENT = --volume ${HOST_CLIENT_PATH}:${CONTAINER_CLIENT_PATH}
-VOLUME_ARTIFACT = --volume ${HOST_ARTIFACT_PATH}:${CONTAINER_ARTIFACT_PATH}
+# Docker setting
 IMAGE_DEFAULT = contribution-markdown-report
+WORKDIR_DEFAULT= --workdir ${CONTAINER_HOME_PATH}
+ENTRYPOINT_DEFAULT = --entrypoint ""
+VOLUME_DEFAULT = --volume ${HOST_HOME_PATH}:${CONTAINER_HOME_PATH}
+VOLUME_OUTPUT = --volume ${CURDIR}/output:/github/workspace
 
-# Functions
+# Function
 DOCKER_RUN = docker run ${1} ${IMAGE_DEFAULT}
 
-# Setup / Cleanup
+# Setup
 build:
 	docker build -t ${IMAGE_DEFAULT} .
+
+# Cleanup
 clean:
 	docker rmi -f ${IMAGE_DEFAULT}
 
 # Debug
-DEBUG_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT} -it
+DEBUG_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT}  --interactive --tty
 DEBUG_BASE = $(call DOCKER_RUN, ${DEBUG_OPTION})
 debug: build
 	${DEBUG_BASE} bash
@@ -38,30 +29,23 @@ debug: build
 # Test
 TEST_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT}
 TEST_BASE = $(call DOCKER_RUN, ${TEST_OPTION})
-test_isort:
-	${TEST_BASE} isort --check-only ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
-test_black:
-	${TEST_BASE} black --check ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
-test_pylint:
-	${TEST_BASE} pylint ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
-test_mypy:
-	${TEST_BASE} mypy ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
-test_pytest:
-	${TEST_BASE} pytest --cov=${CONTAINER_LIB_PATH}
-test: build test_isort test_black test_pylint test_mypy test_pytest
+test-isort:
+	${TEST_BASE} isort --check-only --diff ${CONTAINER_HOME_PATH}
+test-black:
+	${TEST_BASE} black --check --diff ${CONTAINER_HOME_PATH}
+test-pylint:
+	${TEST_BASE} pylint ${CONTAINER_HOME_PATH}
+test-mypy:
+	${TEST_BASE} mypy ${CONTAINER_HOME_PATH}
+test-pytest:
+	${TEST_BASE} pytest --cov=src
+test: build test-isort test-black test-pylint test-mypy test-pytest
 
 # Style
-STYLE_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT} ${VOLUME_LIB} ${VOLUME_CLIENT}
+STYLE_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT} ${VOLUME_DEFAULT}
 STYLE_BASE = $(call DOCKER_RUN, ${STYLE_OPTION})
-style_isort:
-	${STYLE_BASE} isort ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
-style_black:
-	${STYLE_BASE} black ${CONTAINER_LIB_PATH} ${CONTAINER_CLIENT_PATH}
-style: build style_isort style_black
-
-# Artifact
-ARTIFACT_PARAM = -e GITHUB_ACTOR=${USERNAME} -e INPUT_LANGUAGE=${LANGUAGE} -e INPUT_START_DATE=${START_DATE}
-ARTIFACT_OPTION = ${WORKDIR_DEFAULT} ${VOLUME_ARTIFACT} -e INPUT_ARTIFACT_ONLY=YES ${ARTIFACT_PARAM}
-ARTIFACT_BASE = $(call DOCKER_RUN, ${ARTIFACT_OPTION})
-artifact: build
-	${ARTIFACT_BASE}
+style-isort:
+	${STYLE_BASE} isort ${CONTAINER_HOME_PATH}
+style-black:
+	${STYLE_BASE} black ${CONTAINER_HOME_PATH}
+style: build style-isort style-black

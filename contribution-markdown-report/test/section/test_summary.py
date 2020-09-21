@@ -1,10 +1,10 @@
 import datetime
 import random
-
 from datetime import date
 
-from lib.section.summary import SummaryGenerator
-from test.section.test_base import mock_data, mock_language_setting
+from section.summary import SummaryGenerator
+
+from .test_base import mock_data, mock_language_setting
 
 
 def test_summary_today_configure(mock_language_setting):
@@ -15,7 +15,7 @@ def test_summary_today_configure(mock_language_setting):
         month=random.randint(1, 12),
         day=random.randint(1, 28),
     )
-    finish = start + datetime.timedelta(days=length-1)
+    finish = start + datetime.timedelta(days=length - 1)
     print(length, count, start, finish)
 
     summary = SummaryGenerator(
@@ -24,7 +24,7 @@ def test_summary_today_configure(mock_language_setting):
             start=start,
             finish=finish,
         ),
-        setting=mock_language_setting
+        setting=mock_language_setting,
     )
     config = summary.today_configure()
 

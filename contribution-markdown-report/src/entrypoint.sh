@@ -3,9 +3,8 @@
 function GENERATE_REPORT {
     END_DATE=$(date -d "1 day ago" "+%Y-%m-%d")
 
-    python ${SOURCE_PATH}/client/main.py \
-        ${GITHUB_ACTOR} ${INPUT_LANGUAGE} ${INPUT_START_DATE} ${END_DATE} ${ARTIFACT_PATH}
-
+    python ${HOME_PATH}/src/main.py \
+        ${GITHUB_ACTOR} ${INPUT_LANGUAGE} ${INPUT_START_DATE} ${END_DATE} /github/workspace/artifact
     if [ $? -ne 0 ]; then
         echo "Generate report failed, check python trackback"
         exit 1
@@ -21,10 +20,10 @@ function CONFIG_REPORT {
 function COPY_REPORT {
     REMOTE_URL="https://${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-    git clone --branch "${INPUT_BRANCH}" --single-branch ${REMOTE_URL} ${REPO_PATH}
-    cd ${REPO_PATH}
+    git clone --branch "${INPUT_BRANCH}" --single-branch ${REMOTE_URL} /action/repo
+    cd /action/repo
     mkdir -p ${INPUT_PATH}
-    cp -rfv ${ARTIFACT_PATH}/* ${INPUT_PATH}
+    cp -rfv /github/workspace/artifact/* ${INPUT_PATH}
 }
 
 function COMMIT_REPORT {

@@ -1,5 +1,5 @@
-from lib.language.base import LanguageSetting
-from lib.language.english import EnglishSetting
+from language.base import LanguageSetting
+from language.english import EnglishSetting
 
 
 class NotSupportedException(Exception):

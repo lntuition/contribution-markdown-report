@@ -4,8 +4,8 @@ from typing import Any, Callable, Dict, TypeVar, Union
 
 import pandas as pd
 
-from lib.language.base import LanguageSetting
-from lib.section.base import SectionGenerator
+from language.base import LanguageSetting
+from section.base import SectionGenerator
 
 T = TypeVar("T")
 Config = Dict[str, Any]

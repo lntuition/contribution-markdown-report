@@ -3,23 +3,12 @@ import pandas as pd
 import pytest
 import requests
 
-from lib.collect.crawler import ParameterException, RequestException, crawl_data
-
+from crawler import ParameterException, RequestException, crawl_data
 
 username = "lntuition"
-server_status = (
-    requests.get(
-        f"https://github.com/{username}"
-    ).status_code == 200
-)
-live_test = pytest.mark.skipif(
-    server_status == False,  # server dead
-    reason="Error at github server, skip live test"
-)
-dead_test = pytest.mark.skipif(
-    server_status == True,  # server live
-    reason="No error at github server, skip dead test"
-)
+server_status = requests.get(f"https://github.com/{username}").status_code == 200
+live_test = pytest.mark.skipif(server_status == False, reason="Error at github server, skip live test")  # server dead
+dead_test = pytest.mark.skipif(server_status == True, reason="No error at github server, skip dead test")  # server live
 
 
 def test_wrong_start_date_fmt():
@@ -87,7 +76,7 @@ def test_crawl_data_on_dead_server():
         "Many months",
         "One year",
         "Many years",
-    ]
+    ],
 )
 def test_crawl_data_on_live_server(start, finish):
     data = crawl_data(

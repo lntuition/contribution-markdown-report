@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
-from lib.language.base import LanguageSetting
+from language.base import LanguageSetting
 
 
 class SectionGenerator(metaclass=ABCMeta):

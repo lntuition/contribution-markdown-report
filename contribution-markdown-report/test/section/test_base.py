@@ -1,10 +1,10 @@
-import pandas as pd
-import pytest
-
 from typing import List
 from unittest.mock import MagicMock
 
-from lib.language.base import LanguageSetting
+import pandas as pd
+import pytest
+
+from language.base import LanguageSetting
 
 
 class SkeletonLanguageSetting(LanguageSetting):
@@ -75,7 +75,9 @@ def mock_language_setting():
 
 
 def mock_data(count, start, finish):
-    return pd.DataFrame({
-        "count": count,
-        "date": pd.date_range(start, finish),
-    })
+    return pd.DataFrame(
+        {
+            "count": count,
+            "date": pd.date_range(start, finish),
+        }
+    )

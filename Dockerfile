@@ -1,20 +1,22 @@
 FROM python:3.8.5-buster
 
+# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions
+# https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action
 LABEL maintainter "ekffu200098@gmail.com"
+
+# Environment
+ENV OUTPUT_PATH "/github/workspace"
+ENV HOME_PATH "/action"
 
 # Bash
 RUN git clone https://github.com/bats-core/bats-core.git
 RUN bats-core/install.sh /usr/local
 
-# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#workdir
-ENV ARTIFACT_PATH "/github/workspace/artifact"
-ENV SOURCE_PATH "/action/src"
-ENV REPO_PATH "/action/repo"
-ENV PYTHONPATH "$PYTHONPATH:${SOURCE_PATH}"
+# Python
+RUN pip install beautifulsoup4 requests seaborn \
+        black isort pylint pytest pytest-cov mypy
+ENV PYTHONPATH "$PYTHONPATH:${HOME_PATH}/src"
 
-COPY config ${SOURCE_PATH}
-RUN pip install -r ${SOURCE_PATH}/requirement.txt
-COPY src ${SOURCE_PATH}
-
-# https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action#writing-the-action-code
-ENTRYPOINT ["/action/src/script/entrypoint.sh"]
+# Setup
+COPY contribution-markdown-report ${HOME_PATH}
+ENTRYPOINT ["/action/src/entrypoint.sh"]
