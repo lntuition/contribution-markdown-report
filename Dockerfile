@@ -2,6 +2,10 @@ FROM python:3.8.5-buster
 
 LABEL maintainter "ekffu200098@gmail.com"
 
+# Bash
+RUN git clone https://github.com/bats-core/bats-core.git
+RUN bats-core/install.sh /usr/local
+
 # https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#workdir
 ENV ARTIFACT_PATH "/github/workspace/artifact"
 ENV SOURCE_PATH "/action/src"
