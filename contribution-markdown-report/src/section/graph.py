@@ -62,7 +62,7 @@ class GraphGenerator(SectionGenerator):
         label: Optional[List[str]] = None,
     ) -> Tuple[str, str]:
         if label:
-            self.__label_series(series=series, label=label)
+            series = self.__label_series(series=series, label=label)
         ax = self.__draw_barplot(series=series)
 
         self.__label_axis(ax=ax, xlabel=xlabel, ylabel=ylabel)
