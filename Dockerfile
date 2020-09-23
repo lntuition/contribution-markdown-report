@@ -8,12 +8,8 @@ LABEL maintainter "ekffu200098@gmail.com"
 ENV OUTPUT_PATH "/github/workspace"
 ENV HOME_PATH "/action"
 
-# Bash
-RUN git clone https://github.com/bats-core/bats-core.git
-RUN bats-core/install.sh /usr/local
-
 # Python
-RUN pip install beautifulsoup4 requests seaborn \
+RUN pip install beautifulsoup4 requests seaborn gitpython \
         black isort pylint pytest pytest-cov mypy
 ENV PYTHONPATH "$PYTHONPATH:${HOME_PATH}/src"
 
