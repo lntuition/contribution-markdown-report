@@ -3,7 +3,7 @@ import os
 from git import Repo
 
 
-class RepositoryURL():
+class RepositoryURL:
     def __init__(self, user: str, token: str, name: str) -> None:
         self.__remote = f"https://{user}:{token}@github.com/{name}.git"
 
@@ -12,14 +12,13 @@ class RepositoryURL():
         return self.__remote
 
 
-class Repository():
+class Repository:
     def __init__(self, url: RepositoryURL, path: str, **kwargs) -> None:
-        self.__workdir = os.path.join(path, "repo")
-        self.__repo = Repo.clone_from(url.remote, self.__workdir, **kwargs)
+        self.__repo = Repo.clone_from(url.remote, os.path.join(path, "target"), **kwargs)
 
     @property
     def workdir(self) -> str:
-        return self.__workdir
+        return self.__repo.working_tree_dir
 
     def configure(self, email: str, name: str) -> None:
         with self.__repo.config_writer() as config:
