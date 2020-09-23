@@ -12,46 +12,22 @@ class RepositoryURL():
         return self.__remote
 
 
-class RepositoryDir():
-    def __init__(self, home: str, target: str) -> None:
-        self.__base = os.path.join(home, "repo")
-        self.__target = os.path.join(self.__base, target)
+class Repository():
+    def __init__(self, url: RepositoryURL, path: str, **kwargs) -> None:
+        self.__workdir = os.path.join(path, "repo")
+        self.__repo = Repo.clone_from(url.remote, self.__workdir, **kwargs)
 
     @property
-    def base(self) -> str:
-        return self.__base
+    def workdir(self) -> str:
+        return self.__workdir
 
-    @property
-    def target(self) -> str:
-        return self.__target
+    def configure(self, email: str, name: str) -> None:
+        with self.__repo.config_writer() as config:
+            config.set_value("user", "email", email)
+            config.set_value("user", "name", name)
 
-
-class RepositoryConfig():
-    def __init__(self, email: str, name: str) -> None:
-        self.__email = email
-        self.__name = name
-
-    def apply(self, repo: Repo) -> None:
-        config = repo.config_writer()
-        config.set_value("user", "email", self.__email)
-        config.set_value("user", "name", self.__name)
-        config.release()
-
-
-class Repository:
-    def __init__(
-        self,
-        url: RepositoryURL,
-        workdir: RepositoryDir,
-        config: RepositoryConfig,
-        **kwargs
-    ) -> None:
-        self.__repo = Repo.clone_from(url.remote, workdir.base, **kwargs)
-        self.__target = workdir.target
-        config.apply(self.__repo)
-
-    def add(self) -> None:
-        self.__repo.index.add(self.__target)
+    def add(self, path: str) -> None:
+        self.__repo.index.add(path)
 
     def commit(self, msg: str) -> None:
         self.__repo.index.commit(msg)
