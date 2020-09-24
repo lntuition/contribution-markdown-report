@@ -15,4 +15,4 @@ ENV PYTHONPATH "$PYTHONPATH:${HOME_PATH}/src"
 
 # Setup
 COPY contribution-markdown-report ${HOME_PATH}
-ENTRYPOINT ["/action/src/entrypoint.sh"]
+ENTRYPOINT ["python", "/action/src/main.py"]

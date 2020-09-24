@@ -1,31 +1,45 @@
-import argparse
+import os
 import sys
 import traceback
+from datetime import datetime, timedelta
 from functools import reduce
 
 from crawler import crawl_data
 from directory import change_workdir
 from language.factory import language_setting_factory
+from repository import Repository, RepositoryURL
 from section.graph import GraphGenerator
 from section.header import HeaderGenerator
 from section.summary import SummaryGenerator
+from util import safe_environ
 
 if __name__ == "__main__":
     try:
-        parser = argparse.ArgumentParser(description="Contribution report generator")
-        parser.add_argument("username", type=str, metavar="Username", help="User who created report")
-        parser.add_argument("language", type=str, metavar="Language", help="Language used in report")
-        parser.add_argument("start", type=str, metavar="Start", help="Start date in report")
-        parser.add_argument("finish", type=str, metavar="Finish", help="Finish date in report")
-        parser.add_argument("workdir", type=str, metavar="Workdir", help="Directory where report will be generated")
+        user = safe_environ("GITHUB_ACTOR")
+        finish = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
-        # Setup
-        args = parser.parse_args()
-        data = crawl_data(username=args.username, start=args.start, finish=args.finish)
-        setting = language_setting_factory(language=args.language)
+        repo_url = RepositoryURL(
+            user=user,
+            token=safe_environ("INPUT_GITHUB_TOKEN"),
+            name=safe_environ("GITHUB_REPOSITORY"),
+        )
+        repo = Repository(url=repo_url, path=safe_environ("OUTPUT_PATH"), branch=safe_environ("INPUT_BRANCH"))
+        repo.configure(
+            email=safe_environ("INPUT_AUTHOR_EMAIL"),
+            name=safe_environ("INPUT_AUTHOR_NAME"),
+        )
+
+        data = crawl_data(
+            username=user,
+            start=safe_environ("INPUT_START_DATE"),
+            finish=finish,
+        )
+        setting = language_setting_factory(language=safe_environ("INPUT_LANGUAGE"))
+
+        generate_path = os.path.join(repo.workdir, safe_environ("INPUT_PATH"))
 
         # Generate
-        with change_workdir(args.workdir), open("README.md", "w") as fp:
+        with change_workdir(generate_path), open("README.md", "w") as fp:
             fp.write(
                 reduce(
                     lambda a, b: a + b,
@@ -33,7 +47,7 @@ if __name__ == "__main__":
                         lambda x: x.generate(),
                         [
                             HeaderGenerator(
-                                username=args.username,
+                                username=user,
                                 setting=setting,
                             ),
                             SummaryGenerator(
@@ -48,6 +62,10 @@ if __name__ == "__main__":
                     ),
                 )
             )
+
+        repo.add(path=generate_path)
+        repo.commit(msg=f"BOT : {finish} contribution report")
+        repo.push()
 
         sys.exit(0)
     except Exception:
