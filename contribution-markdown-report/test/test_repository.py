@@ -58,18 +58,6 @@ def test_repository_choose_branch(mock_repository_url, base_path):
         assert capture_stdout(["git", "rev-parse", "--abbrev-ref", "HEAD"]) == test_branch
 
 
-def test_repository_configure(mock_repository_url, base_path):
-    test_email = "email"
-    test_name = "name"
-
-    repo = Repository(url=mock_repository_url, path=base_path)
-    repo.configure(email=test_email, name=test_name)
-
-    with change_workdir(repo.workdir):
-        assert capture_stdout(["git", "config", "--get", "user.email"]) == test_email
-        assert capture_stdout(["git", "config", "--get", "user.name"]) == test_name
-
-
 def test_repository_add(mock_repository_url, base_path):
     test_file = "touch"
 
@@ -82,15 +70,47 @@ def test_repository_add(mock_repository_url, base_path):
         assert capture_stdout(["git", "diff", "--name-only", "--cached"]) == test_file
 
 
+def test_repository_empty_add(mock_repository_url, base_path):
+    repo = Repository(url=mock_repository_url, path=base_path)
+
+    with change_workdir(repo.workdir):
+        repo.add(path=".gitignore")
+
+        assert capture_stdout(["git", "diff", "--name-only", "--cached"]) == ""
+
+
 def test_repository_commit(mock_repository_url, base_path):
     test_file = "touch"
     test_message = "message"
+    test_name = "name"
+    test_email = "email"
 
     repo = Repository(url=mock_repository_url, path=base_path)
 
     with change_workdir(repo.workdir):
         open(test_file, "w").close()
         repo.add(path=test_file)
-        repo.commit(msg=test_message)
+        repo.commit(msg=test_message, name=test_name, email=test_email)
 
-        assert capture_stdout(["git", "log", "--oneline", "-1"]).endswith(test_message)
+        assert capture_stdout(["git", "log", "-1", "--format=%s"]) == test_message
+        assert capture_stdout(["git", "log", "-1", "--format=%an"]) == test_name
+        assert capture_stdout(["git", "log", "-1", "--format=%ae"]) == test_email
+
+
+def test_repository_empty_commit(mock_repository_url, base_path):
+    test_message = "message"
+    test_name = "name"
+    test_email = "email"
+
+    repo = Repository(url=mock_repository_url, path=base_path)
+
+    with change_workdir(repo.workdir):
+        head_message = capture_stdout(["git", "log", "-1", "--format=%s"])
+        head_name = capture_stdout(["git", "log", "-1", "--format=%an"])
+        head_email = capture_stdout(["git", "log", "-1", "--format=%ae"])
+
+        repo.commit(msg=test_message, name=test_name, email=test_email)
+
+        assert capture_stdout(["git", "log", "-1", "--format=%s"]) == head_message
+        assert capture_stdout(["git", "log", "-1", "--format=%an"]) == head_name
+        assert capture_stdout(["git", "log", "-1", "--format=%ae"]) == head_email

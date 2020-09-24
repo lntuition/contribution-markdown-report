@@ -1,6 +1,6 @@
 import os
 
-from git import Repo
+from git import Actor, Repo
 
 
 class RepositoryURL:
@@ -20,16 +20,13 @@ class Repository:
     def workdir(self) -> str:
         return self.__repo.working_tree_dir
 
-    def configure(self, email: str, name: str) -> None:
-        with self.__repo.config_writer() as config:
-            config.set_value("user", "email", email)
-            config.set_value("user", "name", name)
-
     def add(self, path: str) -> None:
         self.__repo.index.add(path)
 
-    def commit(self, msg: str) -> None:
-        self.__repo.index.commit(msg)
+    def commit(self, msg: str, name: str, email: str) -> None:
+        if self.__repo.index.diff("HEAD"):
+            config = Actor(name, email)
+            self.__repo.index.commit(msg, author=config, committer=config)
 
     def push(self) -> None:
         self.__repo.remotes.origin.push()

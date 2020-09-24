@@ -24,10 +24,6 @@ if __name__ == "__main__":
             name=safe_environ("GITHUB_REPOSITORY"),
         )
         repo = Repository(url=repo_url, path=safe_environ("OUTPUT_PATH"), branch=safe_environ("INPUT_BRANCH"))
-        repo.configure(
-            email=safe_environ("INPUT_AUTHOR_EMAIL"),
-            name=safe_environ("INPUT_AUTHOR_NAME"),
-        )
 
         data = crawl_data(
             username=user,
@@ -64,7 +60,11 @@ if __name__ == "__main__":
             )
 
         repo.add(path=generate_path)
-        repo.commit(msg=f"BOT : {finish} contribution report")
+        repo.commit(
+            msg=f"BOT : {finish} contribution report",
+            email=safe_environ("INPUT_AUTHOR_EMAIL"),
+            name=safe_environ("INPUT_AUTHOR_NAME"),
+        )
         repo.push()
 
         sys.exit(0)
