@@ -1,12 +1,7 @@
 import pytest
 
 from language.english import EnglishSetting
-from language.factory import FactoryLanguageSetting, NotSupportedException
-
-
-@pytest.fixture(scope="module")
-def factory():
-    return FactoryLanguageSetting()
+from language.factory import NotSupportedException, language_setting_factory
 
 
 @pytest.mark.parametrize(
@@ -18,12 +13,12 @@ def factory():
         "English",
     ],
 )
-def test_get_setting(factory, language, expected_type):
-    setting = factory.get_setting(language=language)
+def test_language_setting_factory(language, expected_type):
+    setting = language_setting_factory(language=language)
 
     assert isinstance(setting, expected_type)
 
 
-def test_not_supported_create_setting(factory):
+def test_not_supported_language():
     with pytest.raises(NotSupportedException):
-        factory.get_setting(language="not supported")
+        language_setting_factory(language="not supported")

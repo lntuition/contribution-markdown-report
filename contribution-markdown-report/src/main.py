@@ -5,7 +5,7 @@ from functools import reduce
 
 from crawler import crawl_data
 from directory import change_workdir
-from language.factory import FactoryLanguageSetting
+from language.factory import language_setting_factory
 from section.graph import GraphGenerator
 from section.header import HeaderGenerator
 from section.summary import SummaryGenerator
@@ -22,7 +22,7 @@ if __name__ == "__main__":
         # Setup
         args = parser.parse_args()
         data = crawl_data(username=args.username, start=args.start, finish=args.finish)
-        setting = FactoryLanguageSetting().get_setting(language=args.language)
+        setting = language_setting_factory(language=args.language)
 
         # Generate
         with change_workdir(args.workdir), open("README.md", "w") as fp:
