@@ -6,11 +6,11 @@ If you have any question or problem, please report [here](https://github.com/lnt
 I hope this report will be a companion for your contribution trip. :airplane:
 
 ## Summary
-- **2020-09-23** was **85**th day since the start of trip, and there was **1** new contribution. :+1:
-- Daily maximum contribution day is **2020-07-16**, which is **5**. :muscle:
-- During the trip, total contribuition count is **195** and average contribution count is **2.29**. :clap:
-- Longest continuous contribution trip was **85** days from **2020-07-01** to **2020-09-23**. :walking:
-- Current continuous contribution trip is **85** days from **2020-07-01**. :running:
+- **2020-09-24** was **86**th day since the start of trip, and there was **6** new contribution. :+1:
+- Daily maximum contribution day is **2020-09-24**, which is **6**. :muscle:
+- During the trip, total contribuition count is **201** and average contribution count is **2.34**. :clap:
+- Longest continuous contribution trip was **86** days from **2020-07-01** to **2020-09-24**. :walking:
+- Current continuous contribution trip is **86** days from **2020-07-01**. :running:
 ## Graph
 | **Number of days per contribution up to the last 4 weeks** | **Number of days per contribution** |
 |:--:|:--:|
