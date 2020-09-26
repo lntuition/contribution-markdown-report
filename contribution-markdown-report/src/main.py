@@ -5,13 +5,12 @@ from datetime import datetime, timedelta
 from functools import reduce
 
 from crawler import crawl_data
-from directory import change_workdir
 from language.factory import language_setting_factory
 from repository import Repository, RepositoryURL
 from section.graph import GraphGenerator
 from section.header import HeaderGenerator
 from section.summary import SummaryGenerator
-from util import safe_environ
+from util import safe_chdir, safe_environ
 
 if __name__ == "__main__":
     try:
@@ -35,7 +34,7 @@ if __name__ == "__main__":
         generate_path = os.path.join(repo.workdir, safe_environ("INPUT_PATH"))
 
         # Generate
-        with change_workdir(generate_path), open("README.md", "w") as fp:
+        with safe_chdir(generate_path), open("README.md", "w") as fp:
             fp.write(
                 reduce(
                     lambda a, b: a + b,

@@ -6,9 +6,9 @@ import pandas as pd
 import seaborn as sns
 from matplotlib.axes import Axes
 
-from directory import change_workdir
 from language.base import LanguageSetting
 from section.base import SectionGenerator
+from util import safe_chdir
 
 
 class GraphGenerator(SectionGenerator):
@@ -47,7 +47,7 @@ class GraphGenerator(SectionGenerator):
             )
 
     def __save_barplot(self, ax: Axes, filename: str) -> None:
-        with change_workdir(self.workdir):
+        with safe_chdir(self.workdir):
             fig = ax.get_figure()
             fig.savefig(filename, dpi=200, bbox_inches="tight")
             fig.clf()

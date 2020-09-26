@@ -5,8 +5,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from directory import change_workdir
 from repository import Repository, RepositoryURL
+from util import safe_chdir
 
 
 def test_repository_url_remote():
@@ -45,7 +45,7 @@ def capture_stdout(cmd):
 def test_repository_default_branch(mock_repository_url, base_path):
     repo = Repository(url=mock_repository_url, path=base_path)
 
-    with change_workdir(repo.workdir):
+    with safe_chdir(repo.workdir):
         assert capture_stdout(["git", "rev-parse", "--abbrev-ref", "HEAD"]) == "master"
 
 
@@ -54,7 +54,7 @@ def test_repository_choose_branch(mock_repository_url, base_path):
 
     repo = Repository(url=mock_repository_url, path=base_path, branch=test_branch)
 
-    with change_workdir(repo.workdir):
+    with safe_chdir(repo.workdir):
         assert capture_stdout(["git", "rev-parse", "--abbrev-ref", "HEAD"]) == test_branch
 
 
@@ -63,7 +63,7 @@ def test_repository_add(mock_repository_url, base_path):
 
     repo = Repository(url=mock_repository_url, path=base_path)
 
-    with change_workdir(repo.workdir):
+    with safe_chdir(repo.workdir):
         open(test_file, "w").close()
         repo.add(path=test_file)
 
@@ -73,7 +73,7 @@ def test_repository_add(mock_repository_url, base_path):
 def test_repository_empty_add(mock_repository_url, base_path):
     repo = Repository(url=mock_repository_url, path=base_path)
 
-    with change_workdir(repo.workdir):
+    with safe_chdir(repo.workdir):
         repo.add(path=".gitignore")
 
         assert capture_stdout(["git", "diff", "--name-only", "--cached"]) == ""
@@ -87,7 +87,7 @@ def test_repository_commit(mock_repository_url, base_path):
 
     repo = Repository(url=mock_repository_url, path=base_path)
 
-    with change_workdir(repo.workdir):
+    with safe_chdir(repo.workdir):
         open(test_file, "w").close()
         repo.add(path=test_file)
         repo.commit(msg=test_message, name=test_name, email=test_email)
@@ -104,7 +104,7 @@ def test_repository_empty_commit(mock_repository_url, base_path):
 
     repo = Repository(url=mock_repository_url, path=base_path)
 
-    with change_workdir(repo.workdir):
+    with safe_chdir(repo.workdir):
         head_message = capture_stdout(["git", "log", "-1", "--format=%s"])
         head_name = capture_stdout(["git", "log", "-1", "--format=%an"])
         head_email = capture_stdout(["git", "log", "-1", "--format=%ae"])
