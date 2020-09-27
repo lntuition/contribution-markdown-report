@@ -24,14 +24,6 @@ class Date:
     def year(self) -> int:
         return self.__year
 
-    @property
-    def month(self) -> int:
-        return self.__month
-
-    @property
-    def day(self) -> int:
-        return self.__day
-
     def __lt__(self, other) -> bool:
         return int(self) < int(other)
 
@@ -45,7 +37,7 @@ class Date:
         return int(self) > int(other)
 
     def __int__(self) -> int:
-        return (self.year * 10000) + (self.month * 100) + self.day
+        return (self.__year * 10000) + (self.__month * 100) + self.__day
 
     def __repr__(self) -> str:
         return f"{self.__year}-{self.__month:02d}-{self.__day:02d}"
@@ -57,13 +49,13 @@ class DateIntervalException(Exception):
 
 class DateInterval:
     def __init__(self, start: Date, end: Date) -> None:
-        if end > start:
+        if end < start:
             raise DateIntervalException(f"{start} : eariler than {end}")
 
         self.__start = start
         self.__end = end
 
-    def iter_year(self) -> Iterable[str]:
+    def iter_year(self) -> Iterable[int]:
         return range(self.__start.year, self.__end.year + 1)
 
     def is_between(self, date: str) -> bool:
