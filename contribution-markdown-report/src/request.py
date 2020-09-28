@@ -5,7 +5,7 @@ class RequestException(Exception):
     pass
 
 
-def fetch_raw_text(url: str) -> str:
+def fetch_text(url: str) -> str:
     response = requests.get(url)
 
     status = response.status_code
