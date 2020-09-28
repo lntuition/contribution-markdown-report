@@ -1,10 +1,10 @@
 import os
 import sys
 import traceback
-from datetime import datetime, timedelta
 from functools import reduce
 
 from crawler import crawl_data
+from date import Date, DateInterval
 from language.factory import language_setting_factory
 from repository import Repository, RepositoryURL
 from section.graph import GraphGenerator
@@ -15,7 +15,7 @@ from util import safe_chdir, safe_environ
 if __name__ == "__main__":
     try:
         user = safe_environ("GITHUB_ACTOR")
-        finish = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        end = Date(date="yesterday")
 
         repo_url = RepositoryURL(
             user=user,
@@ -24,11 +24,7 @@ if __name__ == "__main__":
         )
         repo = Repository(url=repo_url, path=safe_environ("OUTPUT_PATH"), branch=safe_environ("INPUT_BRANCH"))
 
-        data = crawl_data(
-            username=user,
-            start=safe_environ("INPUT_START_DATE"),
-            finish=finish,
-        )
+        data = crawl_data(user=user, interval=DateInterval(start=Date(date=safe_environ("INPUT_START_DATE")), end=end))
         setting = language_setting_factory(language=safe_environ("INPUT_LANGUAGE"))
 
         generate_path = os.path.join(repo.workdir, safe_environ("INPUT_PATH"))
@@ -60,7 +56,7 @@ if __name__ == "__main__":
 
         repo.add(path=generate_path)
         repo.commit(
-            msg=f"BOT : {finish} contribution report",
+            msg=f"BOT : {end} contribution report",
             email=safe_environ("INPUT_AUTHOR_EMAIL"),
             name=safe_environ("INPUT_AUTHOR_NAME"),
         )

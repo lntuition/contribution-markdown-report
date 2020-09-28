@@ -3,64 +3,13 @@ import pandas as pd
 import pytest
 import requests
 
-from crawler import ParameterException, RequestException, crawl_data
-
-username = "lntuition"
-server_status = requests.get(f"https://github.com/{username}").status_code == 200
-live_test = pytest.mark.skipif(server_status == False, reason="Error at github server, skip live test")  # server dead
-dead_test = pytest.mark.skipif(server_status == True, reason="No error at github server, skip dead test")  # server live
+from crawler import crawl_data
+from date import Date, DateInterval
 
 
-def test_wrong_start_date_fmt():
-    with pytest.raises(ParameterException):
-        crawl_data(
-            username=username,
-            start="2020/01/01",
-            finish="2020-07-01",
-        )
-
-
-def test_wrong_finish_date_fmt():
-    with pytest.raises(ParameterException):
-        crawl_data(
-            username=username,
-            start="2020-01-01",
-            finish="2020/07/01",
-        )
-
-
-def test_early_finish_than_start():
-    with pytest.raises(ParameterException):
-        crawl_data(
-            username=username,
-            start="2020-12-25",
-            finish="2020-07-01",
-        )
-
-
-@live_test
-def test_not_exist_username():
-    with pytest.raises(RequestException):
-        crawl_data(
-            username="ItShouldBeNeverExist",
-            start="2020-07-01",
-            finish="2020-12-25",
-        )
-
-
-@dead_test
-def test_crawl_data_on_dead_server():
-    with pytest.raises(RequestException):
-        crawl_data(
-            username=username,
-            start="2020-07-01",
-            finish="2020-12-25",
-        )
-
-
-@live_test
+@pytest.mark.skipif(requests.get(f"https://github.com/").status_code != 200, reason="Error at github server, skip test")
 @pytest.mark.parametrize(
-    ("start, finish"),
+    ("start, end"),
     [
         ("2019-07-01", "2019-07-01"),
         ("2019-06-03", "2019-06-18"),
@@ -78,15 +27,17 @@ def test_crawl_data_on_dead_server():
         "Many years",
     ],
 )
-def test_crawl_data_on_live_server(start, finish):
+def test_crawl_data(start, end):
     data = crawl_data(
-        username=username,
-        start=start,
-        finish=finish,
+        user="lntuition",
+        interval=DateInterval(
+            start=Date(start),
+            end=Date(end),
+        ),
     )
 
-    assert pd.Timestamp(start) == data.iloc[0]["date"]
-    assert pd.Timestamp(finish) == data.iloc[-1]["date"]
+    assert data.iloc[0]["date"] == pd.Timestamp(start)
+    assert data.iloc[-1]["date"] == pd.Timestamp(end)
 
     assert isinstance(data.iloc[0]["count"], np.integer)
     assert isinstance(data.iloc[-1]["count"], np.integer)
