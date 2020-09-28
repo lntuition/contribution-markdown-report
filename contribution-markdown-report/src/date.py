@@ -55,8 +55,8 @@ class DateInterval:
         self.__start = start
         self.__end = end
 
+    def __contains__(self, date: Date) -> bool:
+        return self.__start <= date <= self.__end
+
     def iter_year(self) -> Iterable[int]:
         return range(self.__start.year, self.__end.year + 1)
-
-    def is_between(self, date: str) -> bool:
-        return self.__start <= Date(date) <= self.__end

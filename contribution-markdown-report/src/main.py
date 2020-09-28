@@ -22,9 +22,16 @@ if __name__ == "__main__":
             token=safe_environ("INPUT_GITHUB_TOKEN"),
             name=safe_environ("GITHUB_REPOSITORY"),
         )
-        repo = Repository(url=repo_url, path=safe_environ("OUTPUT_PATH"), branch=safe_environ("INPUT_BRANCH"))
+        repo = Repository(
+            url=repo_url,
+            path=safe_environ("OUTPUT_PATH"),
+            branch=safe_environ("INPUT_BRANCH"),
+        )
 
-        data = crawl_data(user=user, interval=DateInterval(start=Date(date=safe_environ("INPUT_START_DATE")), end=end))
+        data = crawl_data(
+            user=user,
+            interval=DateInterval(start=Date(date=safe_environ("INPUT_START_DATE")), end=end),
+        )
         setting = language_setting_factory(language=safe_environ("INPUT_LANGUAGE"))
 
         generate_path = os.path.join(repo.workdir, safe_environ("INPUT_PATH"))

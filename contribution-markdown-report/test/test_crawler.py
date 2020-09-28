@@ -7,7 +7,10 @@ from crawler import crawl_data
 from date import Date, DateInterval
 
 
-@pytest.mark.skipif(requests.get(f"https://github.com/").status_code != 200, reason="Error at github server, skip test")
+@pytest.mark.skipif(
+    requests.get(f"https://github.com/").status_code != 200,
+    reason="Error at github server, skip test",
+)
 @pytest.mark.parametrize(
     ("start, end"),
     [

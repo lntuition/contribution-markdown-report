@@ -68,8 +68,8 @@ def test_date_interval_iter_year():
     ]
 
 
-def test_date_interval_is_between():
+def test_date_interval_contains():
     interval = DateInterval(start=Date("2018-07-01"), end=Date("2018-07-22"))
 
-    assert interval.is_between("2018-07-15")
-    assert not interval.is_between("2018-07-23")
+    assert Date("2018-07-15") in interval
+    assert not Date("2018-07-23") in interval
