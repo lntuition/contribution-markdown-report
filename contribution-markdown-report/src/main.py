@@ -3,7 +3,7 @@ import sys
 import traceback
 from functools import reduce
 
-from crawler import crawl_data
+from crawler import Crawler
 from date import Date, DateInterval
 from language.factory import language_setting_factory
 from repository import Repository, RepositoryURL
@@ -28,7 +28,7 @@ if __name__ == "__main__":
             branch=safe_environ("INPUT_BRANCH"),
         )
 
-        data = crawl_data(
+        data = Crawler.execute(
             user=user,
             interval=DateInterval(start=Date(date=safe_environ("INPUT_START_DATE")), end=end),
         )

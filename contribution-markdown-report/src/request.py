@@ -5,11 +5,13 @@ class RequestException(Exception):
     pass
 
 
-def fetch_text(url: str) -> str:
-    response = requests.get(url)
+class Request:
+    @staticmethod
+    def fetch(url: str) -> str:
+        response = requests.get(url)
 
-    status = response.status_code
-    if status != 200:
-        raise RequestException(f"{status} : fail request")
+        status = response.status_code
+        if status != 200:
+            raise RequestException(f"{status} : fail request")
 
-    return response.text
+        return response.text

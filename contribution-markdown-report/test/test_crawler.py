@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import requests
 
-from crawler import crawl_data
+from crawler import Crawler
 from date import Date, DateInterval
 
 
@@ -30,8 +30,8 @@ from date import Date, DateInterval
         "Many years",
     ],
 )
-def test_crawl_data(start, end):
-    data = crawl_data(
+def test_crawler_execute(start, end):
+    data = Crawler.execute(
         user="lntuition",
         interval=DateInterval(
             start=Date(start),
