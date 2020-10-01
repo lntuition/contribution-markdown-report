@@ -20,7 +20,7 @@ class Report:
             key = writer.get_attribute()
             setting = setting_dict[key]
 
-            writer.generate(setting=setting)
+            text += writer.write(setting=setting)
 
         with safe_chdir(path), open(file_name, "w") as report:
             report.write(text)
