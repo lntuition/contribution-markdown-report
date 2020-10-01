@@ -12,7 +12,7 @@ from util import safe_chdir
 def test_repository_url_remote():
     url = RepositoryURL(user="user", token="token", name="name")
 
-    assert url.remote == f"https://user:token@github.com/name.git"
+    assert url.remote == "https://user:token@github.com/name.git"
 
 
 @pytest.fixture(scope="module")
