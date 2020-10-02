@@ -9,8 +9,8 @@ class Setting:
 
 class EnglishHeaderSetting(Header, Setting):
     @staticmethod
-    def title(username: str) -> str:
-        return f"Welcome to {username}'s contribution report"
+    def title(user: str) -> str:
+        return f"Welcome to {user}'s contribution report"
 
     @staticmethod
     def repository(url: str) -> str:
@@ -31,16 +31,16 @@ class EnglishSummarySetting(Summary, Setting):
         return "Summary"
 
     @staticmethod
-    def today(today: str, length: str, count: str) -> str:
-        return f"{today} was {length}th day since the start of trip, and there was {count} new contribution."
+    def today(date: str, count: str, length: str) -> str:
+        return f"{date} was {length}th day since the start of trip, and there was {count} new contribution."
 
     @staticmethod
     def maximum(date: str, count: str) -> str:
         return f"Daily maximum contribution day is {date}, which is {count}."
 
     @staticmethod
-    def total(sum: str, avg: str) -> str:
-        return f"During the trip, total contribuition count is {sum} and average contribution count is {avg}."
+    def total(_sum: str, avg: str) -> str:
+        return f"During the trip, total contribuition count is {_sum} and average contribution count is {avg}."
 
     @staticmethod
     def peak(length: str, start: str, end: str) -> str:
