@@ -73,7 +73,7 @@ class SummaryWriter(Summary, Writer):
             },
             "cur_peak": {
                 "length": cur_peak_length,
-                "start": self.__data[cur_start_idx]["date"],
+                "start": self.__data.iloc[cur_start_idx]["date"],
             },
         }
 
@@ -245,7 +245,7 @@ class GraphWriter(Graph, Writer):
 
                 self.__draw_barplot(**params)
 
-                bar_title = getattr(setting, f"{key}_title")()
+                bar_title = f"**{getattr(setting, f'{key}_title')()}**"
                 bar_image = f"![]({asset}/{params['filename']})"
 
                 cells.append(bar_title)

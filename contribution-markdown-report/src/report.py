@@ -16,11 +16,12 @@ class Report:
             setting_dict[key] = setting
 
         text = ""
-        for writer in writers:
-            key = writer.get_attribute()
-            setting = setting_dict[key]
+        with safe_chdir(path):
+            for writer in writers:
+                key = writer.get_attribute()
+                setting = setting_dict[key]
 
-            text += writer.write(setting=setting)
+                text += writer.write(setting=setting)
 
-        with safe_chdir(path), open(file_name, "w") as report:
-            report.write(text)
+            with open(file_name, "w") as report:
+                report.write(text)

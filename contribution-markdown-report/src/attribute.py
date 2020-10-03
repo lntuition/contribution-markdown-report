@@ -1,16 +1,26 @@
-class Attribute:
-    @classmethod
-    def get_attribute(cls) -> str:
-        return cls.__name__
+from abc import ABC, abstractmethod
+
+
+class Attribute(ABC):
+    @staticmethod
+    @abstractmethod
+    def get_attribute() -> str:
+        pass
 
 
 class Header(Attribute):
-    pass
+    @staticmethod
+    def get_attribute() -> str:
+        return "Header"
 
 
 class Summary(Attribute):
-    pass
+    @staticmethod
+    def get_attribute() -> str:
+        return "Summary"
 
 
 class Graph(Attribute):
-    pass
+    @staticmethod
+    def get_attribute() -> str:
+        return "Graph"
