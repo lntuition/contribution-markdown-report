@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import pytest
 
@@ -7,14 +6,14 @@ from date import Date, DateInterval
 
 
 @pytest.mark.parametrize(
-    ("start, end"),
+    ("date_start", "date_end", "count_start", "count_end"),
     [
-        ("2019-07-01", "2019-07-01"),
-        ("2019-06-03", "2019-06-18"),
-        ("2019-07-01", "2019-08-01"),
-        ("2019-07-01", "2019-09-01"),
-        ("2019-01-01", "2019-12-31"),
-        ("2017-01-16", "2020-06-24"),
+        ("2019-07-01", "2019-07-01", 0, 0),
+        ("2019-07-01", "2019-07-16", 0, 1),
+        ("2019-07-01", "2019-08-01", 0, 2),
+        ("2019-07-01", "2019-09-01", 0, 3),
+        ("2019-01-01", "2019-12-31", 0, 7),
+        ("2017-01-01", "2020-07-01", 0, 2),
     ],
     ids=[
         "One day",
@@ -25,17 +24,16 @@ from date import Date, DateInterval
         "Many years",
     ],
 )
-def test_crawler_execute(use_fake_request, start, end):
-    data = Crawler.execute(
-        user="lntuition",
-        interval=DateInterval(
-            start=Date(start),
-            end=Date(end),
-        ),
-    )
+def test_crawler_execute(
+    use_fake_request: None, date_start: str, date_end: str, count_start: int, count_end: int
+) -> None:
+    interval = DateInterval(start=Date(date_start), end=Date(date_end))
+    data = Crawler.execute(user="lntuition", interval=interval)
 
-    assert data.iloc[0]["date"] == pd.Timestamp(start)
-    assert data.iloc[-1]["date"] == pd.Timestamp(end)
+    start = data.iloc[0]
+    end = data.iloc[-1]
 
-    assert isinstance(data.iloc[0]["count"], np.integer)
-    assert isinstance(data.iloc[-1]["count"], np.integer)
+    assert start["date"] == pd.Timestamp(date_start)
+    assert end["date"] == pd.Timestamp(date_end)
+    assert start["count"] == count_start
+    assert end["count"] == count_end
