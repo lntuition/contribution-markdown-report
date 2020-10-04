@@ -1,28 +1,12 @@
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from request import Request, RequestException
 
 
-@patch("requests.get")
-def test_fetch_success(mock_request_get):
-    test_text = "test_text"
-    mock_response = MagicMock()
-    mock_response.status_code = 200
-    mock_response.text = test_text
-    mock_request_get.return_value = mock_response
-
-    assert Request.fetch(url="url") == test_text
+def test_fetch_success(use_fake_request):
+    assert Request.fetch(url="200") == "text"
 
 
-@patch("requests.get")
-def test_fetch_fail(mock_request_get):
-    test_text = "test_text"
-    mock_response = MagicMock()
-    mock_response.status_code = 404
-    mock_response.text = test_text
-    mock_request_get.return_value = mock_response
-
+def test_fetch_fail(use_fake_request):
     with pytest.raises(RequestException):
-        Request.fetch(url="url")
+        Request.fetch(url="404")
