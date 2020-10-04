@@ -1,16 +1,11 @@
 import numpy as np
 import pandas as pd
 import pytest
-import requests
 
 from crawler import Crawler
 from date import Date, DateInterval
 
 
-@pytest.mark.skipif(
-    requests.get(f"https://github.com/").status_code != 200,
-    reason="Error at github server, skip test",
-)
 @pytest.mark.parametrize(
     ("start, end"),
     [
@@ -19,7 +14,7 @@ from date import Date, DateInterval
         ("2019-07-01", "2019-08-01"),
         ("2019-07-01", "2019-09-01"),
         ("2019-01-01", "2019-12-31"),
-        ("2015-01-16", "2020-06-24"),
+        ("2017-01-16", "2020-06-24"),
     ],
     ids=[
         "One day",
@@ -30,7 +25,7 @@ from date import Date, DateInterval
         "Many years",
     ],
 )
-def test_crawler_execute(start, end):
+def test_crawler_execute(use_fake_request, start, end):
     data = Crawler.execute(
         user="lntuition",
         interval=DateInterval(
