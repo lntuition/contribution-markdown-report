@@ -40,6 +40,6 @@ class FakeRequest:
 
 
 @pytest.fixture
-def use_fake_request():
+def use_fake_request() -> None:
     with patch("requests.get", wraps=FakeRequest.get):
         yield
