@@ -1,39 +1,46 @@
 @startuml
-'Section
-Abstract SectionGenerator
-Class HeaderGenerator
-Class SummaryGenerator
-Class GraphGenerator
+'Date
+class Date {
++year : int
+-month : month
+-day : day
+}
 
-'Language
-Interface HeaderSetting
-Interface SummarySetting
-Interface GraphSetting
+class DateInterval {
+-start: Date
+-end: Date
+--
++iter_year() : Iterable[int]
+}
 
-Abstract LanguageSetting
-Class LanguageSettingFactory
+DateInterval "1 " --> "2 " Date
 
-Class EnglishSetting
-Class KoreanSetting
+'Request
+class Request {
++fetch() : str
+}
 
-Client --> HeaderGenerator
-Client --> SummaryGenerator
-Client --> GraphGenerator
+'Crawler
+class Crawler {
++execute() : pd.DataFrame
+}
 
-Client ---> LanguageSettingFactory
+Crawler ..> Request
+Crawler ..> DateInterval
 
-HeaderGenerator ..|> SectionGenerator
-SummaryGenerator ..|> SectionGenerator
-GraphGenerator ..|> SectionGenerator
+'Repository
+class RepositoryURL {
++remote : str
+}
 
-SectionGenerator ---> LanguageSetting
+class Repository {
+-repo : Repo
++workdir : str
+--
++add() : None
++commit() : None
++push() : None
+}
 
-HeaderSetting <|.. LanguageSetting
-SummarySetting <|.. LanguageSetting
-GraphSetting <|.. LanguageSetting
-
-LanguageSettingFactory -> LanguageSetting
-
-LanguageSetting <|.. EnglishSetting
-LanguageSetting <|.. KoreanSetting
+Repository --> RepositoryURL
 @enduml
