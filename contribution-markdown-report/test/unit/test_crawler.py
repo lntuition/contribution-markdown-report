@@ -6,7 +6,7 @@ from date import Date, DateInterval
 
 
 @pytest.mark.parametrize(
-    ("date_start", "date_end", "count_start", "count_end"),
+    ("str_start", "str_end", "count_start", "count_end"),
     [
         ("2019-07-01", "2019-07-01", 0, 0),
         ("2019-07-01", "2019-07-16", 0, 1),
@@ -25,15 +25,17 @@ from date import Date, DateInterval
     ],
 )
 def test_crawler_execute(
-    use_fake_request: None, date_start: str, date_end: str, count_start: int, count_end: int
+    use_fake_request: None, str_start: str, str_end: str, count_start: int, count_end: int
 ) -> None:
-    interval = DateInterval(start=Date(date_start), end=Date(date_end))
+    date_start = Date(str_start)
+    date_end = Date(str_end)
+    interval = DateInterval(start=date_start, end=date_end)
     data = Crawler.execute(user="lntuition", interval=interval)
 
     start = data.iloc[0]
     end = data.iloc[-1]
 
-    assert start["date"] == pd.Timestamp(date_start)
-    assert end["date"] == pd.Timestamp(date_end)
-    assert start["count"] == count_start
-    assert end["count"] == count_end
+    assert start["date"] == pd.Timestamp(str_start)
+    assert end["date"] == pd.Timestamp(str_end)
+    assert start["count"] == pd.to_numeric(count_start)
+    assert end["count"] == pd.to_numeric(count_end)
