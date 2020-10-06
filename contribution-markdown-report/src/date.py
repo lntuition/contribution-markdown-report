@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Iterable
+from typing import Sequence
 
 
 class DateFormatException(Exception):
@@ -9,35 +9,32 @@ class DateFormatException(Exception):
 class Date:
     def __init__(self, date: str) -> None:
         if date == "yesterday":  # Reserved keyword
-            dt = datetime.now() - timedelta(days=1)
+            std_date = datetime.now() - timedelta(days=1)
         else:
             try:
-                dt = datetime.strptime(date, "%Y-%m-%d")
-            except ValueError as e:
-                raise DateFormatException(f"{date} : wrong format") from e
+                std_date = datetime.strptime(date, "%Y-%m-%d")
+            except ValueError as error:
+                raise DateFormatException(f"{date} : wrong format") from error
 
-        self.__year = dt.year
-        self.__month = dt.month
-        self.__day = dt.day
+        self.__year = std_date.year
+        self.__month = std_date.month
+        self.__day = std_date.day
 
     @property
     def year(self) -> int:
         return self.__year
 
     def __lt__(self, other) -> bool:
-        return int(self) < int(other)
+        return str(self) < str(other)
 
     def __le__(self, other) -> bool:
-        return int(self) <= int(other)
+        return str(self) <= str(other)
 
     def __ge__(self, other) -> bool:
-        return int(self) >= int(other)
+        return str(self) >= str(other)
 
     def __gt__(self, other) -> bool:
-        return int(self) > int(other)
-
-    def __int__(self) -> int:
-        return (self.__year * 10000) + (self.__month * 100) + self.__day
+        return str(self) > str(other)
 
     def __repr__(self) -> str:
         return f"{self.__year}-{self.__month:02d}-{self.__day:02d}"
@@ -58,5 +55,5 @@ class DateInterval:
     def __contains__(self, date: Date) -> bool:
         return self.__start <= date <= self.__end
 
-    def iter_year(self) -> Iterable[int]:
+    def iter_year(self) -> Sequence[int]:
         return range(self.__start.year, self.__end.year + 1)

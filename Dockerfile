@@ -10,7 +10,7 @@ ENV HOME_PATH "/action"
 
 # Python
 RUN pip install beautifulsoup4 requests seaborn gitpython \
-        black isort pylint pytest pytest-cov mypy
+        black freezegun isort mypy pylint pytest pytest-cov
 ENV PYTHONPATH "$PYTHONPATH:${HOME_PATH}/src"
 
 # Setup
