@@ -1,6 +1,5 @@
 from crawler import Crawler
 from date import Date, DateInterval
-from report import Report
 from repository import Repository, RepositoryURL
 from section.graph import GraphSection, GraphSettingFactory
 from section.header import HeaderSection, HeaderSettingFactory
@@ -40,7 +39,13 @@ if __name__ == "__main__":
 
     sections = [header_section, summary_section, graph_section]
     with safe_chdir(repo.workdir):
-        Report.generate(sections=sections, path=work_path)
+        with safe_chdir(work_path):
+            text = ""
+            for section in sections:
+                text += section.write()
+
+            with open("README.md", "w") as report:
+                report.write(text)
 
     repo.add(path=work_path)
     repo.commit(
