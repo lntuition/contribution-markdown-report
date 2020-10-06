@@ -2,13 +2,15 @@ from crawler import Crawler
 from date import Date, DateInterval
 from report import Report
 from repository import Repository, RepositoryURL
-from setting import SettingFactory
+from section.graph import GraphSection, GraphSettingFactory
+from section.header import HeaderSection, HeaderSettingFactory
+from section.summary import SummarySection, SummarySettingFactory
 from util import safe_chdir, safe_environ
-from writer import GraphWriter, HeaderWriter, SummaryWriter
 
 if __name__ == "__main__":
     user = safe_environ("GITHUB_ACTOR")
     end = Date(date="yesterday")
+    language = safe_environ("INPUT_LANGUAGE")
 
     repo_url = RepositoryURL(
         user=user,
@@ -25,14 +27,20 @@ if __name__ == "__main__":
         user=user,
         interval=DateInterval(start=Date(date=safe_environ("INPUT_START_DATE")), end=end),
     )
-    settings = SettingFactory.create_settings(language=safe_environ("INPUT_LANGUAGE"))
-
     work_path = safe_environ("INPUT_PATH")
 
-    writers = [HeaderWriter(user=user), SummaryWriter(data=data), GraphWriter(data=data)]
+    header_setting = HeaderSettingFactory.create_setting(language=language)
+    header_section = HeaderSection(user=user, setting=header_setting)
 
+    summary_setting = SummarySettingFactory.create_setting(language=language)
+    summary_section = SummarySection(data=data, setting=summary_setting)
+
+    graph_setting = GraphSettingFactory.create_setting(language=language)
+    graph_section = GraphSection(data=data, setting=graph_setting)
+
+    sections = [header_section, summary_section, graph_section]
     with safe_chdir(repo.workdir):
-        Report.generate(writers=writers, settings=settings, path=work_path)
+        Report.generate(sections=sections, path=work_path)
 
     repo.add(path=work_path)
     repo.commit(

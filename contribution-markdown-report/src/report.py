@@ -1,27 +1,16 @@
-from typing import Iterable, Sequence
+from typing import Sequence
 
-from setting import Setting
+from section.base import Section
 from util import safe_chdir
-from writer import Writer
 
 
 class Report:
     @staticmethod
-    def generate(
-        writers: Sequence[Writer], settings: Iterable[Setting], path: str, file_name: str = "README.md"
-    ) -> None:
-        setting_dict = {}
-        for setting in settings:
-            key = setting.get_attribute()
-            setting_dict[key] = setting
-
-        text = ""
+    def generate(sections: Sequence[Section], path: str, file_name: str = "README.md") -> None:
         with safe_chdir(path):
-            for writer in writers:
-                key = writer.get_attribute()
-                setting = setting_dict[key]
-
-                text += writer.write(setting=setting)
+            text = ""
+            for section in sections:
+                text += section.write()
 
             with open(file_name, "w") as report:
                 report.write(text)
