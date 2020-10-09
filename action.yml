@@ -14,11 +14,10 @@ inputs:
     required: true
     default: "english"
 
-  # Commit inputs
-  artifact_only:
-    description: "If this value is set, do not commit"
+  phase:
+    description: "Last step to process : generate, add, commit, push"
     required: true
-    default: ""
+    default: "push"
   branch:
     description: "Branch where the report will be updated"
     required: true
