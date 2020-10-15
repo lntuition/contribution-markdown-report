@@ -1,116 +1,184 @@
 import os
 import shutil
-import subprocess
-from unittest.mock import MagicMock
+from typing import Iterator
+from unittest.mock import MagicMock, patch
 
+import git
 import pytest
 
-from repository import Repository, RepositoryURL
-from util import safe_chdir
+from src.report import Report
+from src.repository import Repository, RepositoryActorBuilder, RepositoryCoreBuilder
 
 
-def test_repository_url_remote():
-    url = RepositoryURL(user="user", token="token", name="name")
+class FakeReport(Report):
+    def __init__(self) -> None:
+        self.__generate_directory = ""
 
-    assert url.remote == "https://user:token@github.com/name.git"
+    @staticmethod
+    def get_brief() -> str:
+        return "mock report briefing"
 
+    def generate(self) -> None:
+        self.__generate_directory = os.getcwd()
 
-@pytest.fixture(scope="module")
-def mock_repository_url():
-    mock = MagicMock()
-    mock.remote = "https://github.com/lntuition/contribution-markdown-report.git"
-    return mock
-
-
-@pytest.fixture()
-def base_path():
-    path = "/repository/test"
-    os.makedirs(path, exist_ok=True)
-
-    yield path
-
-    shutil.rmtree(path, ignore_errors=True)
+    @property
+    def generate_directory(self) -> str:
+        return self.__generate_directory
 
 
-def test_repository_workdir(mock_repository_url, base_path):
-    repo = Repository(url=mock_repository_url, path=base_path)
+@pytest.fixture
+def fake_core() -> Iterator[git.Repo]:
+    path = "/81fa70/test-repository.git"
 
-    assert repo.workdir.startswith(base_path)
-
-
-def capture_stdout(cmd):
-    return subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-
-
-def test_repository_default_branch(mock_repository_url, base_path):
-    repo = Repository(url=mock_repository_url, path=base_path)
-
-    with safe_chdir(repo.workdir):
-        assert capture_stdout(["git", "rev-parse", "--abbrev-ref", "HEAD"]) == "master"
+    try:
+        yield git.Repo.init(path=path, mkdir=True)
+    finally:
+        shutil.rmtree(path)
 
 
-def test_repository_choose_branch(mock_repository_url, base_path):
-    test_branch = "develop"
-
-    repo = Repository(url=mock_repository_url, path=base_path, branch=test_branch)
-
-    with safe_chdir(repo.workdir):
-        assert capture_stdout(["git", "rev-parse", "--abbrev-ref", "HEAD"]) == test_branch
+@pytest.fixture
+def fake_actor() -> git.Actor:
+    return git.Actor("f98c10", "b302a1")
 
 
-def test_repository_add(mock_repository_url, base_path):
-    test_file = "touch"
-
-    repo = Repository(url=mock_repository_url, path=base_path)
-
-    with safe_chdir(repo.workdir):
-        open(test_file, "w").close()
-        repo.add(path=test_file)
-
-        assert capture_stdout(["git", "diff", "--name-only", "--cached"]) == test_file
+@pytest.fixture
+def fake_report() -> FakeReport:
+    return FakeReport()
 
 
-def test_repository_empty_add(mock_repository_url, base_path):
-    repo = Repository(url=mock_repository_url, path=base_path)
+class TestRepositoryActorBuilder:
+    def test_build(self) -> None:
+        name = "name"
+        email = "email"
 
-    with safe_chdir(repo.workdir):
-        repo.add(path=".gitignore")
-
-        assert capture_stdout(["git", "diff", "--name-only", "--cached"]) == ""
-
-
-def test_repository_commit(mock_repository_url, base_path):
-    test_file = "touch"
-    test_message = "message"
-    test_name = "name"
-    test_email = "email"
-
-    repo = Repository(url=mock_repository_url, path=base_path)
-
-    with safe_chdir(repo.workdir):
-        open(test_file, "w").close()
-        repo.add(path=test_file)
-        repo.commit(msg=test_message, name=test_name, email=test_email)
-
-        assert capture_stdout(["git", "log", "-1", "--format=%s"]) == test_message
-        assert capture_stdout(["git", "log", "-1", "--format=%an"]) == test_name
-        assert capture_stdout(["git", "log", "-1", "--format=%ae"]) == test_email
+        assert git.Actor(name, email) == RepositoryActorBuilder.build(name=name, email=email)
 
 
-def test_repository_empty_commit(mock_repository_url, base_path):
-    test_message = "message"
-    test_name = "name"
-    test_email = "email"
+class TestRepositoryCoreBuilder:
+    @patch("git.Repo.clone_from")
+    def test_default_branch(self, patch_repo_clone_from: MagicMock) -> None:
+        user = "user"
+        token = "token"
+        repository = "repository"
 
-    repo = Repository(url=mock_repository_url, path=base_path)
+        RepositoryCoreBuilder.build(user=user, token=token, repository=repository, branch="")
+        call_args = patch_repo_clone_from.call_args
 
-    with safe_chdir(repo.workdir):
-        head_message = capture_stdout(["git", "log", "-1", "--format=%s"])
-        head_name = capture_stdout(["git", "log", "-1", "--format=%an"])
-        head_email = capture_stdout(["git", "log", "-1", "--format=%ae"])
+        assert f"https://{user}:{token}@github.com/{repository}.git" in call_args.args
+        assert "branch" not in call_args.kwargs
 
-        repo.commit(msg=test_message, name=test_name, email=test_email)
+    @pytest.mark.usefixtures("live_server")
+    @pytest.mark.usefixtures("fake_root")
+    def test_live_default_branch(self) -> None:
+        core = RepositoryCoreBuilder.build(
+            user="lntuition", token="", repository="lntuition/contribution-markdown-report", branch=""
+        )
 
-        assert capture_stdout(["git", "log", "-1", "--format=%s"]) == head_message
-        assert capture_stdout(["git", "log", "-1", "--format=%an"]) == head_name
-        assert capture_stdout(["git", "log", "-1", "--format=%ae"]) == head_email
+        assert core.active_branch.name == "master"
+
+    @patch("git.Repo.clone_from")
+    def test_choose_branch(self, patch_repo_clone_from: MagicMock) -> None:
+        user = "user"
+        token = "token"
+        repository = "repository"
+        branch = "develop"
+
+        RepositoryCoreBuilder.build(user=user, token=token, repository=repository, branch=branch)
+        call_args = patch_repo_clone_from.call_args
+
+        assert f"https://{user}:{token}@github.com/{repository}.git" in call_args.args
+        assert "branch" in call_args.kwargs
+        assert branch == call_args.kwargs["branch"]
+
+    @pytest.mark.usefixtures("live_server")
+    @pytest.mark.usefixtures("fake_root")
+    def test_live_choose_branch(self) -> None:
+        branch = "develop"
+
+        core = RepositoryCoreBuilder.build(
+            user="lntuition", token="", repository="lntuition/contribution-markdown-report", branch=branch
+        )
+
+        assert core.active_branch.name == branch
+
+    @pytest.mark.usefixtures("live_server")
+    @pytest.mark.usefixtures("fake_root")
+    def test_live_not_exist_branch(self) -> None:
+        with pytest.raises(Exception):
+            RepositoryCoreBuilder.build(
+                user="lntuition", token="", repository="lntuition/contribution-markdown-report", branch="notexist"
+            )
+
+
+class TestRepository:
+    @pytest.mark.parametrize(
+        ("work_dir"),
+        [
+            "/absolute",
+            "relative/../path",
+        ],
+        ids=[
+            "Absolute",
+            "..",
+        ],
+    )
+    def test_wrong_work_dir(self, fake_core: git.Repo, fake_actor: git.Actor, work_dir: str) -> None:
+        with pytest.raises(Exception):
+            Repository(core=fake_core, actor=fake_actor, work_dir=work_dir)
+
+    @pytest.mark.parametrize(
+        ("work_dir"),
+        [
+            "",
+            "relative",
+            "relative/path",
+            ".",
+            "./relative",
+            "./relative/path",
+        ],
+        ids=[
+            "Implicit:depth:0",
+            "Implicit:depth:1",
+            "Implicit:depth:2",
+            "Explicit:depth:0",
+            "Explicit:depth:1",
+            "Explicit:depth:2",
+        ],
+    )
+    def test_generate(self, fake_core: git.Repo, fake_actor: git.Actor, work_dir: str, fake_report: FakeReport) -> None:
+        generate_directory = os.path.join(fake_core.working_tree_dir, work_dir)
+
+        repo = Repository(core=fake_core, actor=fake_actor, work_dir=work_dir)
+        repo.generate(report=fake_report)
+
+        assert os.path.samefile(generate_directory, fake_report.generate_directory)
+
+    def test_add(self, fake_actor: git.Actor) -> None:
+        mock_core = MagicMock()
+        work_dir = "test/directory"
+
+        repo = Repository(core=mock_core, actor=fake_actor, work_dir=work_dir)
+        repo.add()
+
+        mock_core.index.add.assert_called_with(work_dir)
+
+    def test_commit(self, fake_actor: git.Actor, fake_report: FakeReport) -> None:
+        mock_core = MagicMock()
+        mock_core.index.diff.return_value = True
+
+        repo = Repository(core=mock_core, actor=fake_actor, work_dir="")
+        repo.commit(report=fake_report)
+
+        mock_core.index.commit.assert_called_with(
+            fake_report.get_brief(),
+            author=fake_actor,
+            committer=fake_actor,
+        )
+
+    def test_push(self, fake_actor: git.Actor) -> None:
+        mock_core = MagicMock()
+
+        repo = Repository(core=mock_core, actor=fake_actor, work_dir="")
+        repo.push()
+
+        mock_core.remotes.origin.push.assert_called()

@@ -15,6 +15,8 @@ DOCKER_RUN = docker run ${1} ${IMAGE_DEFAULT}
 # Setup
 build:
 	docker build -t ${IMAGE_DEFAULT} .
+build-no-cache:
+	docker build -t ${IMAGE_DEFAULT} . --no-cache
 
 # Cleanup
 clean:
@@ -34,11 +36,11 @@ test-isort:
 test-black:
 	${TEST_BASE} black --check --diff ${CONTAINER_HOME_PATH}
 test-pylint:
-	${TEST_BASE} pylint ${CONTAINER_HOME_PATH}
+	${TEST_BASE} pylint ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
 test-mypy:
-	${TEST_BASE} mypy ${CONTAINER_HOME_PATH}
+	${TEST_BASE} mypy ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
 test-pytest:
-	${TEST_BASE} pytest --cov=src
+	${TEST_BASE} python -m pytest --cov=src
 test: build test-isort test-black test-pylint test-mypy test-pytest
 
 # Style

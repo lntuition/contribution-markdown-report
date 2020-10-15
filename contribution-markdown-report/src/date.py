@@ -2,10 +2,6 @@ from datetime import datetime, timedelta
 from typing import Sequence
 
 
-class DateFormatException(Exception):
-    pass
-
-
 class Date:
     def __init__(self, date: str) -> None:
         if date == "yesterday":  # Reserved keyword
@@ -14,7 +10,7 @@ class Date:
             try:
                 std_date = datetime.strptime(date, "%Y-%m-%d")
             except ValueError as error:
-                raise DateFormatException(f"{date} : wrong format") from error
+                raise Exception(f"{date} : Wrong date format") from error
 
         self.__year = std_date.year
         self.__month = std_date.month
@@ -40,14 +36,10 @@ class Date:
         return f"{self.__year}-{self.__month:02d}-{self.__day:02d}"
 
 
-class DateIntervalException(Exception):
-    pass
-
-
 class DateInterval:
     def __init__(self, start: Date, end: Date) -> None:
         if end < start:
-            raise DateIntervalException(f"{start} : eariler than {end}")
+            raise Exception(f"{start} : Must be eariler than {end}")
 
         self.__start = start
         self.__end = end

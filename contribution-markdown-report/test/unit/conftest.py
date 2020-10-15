@@ -1,45 +1,50 @@
-from pathlib import Path
-from unittest.mock import patch
-from urllib.parse import parse_qs, urlparse
+import os
+import shutil
+import sys
+from typing import Iterator
 
 import pytest
+import requests
 
 
-class FakeResponse:
-    def __init__(self, status_code: int, text: str) -> None:
-        self.__status_code = status_code
-        self.__text = text
+def server_status() -> bool:
+    if os.environ.get("DEBUG_FORCE_DEAD", False):
+        return False
 
-    @property
-    def status_code(self) -> int:
-        return self.__status_code
+    try:
+        response = requests.get("https://github.com")
+        response.raise_for_status()
+    except requests.RequestException:
+        return False
 
-    @property
-    def text(self) -> str:
-        return self.__text
+    return True
 
 
-class FakeRequest:
-    @staticmethod
-    def get(url: str) -> FakeResponse:
-        parts = urlparse(url)
-        qs = parse_qs(parts.query)
-
-        # Request test
-        if "status" in qs:
-            status_code = int(qs["status"][0])
-            return FakeResponse(status_code=status_code, text="text")
-
-        # Crawler test
-        if "from" in qs:
-            snapshot_file = f"{qs['from'][0][:4]}_snapshot.html"
-            snapshot_path = Path(__file__).absolute().parents[1].joinpath("asset", snapshot_file)
-            with open(snapshot_path, "r") as snapshot:
-                text = snapshot.read()
-                return FakeResponse(status_code=200, text=text)
+server_ready = server_status()
 
 
 @pytest.fixture
-def use_fake_request() -> None:
-    with patch("requests.get", wraps=FakeRequest.get):
+def live_server() -> None:
+    if not server_ready:
+        pytest.skip("Error at github server, skip live test")
+
+
+@pytest.fixture
+def dead_server() -> None:
+    if server_ready:
+        pytest.skip("No error at github server, skip dead test")
+
+
+@pytest.fixture
+def fake_root() -> Iterator[None]:
+    cur_dir = os.getcwd()
+    root = "/3921ab/root"
+
+    os.makedirs(root)
+    os.chdir(root)
+
+    try:
         yield
+    finally:
+        shutil.rmtree(root)
+        os.chdir(cur_dir)
