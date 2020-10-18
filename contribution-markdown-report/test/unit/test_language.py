@@ -2,27 +2,27 @@ from typing import Type
 
 import pytest
 
-from src.language import LanguageSetting, LanguageSettingFactory
+from src.language import BaseLanguageSetting, EnglishSetting, LanguageSettingFactory
 
 
 class TestLanguageSettingFactory:
     @pytest.mark.parametrize(
-        ("language", "setting_type"),
+        ("language", "expected"),
         [
-            ("english", LanguageSetting),
+            ("english", EnglishSetting),
         ],
         ids=[
             "ENG",
         ],
     )
-    def test_create(self, language: str, setting_type: Type[LanguageSetting]) -> None:
-        setting = LanguageSettingFactory.create_setting(language=language)
+    def test_create(self, language: str, expected: Type[BaseLanguageSetting]) -> None:
+        created = LanguageSettingFactory.create_setting(language=language)
 
-        assert isinstance(setting, setting_type)
+        assert created == expected
 
     def test_create_with_warning(self) -> None:
         with pytest.warns(UserWarning) as warn:
             setting = LanguageSettingFactory.create_setting(language="not supported")
 
         assert len(warn) == 1
-        assert isinstance(setting, LanguageSetting)
+        assert setting == EnglishSetting

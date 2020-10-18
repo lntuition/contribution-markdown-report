@@ -1,8 +1,131 @@
 import warnings
-from typing import Sequence
+from abc import ABC, abstractmethod
+from typing import Sequence, Type
 
 
-class LanguageSetting:  # pragma: no cover
+class BaseLanguageSetting(ABC):  # pragma: no cover
+    @staticmethod
+    @abstractmethod
+    def header_title(user: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def repository(url: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def issue(url: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def ending() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def summary_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def today(date: str, count: str, length: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def maximum(date: str, count: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def total(_sum: str, avg: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def today_peak(start_date: str, length: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def maximum_peak(start_date: str, end_date: str, length: str) -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def graph_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def dayofweek_label() -> Sequence[str]:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def month_label() -> Sequence[str]:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def contribution_axis() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def day_axis() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def dayofweek_axis() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def month_axis() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def year_axis() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def count_sum_recent_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def count_sum_full_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def dayofweek_sum_recent_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def dayofweek_mean_full_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def month_sum_recent_title() -> str:
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def year_sum_full_title() -> str:
+        pass
+
+
+class EnglishSetting(BaseLanguageSetting):  # pragma: no cover
     @staticmethod
     def header_title(user: str) -> str:
         return f"Welcome to {user}'s contribution report"
@@ -102,14 +225,14 @@ class LanguageSetting:  # pragma: no cover
 
 class LanguageSettingFactory:
     @staticmethod
-    def create_setting(language: str) -> LanguageSetting:
+    def create_setting(language: str) -> Type[BaseLanguageSetting]:
         default_language = "english"
         supported_language = {
-            default_language: LanguageSetting,
+            default_language: EnglishSetting,
         }
 
         if language.lower() not in supported_language:
             warnings.warn("Not supported languge, use default setting")
             language = default_language
 
-        return supported_language[language]()
+        return supported_language[language]

@@ -12,18 +12,29 @@ from src.repository import Repository, RepositoryActorBuilder, RepositoryCoreBui
 
 class FakeReport(Report):
     def __init__(self) -> None:
-        self.__generate_directory = ""
-
-    @staticmethod
-    def get_brief() -> str:
-        return "mock report briefing"
-
-    def generate(self) -> None:
         self.__generate_directory = os.getcwd()
+        self.__attribute = {
+            "brief": "3629ab",
+        }
 
     @property
     def generate_directory(self) -> str:
         return self.__generate_directory
+
+    def attribute(self, key: str) -> str:
+        return self.__attribute[key]
+
+    def header_heading(self) -> str:
+        return "header"
+
+    def summary_heading(self) -> str:
+        return "summary"
+
+    def graph_heading(self) -> str:
+        return "graph"
+
+    def generate(self) -> None:
+        self.__generate_directory = os.getcwd()
 
 
 @pytest.fixture
@@ -166,11 +177,13 @@ class TestRepository:
         mock_core = MagicMock()
         mock_core.index.diff.return_value = True
 
+        msg = fake_report.attribute("brief")
+
         repo = Repository(core=mock_core, actor=fake_actor, work_dir="")
         repo.commit(report=fake_report)
 
         mock_core.index.commit.assert_called_with(
-            fake_report.get_brief(),
+            msg,
             author=fake_actor,
             committer=fake_actor,
         )

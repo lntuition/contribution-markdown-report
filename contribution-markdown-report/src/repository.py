@@ -62,7 +62,7 @@ class Repository:
 
     def commit(self, report: Report) -> None:
         if self.__core.index.diff("HEAD"):
-            msg = report.get_brief()
+            msg = report.attribute(key="brief")
             self.__core.index.commit(msg, author=self.__actor, committer=self.__actor)
 
     def push(self) -> None:

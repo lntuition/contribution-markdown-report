@@ -72,7 +72,7 @@ class ContributionInfo:
     def total(self) -> Dict[str, Union[int, float]]:
         return {
             "_sum": self.__dataframe["count"].sum(),
-            "avg": self.__dataframe["count"].mean(),
+            "avg": round(self.__dataframe["count"].mean(), 2),
         }
 
     def today_peak(self) -> Dict[str, Union[pd.Timestamp, int]]:
