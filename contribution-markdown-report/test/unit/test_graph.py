@@ -12,12 +12,8 @@ from src.graph import Barplot, BarplotAxesBuilder
 
 
 class TestBarplotAxesBuilder:
-    def build_barplot_axes(
-        self,
-        *,
-        index: List[int],
-        data: List[int],
-    ) -> Axes:
+    @staticmethod
+    def barplot_axes(index: List[int], data: List[int]) -> Axes:
         return BarplotAxesBuilder.build(
             series=Series(
                 index=index,
@@ -30,7 +26,7 @@ class TestBarplotAxesBuilder:
         index = [7, 8, 9, 10, 11]
         data = [23, 0, 13, 42, 38]
 
-        barplot_axes = self.build_barplot_axes(index=index, data=data)
+        barplot_axes = self.barplot_axes(index=index, data=data)
 
         assert ["7", "8", "9", "10", "11"] == [xticklabel.get_text() for xticklabel in barplot_axes.get_xticklabels()]
         assert data == [patch.get_height() for patch in barplot_axes.patches]
@@ -40,12 +36,8 @@ class TestBarplotAxesBuilder:
 
 
 class TestBarplot:
-    def build_barplot(
-        self,
-        *,
-        index: List[int] = [0, 1],
-        data: List[int] = [2, 3],
-    ) -> Barplot:
+    @staticmethod
+    def barplot(index: List[int] = [0, 1], data: List[int] = [2, 3]) -> Barplot:
         figure = Figure(tight_layout=True)
         axes = figure.add_subplot()
 
@@ -58,7 +50,7 @@ class TestBarplot:
         data = [23, 0, 13, 42, 38]
         labels = ["zero", "one", "two", "three", "four", "five", "six"]
 
-        barplot = self.build_barplot(index=index, data=data)
+        barplot = self.barplot(index=index, data=data)
         barplot.set_xticklabels(labels=labels)
 
         assert ["one", "two", "three", "four", "five"] == barplot.get_xticklabels()
@@ -66,7 +58,7 @@ class TestBarplot:
     def test_set_xlabel(self) -> None:
         xlabel = "xlabel"
 
-        barplot = self.build_barplot()
+        barplot = self.barplot()
         barplot.set_xlabel(label=xlabel)
 
         assert xlabel == barplot.get_xlabel()
@@ -74,7 +66,7 @@ class TestBarplot:
     def test_set_ylabel(self) -> None:
         ylabel = "ylabel"
 
-        barplot = self.build_barplot()
+        barplot = self.barplot()
         barplot.set_ylabel(label=ylabel)
 
         assert ylabel == barplot.get_ylabel()
@@ -83,7 +75,7 @@ class TestBarplot:
         index = [1, 2, 3, 4, 5]
         data = [23.256, 23.254, 0, 1, 19]
 
-        barplot = self.build_barplot(index=index, data=data)
+        barplot = self.barplot(index=index, data=data)
         barplot.set_annotations()
 
         assert ["23.26", "23.25", "1", "19"] == barplot.get_annotations()
@@ -92,7 +84,7 @@ class TestBarplot:
     def test_save(self) -> None:
         file_name = "file_name.png"
 
-        barplot = self.build_barplot()
+        barplot = self.barplot()
         barplot.save(file_name=file_name)
 
         assert os.path.isfile(file_name)
