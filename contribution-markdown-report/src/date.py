@@ -7,11 +7,11 @@ class dateBuilder:
     def build(expr: str) -> date:
         if expr == "yesterday":  # Reserved keyword
             return date.today() - timedelta(days=1)
-        else:
-            try:
-                return date.fromisoformat(expr)
-            except ValueError as error:
-                raise Exception(f"{expr} : Wrong date format") from error
+
+        try:
+            return date.fromisoformat(expr)
+        except ValueError as error:
+            raise Exception(f"{expr} : Wrong date format") from error
 
 
 class dateRange:
