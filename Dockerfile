@@ -6,7 +6,7 @@ LABEL maintainter "ekffu200098@gmail.com"
 
 # Python
 RUN pip install beautifulsoup4 gitpython requests seaborn tabulate \
-        black freezegun isort mypy pylint pytest pytest-cov
+        black freezegun isort mypy pylint pytest pytest-cov responses
 
 # Setup
 COPY contribution-markdown-report /action
