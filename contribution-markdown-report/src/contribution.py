@@ -1,10 +1,11 @@
+from datetime import date
 from typing import Dict, Union
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from .date import Date, DateInterval
+from .date import dateBuilder, dateRange
 
 
 class ContributionInfo:
@@ -134,7 +135,7 @@ class ContributionInfo:
 
 
 class ContributionInfoCollector:
-    def __init__(self, user: str, start: Date, end: Date) -> None:
+    def __init__(self, user: str, start: date, end: date) -> None:
         self.__user = user
         self.__start = start
         self.__end = end
@@ -150,17 +151,17 @@ class ContributionInfoCollector:
         return response.text
 
     def collect(self) -> ContributionInfo:
-        interval = DateInterval(start=self.__start, end=self.__end)
+        date_range = dateRange(start=self.__start, end=self.__end)
 
         data = []
-        for year in interval.iter_year():
+        for year in date_range.iter_year():
             url = f"https://github.com/{self.__user}?from={year}-01-01"
             text = self.__fetch_text(url)
 
             for rect in BeautifulSoup(text, "html.parser").findAll("rect"):
                 rect_date, rect_count = rect["data-date"], rect["data-count"]
 
-                if Date(rect_date) in interval:
+                if dateBuilder.build(rect_date) in date_range:
                     column = [
                         pd.to_numeric(rect_count),
                         pd.Timestamp(rect_date),

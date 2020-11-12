@@ -1,119 +1,67 @@
+from datetime import date
 from typing import List
 
 import pytest
 from freezegun import freeze_time
 
-from src.date import Date, DateInterval
+from src.date import dateBuilder, dateRange
 
 
-@pytest.fixture
-def big_date() -> Date:
-    yield Date("2018-04-01")
-
-
-@pytest.fixture
-def small_date() -> Date:
-    yield Date("2018-03-01")
-
-
-class TestDate:
+class TestdateBuilder:
     def test_correct_format(self) -> None:
-        str_date = "2019-07-01"
-
-        date = Date(str_date)
-
-        assert str(date) == str_date
+        assert dateBuilder.build("2019-07-01") == date(2019, 7, 1)
 
     @pytest.mark.parametrize(
-        ("str_date"),
+        ("expr"),
         [
             ("2020.01.01"),
             ("2020/01/01"),
             ("2020-13-01"),
             ("2020-01-84"),
-            ("Notdate"),
+            ("JUSTSTRING"),
         ],
     )
-    def test_incorrect_format(self, str_date: str) -> None:
+    def test_incorrect_format(self, expr: str) -> None:
         with pytest.raises(Exception):
-            Date(str_date)
+            dateBuilder.build(expr)
 
     @freeze_time("2019-07-02")
     def test_reserved_format(self) -> None:
-        date = Date("yesterday")
-
-        assert str(date) == "2019-07-01"
-
-    def test_year_property(self) -> None:
-        date = Date("2020-01-01")
-
-        assert date.year == 2020
-
-    def test_compare_less_than(self, big_date: Date, small_date: Date) -> None:
-        assert small_date < big_date
-        assert not big_date < small_date
-        assert not small_date < small_date
-        assert not big_date < big_date
-
-    def test_compare_less_equal(self, big_date: Date, small_date: Date) -> None:
-        assert small_date <= big_date
-        assert not big_date <= small_date
-        assert small_date <= small_date
-        assert big_date <= big_date
-
-    def test_compare_great_than(self, big_date: Date, small_date: Date) -> None:
-        assert not small_date > big_date
-        assert big_date > small_date
-        assert not small_date > small_date
-        assert not big_date > big_date
-
-    def test_compare_great_equal(self, big_date: Date, small_date: Date) -> None:
-        assert not small_date >= big_date
-        assert big_date >= small_date
-        assert small_date >= small_date
-        assert big_date >= big_date
+        assert dateBuilder.build("yesterday") == date(2019, 7, 1)
 
 
-class TestDateInterval:
-    def test_correct_period(self, big_date: Date, small_date: Date) -> None:
-        assert DateInterval(start=small_date, end=big_date)
+class TestdateInterval:
+    @classmethod
+    def setup_class(cls):
+        cls.start = date(2017, 7, 1)
+        cls.end = date(2020, 6, 29)
 
-    def test_incorrect_period(self, big_date: Date, small_date: Date) -> None:
+    def test_correct_period(self) -> None:
+        try:
+            dateRange(self.start, self.end)
+        except Exception as error:
+            pytest.fail(f"{error} : Unexpected exception")
+
+    def test_incorrect_period(self) -> None:
         with pytest.raises(Exception):
-            DateInterval(start=big_date, end=small_date)
+            dateRange(self.end, self.start)
 
-    @pytest.mark.parametrize(
-        ("str_start", "str_end", "sequence"),
-        [
-            ("2018-06-01", "2018-06-01", [2018]),
-            ("2018-01-01", "2019-12-31", [2018, 2019]),
-            ("2017-07-01", "2020-06-13", [2017, 2018, 2019, 2020]),
-        ],
-        ids=[
-            "Single",
-            "Double",
-            "Multiple",
-        ],
-    )
-    def test_iter_year(self, str_start: str, str_end: str, sequence: List[int]) -> None:
-        start = Date(str_start)
-        end = Date(str_end)
-        interval = DateInterval(start, end)
+    def test_iter_year(self) -> None:
+        date_range = dateRange(self.start, self.end)
 
-        for result, expected in zip(interval.iter_year(), sequence):
-            assert result == expected
+        assert [year for year in date_range.iter_year()] == [2017, 2018, 2019, 2020]
 
     def test_contains(self) -> None:
-        less = Date("2018-06-29")
-        start = Date("2018-07-01")
-        between = Date("2018-07-12")
-        end = Date("2018-07-23")
-        great = Date("2018-07-30")
+        less = date(2018, 6, 29)
+        start = date(2018, 7, 1)
+        between = date(2018, 7, 12)
+        end = date(2018, 7, 23)
+        great = date(2018, 7, 30)
 
-        interval = DateInterval(start, end)
+        date_range = dateRange(start, end)
 
-        assert not less in interval
-        assert start in interval
-        assert between in interval
-        assert end in interval
-        assert not great in interval
+        assert not less in date_range
+        assert start in date_range
+        assert between in date_range
+        assert end in date_range
+        assert not great in date_range
