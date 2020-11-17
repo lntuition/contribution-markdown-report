@@ -1,6 +1,5 @@
 import os
 from typing import List
-from unittest.mock import MagicMock, patch
 
 import pytest
 import seaborn
@@ -12,23 +11,18 @@ from src.graph import Barplot, BarplotAxesBuilder
 
 
 class TestBarplotAxesBuilder:
-    @staticmethod
-    def barplot_axes(index: List[int], data: List[int]) -> Axes:
-        return BarplotAxesBuilder.build(
+    def test_build(self) -> None:
+        index = [7, 8, 9, 10, 11]
+        data = [23, 0, 13, 42, 38]
+
+        barplot_axes = BarplotAxesBuilder.build(
             series=Series(
                 index=index,
                 data=data,
             )
         )
 
-    @patch("seaborn.set_theme")
-    def test_build(self, mock_set_theme: MagicMock) -> None:
-        index = [7, 8, 9, 10, 11]
-        data = [23, 0, 13, 42, 38]
-
-        barplot_axes = self.barplot_axes(index=index, data=data)
-
-        assert ["7", "8", "9", "10", "11"] == [xticklabel.get_text() for xticklabel in barplot_axes.get_xticklabels()]
+        assert [str(text) for text in index] == [xticklabel.get_text() for xticklabel in barplot_axes.get_xticklabels()]
         assert data == [patch.get_height() for patch in barplot_axes.patches]
 
         assert not barplot_axes.spines["right"].get_visible()

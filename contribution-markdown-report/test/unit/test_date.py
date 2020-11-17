@@ -18,7 +18,7 @@ class TestdateBuilder:
             ("2020/01/01"),
             ("2020-13-01"),
             ("2020-01-84"),
-            ("JUSTSTRING"),
+            ("NOTDATEFMT"),
         ],
     )
     def test_incorrect_format(self, expr: str) -> None:
@@ -32,7 +32,7 @@ class TestdateBuilder:
 
 class TestdateInterval:
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         cls.start = date(2017, 7, 1)
         cls.end = date(2020, 6, 29)
 
