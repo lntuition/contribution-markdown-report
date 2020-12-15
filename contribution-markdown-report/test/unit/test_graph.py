@@ -74,7 +74,7 @@ class TestBarplot:
 
         assert ["23.26", "23.25", "1", "19"] == barplot.get_annotations()
 
-    @pytest.mark.usefixtures("fake_root")
+    @pytest.mark.usefixtures("use_temporary_path")
     def test_save(self) -> None:
         file_name = "file_name.png"
 

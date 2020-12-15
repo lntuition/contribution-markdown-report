@@ -1,50 +1,47 @@
 import os
 import shutil
-import sys
-from typing import Iterator
+from typing import Dict, Iterator
+from unittest.mock import patch
+from uuid import uuid4
 
 import pytest
-import requests
 
 
-def server_status() -> bool:
-    if os.environ.get("DEBUG_FORCE_DEAD", False):
-        return False
+@pytest.fixture
+def use_temporary_path() -> Iterator[None]:
+    temporary_uuid = uuid4()
+    temporary_path = os.path.join(
+        os.path.abspath(os.sep),
+        str(temporary_uuid),
+    )
+    recover_path = os.getcwd()
 
     try:
-        response = requests.get("https://github.com")
-        response.raise_for_status()
-    except requests.RequestException:
-        return False
-
-    return True
-
-
-server_ready = server_status()
-
-
-@pytest.fixture
-def live_server() -> None:
-    if not server_ready:
-        pytest.skip("Error at github server, skip live test")
-
-
-@pytest.fixture
-def dead_server() -> None:
-    if server_ready:
-        pytest.skip("No error at github server, skip dead test")
-
-
-@pytest.fixture
-def fake_root() -> Iterator[None]:
-    cur_dir = os.getcwd()
-    root = "/3921ab/root"
-
-    os.makedirs(root)
-    os.chdir(root)
-
-    try:
+        os.makedirs(temporary_path)
+        os.chdir(temporary_path)
         yield
     finally:
-        shutil.rmtree(root)
-        os.chdir(cur_dir)
+        shutil.rmtree(temporary_path)
+        os.chdir(recover_path)
+
+
+def __wrapper_fetch_text(url: str, params: Dict[str, str]) -> str:
+    # Redirect fetch text to snapshot
+    snapshot_path = os.path.join(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__),
+            )
+        ),
+        "asset",
+        params["from"][:4] + "_snapshot.html",
+    )
+
+    with open(snapshot_path, "r") as snapshot:
+        return snapshot.read()
+
+
+@pytest.fixture
+def use_snapshot() -> Iterator[None]:
+    with patch("src.request.Request.fetch_text", wraps=__wrapper_fetch_text):
+        yield
