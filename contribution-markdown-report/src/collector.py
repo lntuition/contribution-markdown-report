@@ -1,21 +1,14 @@
-from dataclasses import dataclass
-
 import pandas as pd
 from bs4 import BeautifulSoup
 
 from src.date import dateBuilder, dateRange
+from src.extractor import Extractor
 from src.request import Request
 
 
-@dataclass(frozen=True)
-class ContributionData:
-    user: str
-    df: pd.DataFrame
-
-
-class ContributionDataBuilder:
+class Collector:
     @staticmethod
-    def build(user: str, date_range: dateRange) -> ContributionData:
+    def collect(user: str, date_range: dateRange) -> Extractor:
         data = []
         for year in date_range.iter_year():
             url = f"https://github.com/{user}"
@@ -38,7 +31,7 @@ class ContributionDataBuilder:
                         ]
                     )
 
-        return ContributionData(
+        return Extractor(
             user=user,
             df=pd.DataFrame(
                 data=data,

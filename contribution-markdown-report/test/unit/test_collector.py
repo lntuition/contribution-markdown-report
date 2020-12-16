@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from src.data import ContributionDataBuilder
+from src.collector import Collector
 from src.date import dateBuilder, dateRange
 
 
@@ -17,8 +17,8 @@ from src.date import dateBuilder, dateRange
     ],
 )
 @pytest.mark.usefixtures("use_snapshot")
-def test_build(start_expr: str, end_expr: str, start_cnt: int, end_cnt: int) -> None:
-    data = ContributionDataBuilder.build(
+def test_collect(start_expr: str, end_expr: str, start_cnt: int, end_cnt: int) -> None:
+    data = Collector.collect(
         user="lntuition",
         date_range=dateRange(
             start=dateBuilder.build(start_expr),
