@@ -3,10 +3,7 @@ import pytest
 from src.skeleton import MessageSkeleton
 
 
-@pytest.mark.parametrize(
-    "language",
-    ["english"],
-)
+@pytest.mark.parametrize("language", ["english"])
 def test_get_skeleton(language: str) -> None:
     skeleton = MessageSkeleton.get_skeleton(language)
 

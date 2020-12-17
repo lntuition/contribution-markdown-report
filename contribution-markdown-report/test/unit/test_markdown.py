@@ -91,20 +91,14 @@ def test_change_end() -> None:
     assert "one" == str(markdown)
 
 
-@pytest.mark.parametrize(
-    "level",
-    [1, 2, 3, 4, 5],
-)
+@pytest.mark.parametrize("level", [1, 2, 3, 4, 5])
 def test_heading_right_level(level: int) -> None:
     markdown = Markdown(expr="one").to_heading(level=level)
 
     assert "#" * level + "one\n" == str(markdown)
 
 
-@pytest.mark.parametrize(
-    "level",
-    [0, 6],
-)
+@pytest.mark.parametrize("level", [0, 6])
 def test_heading_wrong_level(level: int) -> None:
     with pytest.raises(Exception):
         Markdown(expr="one").to_heading(level=level)

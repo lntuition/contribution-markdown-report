@@ -18,7 +18,7 @@ from src.date import dateBuilder, dateRange
 )
 @pytest.mark.usefixtures("use_snapshot")
 def test_collect(start_expr: str, end_expr: str, start_cnt: int, end_cnt: int) -> None:
-    data = Collector.collect(
+    collected = Collector.collect(
         user="lntuition",
         date_range=dateRange(
             start=dateBuilder.build(start_expr),
@@ -27,8 +27,8 @@ def test_collect(start_expr: str, end_expr: str, start_cnt: int, end_cnt: int) -
     )
 
     # Use mangled variable for test only
-    assert data._Extractor__user == "lntuition"
-    assert data._Extractor__df.iloc[0]["date"] == pd.Timestamp(start_expr)
-    assert data._Extractor__df.iloc[-1]["date"] == pd.Timestamp(end_expr)
-    assert data._Extractor__df.iloc[0]["count"] == pd.to_numeric(start_cnt)
-    assert data._Extractor__df.iloc[-1]["count"] == pd.to_numeric(end_cnt)
+    assert collected._Extractor__user == "lntuition"
+    assert collected._Extractor__df.iloc[0]["date"] == pd.Timestamp(start_expr)
+    assert collected._Extractor__df.iloc[-1]["date"] == pd.Timestamp(end_expr)
+    assert collected._Extractor__df.iloc[0]["count"] == pd.to_numeric(start_cnt)
+    assert collected._Extractor__df.iloc[-1]["count"] == pd.to_numeric(end_cnt)
