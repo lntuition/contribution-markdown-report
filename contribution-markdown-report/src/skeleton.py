@@ -5,8 +5,7 @@ from typing import Dict, Type
 
 
 class MessageSkeleton:
-    # Public for testing, do not use this value
-    skeleton = {
+    __skeleton = {
         "english": {
             "message": {
                 "greeting": "Welcome to {user}'s contribution report",
@@ -57,4 +56,4 @@ class MessageSkeleton:
             warnings.warn("Not supported languge, use default setting")
             language = default_language
 
-        return cls.skeleton[language]
+        return cls.__skeleton[language]

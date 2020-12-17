@@ -10,11 +10,11 @@ from src.skeleton import MessageSkeleton
 def test_get_skeleton(language: str) -> None:
     skeleton = MessageSkeleton.get_skeleton(language)
 
-    assert skeleton == MessageSkeleton.skeleton[language]
+    assert skeleton == MessageSkeleton._MessageSkeleton__skeleton[language]
 
 
 def test_get_skeleton_with_warning() -> None:
     with pytest.warns(UserWarning):
         skeleton = MessageSkeleton.get_skeleton("NOTSUPPORTED")
 
-    assert skeleton == MessageSkeleton.skeleton["english"]
+    assert skeleton == MessageSkeleton._MessageSkeleton__skeleton["english"]

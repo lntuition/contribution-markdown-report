@@ -26,8 +26,9 @@ def test_collect(start_expr: str, end_expr: str, start_cnt: int, end_cnt: int) -
         ),
     )
 
-    assert data.user == "lntuition"
-    assert data.df.iloc[0]["date"] == pd.Timestamp(start_expr)
-    assert data.df.iloc[-1]["date"] == pd.Timestamp(end_expr)
-    assert data.df.iloc[0]["count"] == pd.to_numeric(start_cnt)
-    assert data.df.iloc[-1]["count"] == pd.to_numeric(end_cnt)
+    # Use mangled variable for test only
+    assert data._Extractor__user == "lntuition"
+    assert data._Extractor__df.iloc[0]["date"] == pd.Timestamp(start_expr)
+    assert data._Extractor__df.iloc[-1]["date"] == pd.Timestamp(end_expr)
+    assert data._Extractor__df.iloc[0]["count"] == pd.to_numeric(start_cnt)
+    assert data._Extractor__df.iloc[-1]["count"] == pd.to_numeric(end_cnt)
