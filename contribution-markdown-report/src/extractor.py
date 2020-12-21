@@ -15,6 +15,9 @@ class Extractor:
         self.__df["year"] = df["date"].dt.year
         self.__df["peak"] = exist * (exist.groupby((exist != exist.shift()).cumsum()).cumcount() + 1)
 
+    def fetch_user(self) -> str:
+        return self.__user
+
     def fetch_series(self, group: str, combinator: str, length: int = 0) -> pd.Series:
         if group not in ["dayofweek", "month", "year"]:
             raise Exception("Not supported group")

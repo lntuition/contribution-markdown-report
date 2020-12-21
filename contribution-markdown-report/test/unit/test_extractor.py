@@ -90,6 +90,12 @@ def __expected_map(key: str) -> Dict[str, Union[float, int, str]]:
         }
 
 
+def test_fetch_user() -> None:
+    ret = __extractor().fetch_user()
+
+    assert "lntuition" == ret
+
+
 @pytest.mark.parametrize("group", ["dayofweek", "month", "year"])
 @pytest.mark.parametrize("combinator", ["sum", "mean"])
 @pytest.mark.parametrize("length", [0, 10])
