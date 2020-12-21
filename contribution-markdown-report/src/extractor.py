@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import pandas as pd
 
@@ -8,9 +8,12 @@ class Extractor:
         self.__user = user
         self.__df = df
 
+        exist = df["count"] > 0
+
         self.__df["dayofweek"] = df["date"].dt.dayofweek
         self.__df["month"] = df["date"].dt.month - 1
         self.__df["year"] = df["date"].dt.year
+        self.__df["peak"] = exist * (exist.groupby((exist != exist.shift()).cumsum()).cumcount() + 1)
 
     def fetch_series(self, group: str, combinator: str, length: int = 0) -> pd.Series:
         if group not in ["dayofweek", "month", "year"]:
@@ -41,3 +44,52 @@ class Extractor:
             bins=bins,
             labels=labels,
         ).value_counts()
+
+    @staticmethod
+    def __fmt_float(f: float) -> float:
+        return round(f, 2)
+
+    @staticmethod
+    def __fmt_timestamp(ts: pd.Timestamp) -> str:
+        return ts.strftime("%Y-%m-%d")
+
+    def fetch_map(self, key: str) -> Dict[str, Union[float, int, str]]:
+        key = key.lower()
+
+        if key == "total":
+            count = self.__df["count"]
+            return {
+                "sum": count.sum(),
+                "avg": self.__fmt_float(count.mean()),
+            }
+        elif key == "today":
+            row = self.__df.iloc[-1]
+            return {
+                "date": self.__fmt_timestamp(row["date"]),
+                "count": row["count"],
+                "length": len(self.__df),
+            }
+        elif key == "today-peak":
+            end = self.__df.iloc[-1]
+            start = self.__df.iloc[-1 - max(0, end["peak"] - 1)]
+            return {
+                "start": self.__fmt_timestamp(start["date"]),
+                "length": end["peak"],
+            }
+        elif key == "max":
+            row = self.__df.iloc[self.__df["count"].idxmax()]
+            return {
+                "date": self.__fmt_timestamp(row["date"]),
+                "count": row["count"],
+            }
+        elif key == "max-peak":
+            idx = self.__df["peak"].idxmax()
+            end = self.__df.iloc[idx]
+            start = self.__df.iloc[idx - max(0, end["peak"] - 1)]
+            return {
+                "start": self.__fmt_timestamp(start["date"]),
+                "end": self.__fmt_timestamp(end["date"]),
+                "length": end["peak"],
+            }
+        else:
+            raise Exception(f"Not supported key : {key}")
