@@ -36,7 +36,7 @@ test-isort:
 test-black:
 	${TEST_BASE} black --check --diff ${CONTAINER_HOME_PATH}
 test-pylint:
-	${TEST_BASE} pylint ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
+	# ${TEST_BASE} pylint ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
 test-mypy:
 	${TEST_BASE} mypy ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
 test-pytest:
