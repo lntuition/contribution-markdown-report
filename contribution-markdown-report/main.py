@@ -1,7 +1,7 @@
 import os
 
 from src.contribution import ContributionInfoCollector
-from src.date import dateBuilder
+from src.date import DateBuilder
 from src.language import LanguageSettingFactory
 from src.report import Report
 from src.repository import Repository, RepositoryActorBuilder, RepositoryCoreBuilder
@@ -25,8 +25,8 @@ if __name__ == "__main__":
         report=Report(
             info=ContributionInfoCollector(
                 user=os.environ["GITHUB_ACTOR"],
-                start=dateBuilder.build(os.environ["INPUT_START_DATE"]),
-                end=dateBuilder.build("yesterday"),
+                start=DateBuilder.build(os.environ["INPUT_START_DATE"]),
+                end=DateBuilder.build("yesterday"),
             ).collect(),
             setting=LanguageSettingFactory.create_setting(
                 language=os.environ["INPUT_LANGUAGE"],

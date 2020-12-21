@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from .date import dateBuilder, dateRange
+from .date import DateBuilder, DateRange
 
 
 class ContributionInfo:
@@ -151,7 +151,7 @@ class ContributionInfoCollector:
         return response.text
 
     def collect(self) -> ContributionInfo:
-        date_range = dateRange(start=self.__start, end=self.__end)
+        date_range = DateRange(start=self.__start, end=self.__end)
 
         data = []
         for year in date_range.iter_year():
@@ -161,7 +161,7 @@ class ContributionInfoCollector:
             for rect in BeautifulSoup(text, "html.parser").findAll("rect"):
                 rect_date, rect_count = rect["data-date"], rect["data-count"]
 
-                if dateBuilder.build(rect_date) in date_range:
+                if DateBuilder.build(rect_date) in date_range:
                     column = [
                         pd.to_numeric(rect_count),
                         pd.Timestamp(rect_date),

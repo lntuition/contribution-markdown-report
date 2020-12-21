@@ -1,17 +1,17 @@
 import pytest
 
-from src.skeleton import MessageSkeleton
+from src.skeleton import SkeletonFactory
 
 
 @pytest.mark.parametrize("language", ["english"])
 def test_get_skeleton(language: str) -> None:
-    skeleton = MessageSkeleton.get_skeleton(language)
+    skeleton = SkeletonFactory.get_skeleton(language)
 
-    assert skeleton == MessageSkeleton._MessageSkeleton__skeleton[language]
+    assert skeleton == SkeletonFactory._SkeletonFactory__skeleton[language]
 
 
 def test_get_skeleton_with_warning() -> None:
     with pytest.warns(UserWarning):
-        skeleton = MessageSkeleton.get_skeleton("NOTSUPPORTED")
+        skeleton = SkeletonFactory.get_skeleton("NOTSUPPORTED")
 
-    assert skeleton == MessageSkeleton._MessageSkeleton__skeleton["english"]
+    assert skeleton == SkeletonFactory._SkeletonFactory__skeleton["english"]

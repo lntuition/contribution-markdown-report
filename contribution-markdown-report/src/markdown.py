@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import Dict, Union
 
 
-class Markdown:
+class MarkdownBuilder:
     def __init__(
         self,
         expr: str,
-        fmt: Dict[str, Union[str, Markdown]] = {},
+        fmt: Dict[str, Union[str, MarkdownBuilder]] = {},
         end: str = "\n",
     ) -> None:
         self.__expr = expr
@@ -25,14 +25,14 @@ class Markdown:
 
         return wrapped + self.__end
 
-    def to_heading(self, level: int) -> Markdown:
+    def to_heading(self, level: int) -> MarkdownBuilder:
         if level < 1 or level > 5:
             raise Exception("level must be between 1 and 5")
         self.__wrapper = "#" * level + self.__wrapper
 
         return self
 
-    def to_list(self, is_ordered: bool) -> Markdown:
+    def to_list(self, is_ordered: bool) -> MarkdownBuilder:
         if is_ordered:
             self.__wrapper = "1. " + self.__wrapper
         else:
@@ -40,36 +40,36 @@ class Markdown:
 
         return self
 
-    def to_blockquote(self) -> Markdown:
+    def to_blockquote(self) -> MarkdownBuilder:
         self.__wrapper = ">" + self.__wrapper
 
         return self
 
-    def __wrap_wrapper_and_return_self(self, s: str) -> Markdown:
+    def __wrap_wrapper_and_return_self(self, s: str) -> MarkdownBuilder:
         self.__wrapper = s + self.__wrapper + s
         return self
 
-    def to_bold(self) -> Markdown:
+    def to_bold(self) -> MarkdownBuilder:
         return self.__wrap_wrapper_and_return_self("**")
 
-    def to_italic(self) -> Markdown:
+    def to_italic(self) -> MarkdownBuilder:
         return self.__wrap_wrapper_and_return_self("*")
 
-    def to_emoji(self) -> Markdown:
+    def to_emoji(self) -> MarkdownBuilder:
         return self.__wrap_wrapper_and_return_self(":")
 
-    def to_code(self) -> Markdown:
+    def to_code(self) -> MarkdownBuilder:
         return self.__wrap_wrapper_and_return_self("`")
 
     def __link_wrapper_with_link(self, path: str) -> None:
         self.__wrapper = "[" + self.__wrapper + "]" + "(" + path + ")"
 
-    def link_url(self, path: str) -> Markdown:
+    def link_url(self, path: str) -> MarkdownBuilder:
         self.__link_wrapper_with_link(path)
 
         return self
 
-    def link_image(self, path: str) -> Markdown:
+    def link_image(self, path: str) -> MarkdownBuilder:
         self.__link_wrapper_with_link(path)
         self.__wrapper = "!" + self.__wrapper
 

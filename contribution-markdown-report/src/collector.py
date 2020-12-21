@@ -1,14 +1,14 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from src.date import dateBuilder, dateRange
+from src.date import DateBuilder, DateRange
 from src.extractor import Extractor
 from src.request import Request
 
 
 class Collector:
     @staticmethod
-    def collect(user: str, date_range: dateRange) -> Extractor:
+    def collect(user: str, date_range: DateRange) -> Extractor:
         data = []
         for year in date_range.iter_year():
             url = f"https://github.com/{user}"
@@ -23,7 +23,7 @@ class Collector:
                 data_date = rect["data-date"]
                 data_count = rect["data-count"]
 
-                if dateBuilder.build(data_date) in date_range:
+                if DateBuilder.build(data_date) in date_range:
                     data.append(
                         [
                             pd.Timestamp(data_date),

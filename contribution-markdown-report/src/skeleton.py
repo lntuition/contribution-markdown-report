@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import warnings
-from typing import Dict, Type
+from typing import Any, Dict, Type
 
 
-class MessageSkeleton:
+class SkeletonFactory:
     __skeleton = {
         "english": {
             "message": {
@@ -43,9 +43,9 @@ class MessageSkeleton:
 
     @classmethod
     def get_skeleton(
-        cls: Type[MessageSkeleton],
+        cls: Type[SkeletonFactory],
         language: str,
-    ) -> Dict[str, object]:
+    ) -> Dict[str, Any]:
         # TODO : Fix type error with detail return type
         default_language = "english"
         supported_language = [

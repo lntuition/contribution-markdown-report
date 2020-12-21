@@ -2,7 +2,7 @@ from datetime import date, timedelta
 from typing import Sequence
 
 
-class dateBuilder:
+class DateBuilder:
     @staticmethod
     def build(expr: str) -> date:
         if expr == "yesterday":  # Reserved keyword
@@ -14,7 +14,7 @@ class dateBuilder:
             raise Exception(f"{expr} : Wrong date format") from error
 
 
-class dateRange:
+class DateRange:
     def __init__(self, start: date, end: date) -> None:
         if end < start:
             raise Exception(f"{start} : Must be eariler than {end}")
