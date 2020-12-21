@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 import pandas as pd
 
 
@@ -25,3 +27,17 @@ class Extractor:
         series = getattr(grouped["count"], combinator)()
 
         return series
+
+    def fetch_cut(
+        self,
+        length: int = 0,
+        bins: List[int] = [-1, 0, 2, 4, 6, 1_000],
+        labels: List[str] = ["0", "1-2", "3-4", "5-6", "7+"],
+    ) -> pd.Series:
+        idx = -min(length, len(self.__df))
+
+        return pd.cut(
+            self.__df[idx:]["count"],
+            bins=bins,
+            labels=labels,
+        ).value_counts()

@@ -18,7 +18,7 @@ def __df_for_fetch_series() -> pd.DataFrame:
 
 def __series_for_fetch_series(group: str, combinator: str, length: int) -> pd.Series:
     if group == "dayofweek":
-        index = [0, 1, 2, 3, 4, 5, 6]
+        idx = [0, 1, 2, 3, 4, 5, 6]
         data_map = {
             ("sum", 0): [9, 11, 13, 15, 17, 19, 21],
             ("sum", 10): [8, 9, 10, 11, 17, 19, 21],
@@ -26,7 +26,7 @@ def __series_for_fetch_series(group: str, combinator: str, length: int) -> pd.Se
             ("mean", 10): [8, 9, 10, 11, 8.5, 9.5, 10.5],
         }
     elif group == "month":
-        index = [0, 11]
+        idx = [0, 11]
         data_map = {
             ("sum", 0): [90, 15],
             ("sum", 10): [90, 5],
@@ -34,7 +34,7 @@ def __series_for_fetch_series(group: str, combinator: str, length: int) -> pd.Se
             ("mean", 10): [10, 5],
         }
     elif group == "year":
-        index = [2010, 2011]
+        idx = [2010, 2011]
         data_map = {
             ("sum", 0): [15, 90],
             ("sum", 10): [5, 90],
@@ -42,7 +42,19 @@ def __series_for_fetch_series(group: str, combinator: str, length: int) -> pd.Se
             ("mean", 10): [5, 10],
         }
 
-    return pd.Series(data_map[(combinator, length)], index)
+    data = data_map[(combinator, length)]
+
+    return pd.Series(data, idx)
+
+
+def __series_for_fetch_cut(length: int) -> pd.Series:
+    idx = ["0", "1-2", "3-4", "5-6", "7+"]
+    if length == 0:
+        data = [0, 2, 2, 2, 8]
+    elif length == 10:
+        data = [0, 0, 0, 2, 8]
+
+    return pd.Series(data, idx)
 
 
 @pytest.mark.parametrize("group", ["dayofweek", "month", "year"])
@@ -51,7 +63,7 @@ def __series_for_fetch_series(group: str, combinator: str, length: int) -> pd.Se
 def test_fetch_series_right_param(group: str, combinator: str, length: int) -> None:
     df = __df_for_fetch_series()
 
-    series = Extractor("", df).fetch_series(group, combinator, length)
+    series = Extractor("", df).fetch_series(group, combinator, length).sort_index()
 
     assert __series_for_fetch_series(group, combinator, length).equals(series)
 
@@ -75,3 +87,12 @@ def test_fetch_series_wrong_length() -> None:
 
     with pytest.raises(Exception):
         Extractor("", df).fetch_series("dayofweek", "sum", -1)
+
+
+@pytest.mark.parametrize("length", [0, 10])
+def test_fetch_cut(length: int) -> None:
+    df = __df_for_fetch_series()
+
+    series = Extractor("", df).fetch_cut(length).sort_index()
+
+    assert __series_for_fetch_cut(length).equals(series)
