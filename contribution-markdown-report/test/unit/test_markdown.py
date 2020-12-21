@@ -95,7 +95,7 @@ def test_change_end() -> None:
 def test_heading_right_level(level: int) -> None:
     markdown = MarkdownBuilder(expr="one").to_heading(level=level)
 
-    assert "#" * level + "one\n" == str(markdown)
+    assert "#" * level + " one\n" == str(markdown)
 
 
 @pytest.mark.parametrize("level", [0, 6])

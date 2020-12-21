@@ -28,7 +28,7 @@ class MarkdownBuilder:
     def to_heading(self, level: int) -> MarkdownBuilder:
         if level < 1 or level > 5:
             raise Exception("level must be between 1 and 5")
-        self.__wrapper = "#" * level + self.__wrapper
+        self.__wrapper = "#" * level + " " + self.__wrapper
 
         return self
 
