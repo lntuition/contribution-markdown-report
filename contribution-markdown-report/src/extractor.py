@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import List, Mapping, cast
 
 import pandas as pd
 
@@ -56,21 +56,29 @@ class Extractor:
     def __fmt_timestamp(ts: pd.Timestamp) -> str:
         return ts.strftime("%Y-%m-%d")
 
-    def fetch_map(self, key: str) -> Dict[str, Union[float, int, str]]:
+    def fetch_map(self, key: str) -> Mapping[str, str]:
         key = key.lower()
 
         if key == "total":
             count = self.__df["count"]
             return {
                 "sum": count.sum(),
-                "avg": self.__fmt_float(count.mean()),
+                "avg": cast(
+                    str,
+                    self.__fmt_float(
+                        count.mean(),
+                    ),
+                ),
             }
         elif key == "today":
             row = self.__df.iloc[-1]
             return {
                 "date": self.__fmt_timestamp(row["date"]),
                 "count": row["count"],
-                "length": len(self.__df),
+                "length": cast(
+                    str,
+                    len(self.__df),
+                ),
             }
         elif key == "today-peak":
             end = self.__df.iloc[-1]

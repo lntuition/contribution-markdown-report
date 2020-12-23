@@ -3,15 +3,20 @@ import pytest
 from src.skeleton import SkeletonFactory
 
 
-@pytest.mark.parametrize("language", ["english"])
-def test_get_skeleton(language: str) -> None:
-    skeleton = SkeletonFactory.get_skeleton(language)
-
-    assert skeleton == SkeletonFactory._SkeletonFactory__skeleton[language]
-
-
-def test_get_skeleton_with_warning() -> None:
+def test_default_language_with_warning() -> None:
     with pytest.warns(UserWarning):
-        skeleton = SkeletonFactory.get_skeleton("NOTSUPPORTED")
+        SkeletonFactory(language="NOTSUPPORTED")
 
-    assert skeleton == SkeletonFactory._SkeletonFactory__skeleton["english"]
+
+@pytest.mark.parametrize("language", ["english"])
+def test_get_string_map(language: str) -> None:
+    string_map = SkeletonFactory(language=language).get_string_map()
+
+    assert string_map == SkeletonFactory._SkeletonFactory__string_map[language]
+
+
+@pytest.mark.parametrize("language", ["english"])
+def test_get_list_map(language: str) -> None:
+    list_map = SkeletonFactory(language=language).get_list_map()
+
+    assert list_map == SkeletonFactory._SkeletonFactory__list_map[language]

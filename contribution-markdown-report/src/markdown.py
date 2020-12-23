@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Dict, Union
+from typing import Mapping, Union
 
 
 class MarkdownBuilder:
     def __init__(
         self,
         expr: str,
-        fmt: Dict[str, Union[str, MarkdownBuilder]] = {},
+        fmt: Mapping[str, Union[str, MarkdownBuilder]] = {},
         end: str = "\n",
     ) -> None:
         self.__expr = expr
