@@ -1,33 +1,26 @@
+from __future__ import annotations
+
 from typing import List
 
 import seaborn
-from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.text import Annotation
 from pandas import Series
 
 
-class BarplotAxesBuilder:
-    @staticmethod
-    def build(
+class Barplot:
+    def __init__(
+        self,
         series: Series,
         *,
         style: str = "whitegrid",
         palette: str = "pastel",
-    ) -> Axes:
-        figure = Figure(tight_layout=True)
-        axes = figure.add_subplot()
+    ) -> None:
+        self.__axes = Figure(tight_layout=True).add_subplot()
 
         seaborn.set_theme(style=style, palette=palette)
-        seaborn.barplot(x=series.index, y=series, ax=axes)
-        seaborn.despine(ax=axes)
-
-        return axes
-
-
-class Barplot:
-    def __init__(self, axes: Axes) -> None:
-        self.__axes = axes
+        seaborn.barplot(x=series.index, y=series, ax=self.__axes)
+        seaborn.despine(ax=self.__axes)
 
     def get_xticklabels(self) -> List[str]:
         return [xticklabel.get_text() for xticklabel in self.__axes.get_xticklabels()]
@@ -41,7 +34,7 @@ class Barplot:
     def get_annotations(self) -> List[str]:
         return [child.get_text() for child in self.__axes.get_children() if isinstance(child, Annotation)]
 
-    def set_xticklabels(self, labels: List[str]) -> None:
+    def set_xticklabels(self, labels: List[str]) -> Barplot:
         xticklabels = self.__axes.get_xticklabels()
 
         for xticklabel in xticklabels:
@@ -53,19 +46,22 @@ class Barplot:
             xticklabel.set_text(new_text)
 
         self.__axes.set_xticklabels(xticklabels)
+        return self
 
-    def set_xlabel(self, label: str) -> None:
+    def set_xlabel(self, label: str) -> Barplot:
         self.__axes.set_xlabel(label)
+        return self
 
-    def set_ylabel(self, label: str) -> None:
+    def set_ylabel(self, label: str) -> Barplot:
         self.__axes.set_ylabel(label)
+        return self
 
     def set_annotations(
         self,
         *,
         ha: str = "center",
         va: str = "bottom",
-    ) -> None:
+    ) -> Barplot:
         for patch in self.__axes.patches:
             x = patch.get_x()
             y = patch.get_y()
@@ -80,6 +76,8 @@ class Barplot:
                     ha=ha,
                     va=va,
                 )
+
+        return self
 
     def save(self, file_name: str) -> None:
         figure = self.__axes.get_figure()
