@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict, List, Union
+from typing import Mapping
 
 import pandas as pd
 import pytest
@@ -60,33 +60,33 @@ def __expected_cut(length: int) -> pd.Series:
     return pd.Series(data, idx)
 
 
-def __expected_map(key: str) -> Dict[str, Union[float, int, str]]:
+def __expected_map(key: str) -> Mapping[str, str]:
     if key == "total":
         return {
-            "sum": 96,
-            "avg": 6.86,
+            "sum": "96",
+            "avg": "6.86",
         }
     elif key == "today":
         return {
             "date": "2011-01-09",
-            "count": 13,
-            "length": 14,
+            "count": "13",
+            "length": "14",
         }
     elif key == "today-peak":
         return {
             "start": "2011-01-06",
-            "length": 4,
+            "length": "4",
         }
     elif key == "max":
         return {
             "date": "2011-01-08",
-            "count": 15,
+            "count": "15",
         }
     elif key == "max-peak":
         return {
             "start": "2010-12-27",
             "end": "2011-01-04",
-            "length": 9,
+            "length": "9",
         }
 
 
