@@ -5,40 +5,45 @@ branding:
   icon: "check"
   color: "blue"
 inputs:
-  # Report inputs
-  start_date:
-    description: "Start date in report"
+  # Variable
+  branch:
+    description: "Branch where the report will be updated, default is default branch"
     required: true
+    default: ""
+  workspace:
+    description: "Relative path where the report will be updated, default is ${repository}/result"
+    required: true
+    default: "result"
+  file_name:
+    description: "Name of markdown report file, default is README"
+    required: true
+    default: "README"
+
+  user:
+    description: "User of report, default is repository owner"
+    required: true
+    default: "${{ github.repository_owner }}"
+  start_date:
+    description: "Start date in report, following isoformat"
+    required: true
+  end_date:
+    description: "End date in report, default is yesterday"
+    required: true
+    default: "yesterday"
   language:
     description: "Language used in report"
     required: true
     default: "english"
 
-  phase:
-    description: "Last step to process : generate, add, commit, push"
-    required: true
-    default: "push"
-  branch:
-    description: "Branch where the report will be updated"
-    required: true
-    default: "master"
-  path:
-    description: "Path where the report will be updated"
-    required: true
-    default: "."
-
-  github_token:
-    description: "Token for repo which can be passed in using secrets.GITHUB_TOKEN"
+  # Constant
+  remote:
+    description: "Remote repository url where the report will be updated"
     required: false
-    default: ${{ github.token }}
-  author_email:
-    description: "Email used to configure user.email in `git config`"
+    default: "https://${{ github.actor }}:${{ github.token }}@github.com/${{ github.repository }}.git"
+  local:
+    description: "Local path where the report will be updated"
     required: false
-    default: "github-actions[bot]@users.noreply.github.com"
-  author_name:
-    description: "Name used to configure user.name in `git config`"
-    required: false
-    default: "github-actions[bot]"
+    default: "${{ github.workspace }}/local"
 runs:
   using: "docker"
   image: "Dockerfile"
