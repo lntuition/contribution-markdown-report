@@ -1,17 +1,5 @@
-from datetime import date, timedelta
+from datetime import date
 from typing import Sequence
-
-
-class DateBuilder:
-    @staticmethod
-    def build(expr: str) -> date:
-        if expr == "yesterday":  # Reserved keyword
-            return date.today() - timedelta(days=1)
-
-        try:
-            return date.fromisoformat(expr)
-        except ValueError as error:
-            raise Exception(f"{expr} : Wrong date format") from error
 
 
 class DateRange:

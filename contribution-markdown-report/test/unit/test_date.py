@@ -4,22 +4,7 @@ from typing import List
 import pytest
 from freezegun import freeze_time
 
-from src.date import DateBuilder, DateRange
-
-
-def test_build() -> None:
-    assert DateBuilder.build("2019-07-01") == date(2019, 7, 1)
-
-
-@pytest.mark.parametrize("expr", ["2020.01.01", "2020/01/01", "2020-13-01", "2020-01-84", "NOTDATEFMT"])
-def test_build_wrong_expr(expr: str) -> None:
-    with pytest.raises(Exception):
-        DateBuilder.build(expr)
-
-
-@freeze_time("2019-07-02")
-def test_build_reserved_expr() -> None:
-    assert DateBuilder.build("yesterday") == date(2019, 7, 1)
+from src.date import DateRange
 
 
 def test_range_right_period() -> None:

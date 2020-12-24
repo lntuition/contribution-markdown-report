@@ -1,8 +1,10 @@
+from datetime import date
+
 import pandas as pd
 import pytest
 
 from src.collector import Collector
-from src.date import DateBuilder, DateRange
+from src.date import DateRange
 
 
 @pytest.mark.parametrize(
@@ -21,8 +23,8 @@ def test_collect(start_expr: str, end_expr: str, start_cnt: int, end_cnt: int) -
     collected = Collector.collect(
         user="lntuition",
         date_range=DateRange(
-            start=DateBuilder.build(start_expr),
-            end=DateBuilder.build(end_expr),
+            start=date.fromisoformat(start_expr),
+            end=date.fromisoformat(end_expr),
         ),
     )
 

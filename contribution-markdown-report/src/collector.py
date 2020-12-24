@@ -1,7 +1,9 @@
+from datetime import date
+
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from src.date import DateBuilder, DateRange
+from src.date import DateRange
 from src.extractor import Extractor
 from src.request import Request
 
@@ -23,7 +25,7 @@ class Collector:
                 data_date = rect["data-date"]
                 data_count = rect["data-count"]
 
-                if DateBuilder.build(data_date) in date_range:
+                if date.fromisoformat(data_date) in date_range:
                     data.append(
                         [
                             pd.Timestamp(data_date),

@@ -1,7 +1,7 @@
 import os
 
 from src.collector import Collector
-from src.date import DateBuilder, DateRange
+from src.date import DateRange
 from src.extractor import Extractor
 from src.skeleton import SkeletonFactory
 
