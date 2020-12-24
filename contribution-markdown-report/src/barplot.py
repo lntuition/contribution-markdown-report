@@ -83,4 +83,4 @@ class Barplot:
 
     def save(self, file_name: str) -> None:
         figure = self.__axes.get_figure()
-        figure.savefig(file_name)
+        figure.savefig(file_name + ".png")
