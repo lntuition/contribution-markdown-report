@@ -1,0 +1,28 @@
+name: Continuous deployment
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/**
+      - contribution-markdown-report/**
+      - action.yml
+      - Dockerfile
+      - Makefile
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Build docker image"
+        run: make build
+      - name: "Upload coverage to codecov by unit test"
+        run: make unit-codecov
+      - uses: codecov/codecov-action@v1.1.1
+        with:
+          file: ./output/coverage.xml
+          fail_ci_if_error: true
+          verbose: true

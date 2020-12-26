@@ -1,53 +1,140 @@
-# Constant setting
-HOST_HOME_PATH = ${CURDIR}/contribution-markdown-report
-CONTAINER_HOME_PATH = /action
+CONTAINER_HOME = /action
+HOST_HOME = ${CURDIR}/contribution-markdown-report
+IMAGE = contribution-markdown-report-docker-image
 
-# Docker setting
-IMAGE_DEFAULT = contribution-markdown-report
-WORKDIR_DEFAULT= --workdir ${CONTAINER_HOME_PATH}
-ENTRYPOINT_DEFAULT = --entrypoint ""
-VOLUME_DEFAULT = --volume ${HOST_HOME_PATH}:${CONTAINER_HOME_PATH}
-VOLUME_OUTPUT = --volume ${CURDIR}/output:/github/workspace
+# docker run [options] image [command] [arg ...]
+define __docker_run
+	docker run $(1) ${IMAGE} $(2)
+endef
 
-# Function
-DOCKER_RUN = docker run ${1} ${IMAGE_DEFAULT}
+entrypoint = --entrypoint ""
+user = --user $(shell id -u):$(shell id -g)
+volume = --volume ${HOST_HOME}:${CONTAINER_HOME}
+workdir = --workdir ${CONTAINER_HOME}
 
-# Setup
+# build
 build:
-	docker build -t ${IMAGE_DEFAULT} .
+	docker build -t ${IMAGE} .
 build-no-cache:
-	docker build -t ${IMAGE_DEFAULT} . --no-cache
+	docker build -t ${IMAGE} . --no-cache
+build-clean:
+	docker rmi -f ${IMAGE}
 
-# Cleanup
+# clean
 clean:
-	docker rmi -f ${IMAGE_DEFAULT}
+	sudo rm -rf ${CURDIR}/output
 
-# Debug
-DEBUG_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT}  --interactive --tty
-DEBUG_BASE = $(call DOCKER_RUN, ${DEBUG_OPTION})
+# debug
 debug: build
-	${DEBUG_BASE} bash
+	$(call __docker_run, \
+		${entrypoint} \
+		${workdir} \
+		--interactive \
+		--tty \
+		, \
+		bash \
+	)
 
-# Test
-TEST_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT}
-TEST_BASE = $(call DOCKER_RUN, ${TEST_OPTION})
-test-isort:
-	${TEST_BASE} isort --check-only --diff ${CONTAINER_HOME_PATH}
-test-black:
-	${TEST_BASE} black --check --diff ${CONTAINER_HOME_PATH}
-test-pylint:
-	# ${TEST_BASE} pylint ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
-test-mypy:
-	${TEST_BASE} mypy ${CONTAINER_HOME_PATH}/src ${CONTAINER_HOME_PATH}/main.py
-test-pytest:
-	${TEST_BASE} python -m pytest --cov=src
-test: build test-isort test-black test-pylint test-mypy test-pytest
+# isort
+isort: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${user} \
+		${workdir} \
+		, \
+		isort --check-only --diff \
+		${CONTAINER_HOME} \
+	)
 
-# Style
-STYLE_OPTION = ${WORKDIR_DEFAULT} ${ENTRYPOINT_DEFAULT} ${VOLUME_DEFAULT}
-STYLE_BASE = $(call DOCKER_RUN, ${STYLE_OPTION})
-style-isort:
-	${STYLE_BASE} isort ${CONTAINER_HOME_PATH}
-style-black:
-	${STYLE_BASE} black ${CONTAINER_HOME_PATH}
-style: build style-isort style-black
+isort-fix: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${user} \
+		${volume} \
+		${workdir} \
+		, \
+		isort \
+		${CONTAINER_HOME} \
+	)
+
+# black
+black: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${user} \
+		${workdir} \
+		, \
+		black --check --diff \
+		${CONTAINER_HOME} \
+	)
+
+black-fix: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${user} \
+		${volume} \
+		${workdir} \
+		, \
+		black \
+		${CONTAINER_HOME} \
+	)
+
+# pylint: temporary disabled with pylint issue
+pylint: build
+ifeq (0, 1)
+	$(call __docker_run, \
+		${entrypoint} \
+		${user} \
+		${workdir} \
+		, \
+		pylint \
+		${CONTAINER_HOME}/src \
+		${CONTAINER_HOME}/main.py \
+	)
+endif
+
+# mypy
+mypy: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${user} \
+		${workdir} \
+		, \
+		mypy \
+		${CONTAINER_HOME}/src \
+		${CONTAINER_HOME}/main.py \
+	)
+
+# unit
+unit: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${workdir} \
+		, \
+		python -m pytest --cov=src --cov-report=term-missing \
+	)
+
+unit-codecov: build
+	$(call __docker_run, \
+		${entrypoint} \
+		${workdir} \
+		--volume ${CURDIR}/output:/output \
+		, \
+		python -m pytest --cov=src --cov-report=term-missing --cov-report=xml:/output/coverage.xml \
+	)
+
+# integration
+integration: build
+	$(call __docker_run, \
+		--workdir /github/workspace \
+		-e INPUT_WORKSPACE=result \
+		-e INPUT_FILE_NAME=README \
+		-e INPUT_USER=lntuition \
+		-e INPUT_START_DATE=2018-01-01 \
+		-e INPUT_END_DATE=yesterday \
+		-e INPUT_LANGUAGE=english \
+		-e INPUT_REMOTE=https://github.com/lntuition/empty-archive \
+		-e INPUT_LOCAL=/output \
+		--volume ${CURDIR}/output:/output \
+		, \
+	)

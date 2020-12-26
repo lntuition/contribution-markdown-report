@@ -2,10 +2,10 @@ name: Continuous integration
 
 on:
   push:
-    branches: 
+    branches:
+      - master
       - develop
     paths:
-      - .github/config/**
       - .github/workflows/**
       - contribution-markdown-report/**
       - action.yml
@@ -13,10 +13,9 @@ on:
       - Makefile
 
   pull_request:
-    branches:
+    branches: 
       - master
     paths:
-      - .github/config/**
       - .github/workflows/**
       - contribution-markdown-report/**
       - action.yml
@@ -29,29 +28,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: "[SET UP] Setup filter"
-        uses: dorny/paths-filter@v2.2.1
-        id: filter
-        with:
-          filters: .github/config/integration_filter.yml
-      - name: "[SET UP] Build docker image"
+      - name: "Build docker image"
         run: make build
-
-      - name: "[BUILD TEST] Format check - isort"
-        run: make test-isort
-      - name: "[BUILD TEST] Format check - black"
-        run: make test-black
-      - name: "[BUILD TEST] Lint check - pylint"
-        run: make test-pylint
-      - name: "[BUILD TEST] Typing check - mypy"
-        run: make test-mypy
-
-      - name: "[UNIT TEST] Unit test - pytest"
-        run: make test-pytest
-
-      - name: Live test
-        uses: lntuition/contribution-markdown-report@develop
+      - name: "Import check with isort"
+        run: make isort
+      - name: "Format check with black"
+        run: make black
+      - name: "Lint checking with pylint"
+        run: make pylint
+      - name: "Typing check with mypy"
+        run: make mypy
+      - name: "Unit test"
+        run: make unit
+      - name: "Integration test"
+        run: make integration
+      - uses: actions/upload-artifact@v2
         with:
-          start_date: "2020-07-01"
-          branch: "develop"
-          path: "result"
+          name: markdown-report
+          path: ./output/result
