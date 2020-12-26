@@ -44,6 +44,10 @@ inputs:
     description: "Local path where the report will be updated"
     required: false
     default: "${{ github.workspace }}/local"
+  push:
+    description: "Trigger flag to execute push command"
+    required: false
+    default: "true"
 runs:
   using: "docker"
   image: "Dockerfile"

@@ -19,5 +19,8 @@ git config --global user.name "github-actions[bot]"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
 git add ${INPUT_WORKSPACE}
 git commit -m "${INPUT_USER}'s contribution report on ${INPUT_END_DATE}"
-git push origin HEAD:$(git rev-parse --abbrev-ref HEAD)
 git log -2
+
+if [[ ${INPUT_PUSH} == "true" ]]; then
+    git push origin HEAD:$(git rev-parse --abbrev-ref HEAD)
+fi
