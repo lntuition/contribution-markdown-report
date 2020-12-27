@@ -1,6 +1,7 @@
 # Contribution markdown report
 [![License](https://img.shields.io/github/license/lntuition/contribution-markdown-report)](https://github.com/lntuition/contribution-markdown-report/blob/master/LICENSE)
 [![Action](https://github.com/lntuition/contribution-markdown-report/workflows/Contribution%20markdown%20report/badge.svg)](https://github.com/lntuition/contribution-markdown-report/actions?query=workflow%3A%22Contribution+markdown+report%22)
+[![codecov](https://codecov.io/gh/lntuition/contribution-markdown-report/branch/master/graph/badge.svg?token=TDAMA0FK7C)](https://codecov.io/gh/lntuition/contribution-markdown-report)
 
 Automatically generate contribution markdown report with `Python` & `Github Actions`.
 Whenever you want, github action will check your contribution and update result.
@@ -26,7 +27,8 @@ jobs:
         user: "lntuition"
         # Start date in report, following isoformat
         start_date: "2020-07-01"
-        # End date in report, default is yesterday. Except for yesterday keyword, following isoformat
+        # End date in report, default is yesterday.
+        # Except for yesterday keyword, following isoformat
         end: "yesterday"
         # Language used in report, default is english
         langugage: "english"
@@ -35,7 +37,7 @@ jobs:
 ## Notification
 - We track your contribution history from your public profile with anonymous user.
   So, if you turn off `Contribution Settings > Private contributions`, private contribution will not be tracked.
-- See example report at [here](https://github.com/lntuition/contribution-markdown-report/blob/master/result/README.md)
+- See example report [here](https://github.com/lntuition/contribution-markdown-report/blob/master/result/README.md). Example will be updated on every saturday.
 
 ## Bug report & Feature request
 - Please leave an [issue](https://github.com/lntuition/contribution-markdown-report/issues).

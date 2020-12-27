@@ -2,7 +2,7 @@
 If you're reading this, you're probably looking to contribute to `contribution-markdown-report`.
 First of all thank you very much, please read the guide below.
 
-# Setting up development environment
+## Setting up development environment
 1. Install `docker` and `make`
 1. Use `make build` to make docker image
   - If there are some problem to setup environment, try below guides
@@ -24,6 +24,8 @@ First of all thank you very much, please read the guide below.
 - Make sure your commit message follow below rules
   - Subject line must follow template, `{keyword}: {description}`
   - Use the body to explain what and why vs. how 
+
+---
 
 ### Architecture
 - Class Diagram
