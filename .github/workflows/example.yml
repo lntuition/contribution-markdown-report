@@ -1,23 +1,29 @@
-name: Contribution markdown report
+name: Example for contribution markdown report
 
 on:
-  # Github actions will generate report daily 09:00 AM UTC.
+  # Github actions will trigger event at saturday 09:00 AM UTC.
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 9 * * SAT"
 
 jobs:
   example:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Contribuition markdown report
-      # You should use concrete marketplace version instead of master.
-      uses: lntuition/contribution-markdown-report@master
+    - uses: lntuition/contribution-markdown-report@master
       with:
-        # Change below variable to date you want to start tracking.
+        # Branch where the report will be updated, default is default branch
+        branch: ""
+        # Relative path where the report will be updated, default is ${repository}/result
+        workspace: "result"
+        # Name of markdown report file, default is README
+        file_name: "README"
+
+        # User of report, default is repository owner
+        user: "lntuition"
+        # Start date in report, following isoformat
         start_date: "2020-07-01"
-        # Branch where the result will be. Default branch is master.
-        branch: "master"
-        # Path where the result will be. Default path is "." which is root directory of repo.
-        path: "result"
+        # End date in report, default is yesterday. Except for yesterday keyword, following isoformat
+        end: "yesterday"
+        # Language used in report, default is english
+        langugage: "english"
