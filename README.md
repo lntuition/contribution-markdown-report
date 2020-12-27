@@ -2,52 +2,44 @@
 [![License](https://img.shields.io/github/license/lntuition/contribution-markdown-report)](https://github.com/lntuition/contribution-markdown-report/blob/master/LICENSE)
 [![Action](https://github.com/lntuition/contribution-markdown-report/workflows/Contribution%20markdown%20report/badge.svg)](https://github.com/lntuition/contribution-markdown-report/actions?query=workflow%3A%22Contribution+markdown+report%22)
 
-Automatically generate contribution report by markdown with `Python` & `Github Actions`.
+Automatically generate contribution markdown report with `Python` & `Github Actions`.
 Whenever you want, github action will check your contribution and update result.
 
-## How to Use?
-### With marketplace
-1. Add below workflow step in your repository :smile:
+## Usage
+- Add below workflow step to your repository
 ``` yml
-name: Contribution markdown report
-
-on:
-  # Github actions will generate report daily 09:00 AM UTC.
-  schedule:
-    - cron: "0 9 * * *"
-
 jobs:
-  check:
+  example:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Contribuition markdown report
-      # You should use concrete marketplace version instead of master.
-      uses: lntuition/contribution-markdown-report@master
+    - uses: lntuition/contribution-markdown-report@master
       with:
-        # Change below variable to date you want to start tracking.
-        start_date: "2020-07-01"
-        # Branch where the result will be. Default branch is master.
-        branch: "master"
-        # Path where the result will be. Default path is "." which is root directory of repo.
-        path: "result"
-```
-2. Enjoy Contributon markdown report :tada:
+        # Branch where the report will be updated, default is default branch
+        branch: ""
+        # Relative path where the report will be updated, default is ${repository}/result
+        workspace: "result"
+        # Name of markdown report file, default is README
+        file_name: "README"
 
-## Feature
-### Report
-- With new information, report is created at `path`.
-- Report has summary, graph section. See example report [here](https://github.com/lntuition/contribution-markdown-report/tree/master/result/README.md)
+        # User of report, default is repository owner
+        user: "lntuition"
+        # Start date in report, following isoformat
+        start_date: "2020-07-01"
+        # End date in report, default is yesterday. Except for yesterday keyword, following isoformat
+        end: "yesterday"
+        # Language used in report, default is english
+        langugage: "english"
+```
 
 ## Notification
 - We track your contribution history from your public profile with anonymous user.
   So, if you turn off `Contribution Settings > Private contributions`, private contribution will not be tracked.
-- Contribution of the public profile is based on UTC. It should be different from your login profile.
-- If you are using this Action from marketplace, please press star or watch. If you do so, I will tell you about some important changes.
+- See example report at [here](https://github.com/lntuition/contribution-markdown-report/blob/master/result/README.md)
 
 ## Bug report & Feature request
-- Please leave an [issue](https://github.com/lntuition/contribution-markdown-report/issues). Reporting makes the software more robust :+1:
+- Please leave an [issue](https://github.com/lntuition/contribution-markdown-report/issues).
+- We are also welcome to contribute directly, see [contribue guide document](https://github.com/lntuition/contribution-markdown-report/blob/master/docs/CONTRIBUTING.md).
 
 ## License
 - [MIT LICENSE](https://github.com/lntuition/contribution-markdown-report/blob/master/LICENSE)

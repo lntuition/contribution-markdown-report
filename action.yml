@@ -27,11 +27,11 @@ inputs:
     description: "Start date in report, following isoformat"
     required: true
   end_date:
-    description: "End date in report, default is yesterday"
+    description: "End date in report, default is yesterday. Except for yesterday keyword, following isoformat"
     required: true
     default: "yesterday"
   language:
-    description: "Language used in report"
+    description: "Language used in report, default is english"
     required: true
     default: "english"
 

@@ -1,0 +1,100 @@
+@startuml
+
+class DateRange {
+- start : date
+- end : date
+---
++ iter_year() : Sequence[int]
+}
+class Request {
++ {static} fetch-text() : str
+}
+
+class Collector {
++ {static} collect() : Extractor
+}
+class Extractor {
+- user: str
+- df : pd.DataFrame
+---
++ fetch_user() : str
++ fetch_series() : pd.Series
++ fetch_cut() : pd.Series
+- {static} fmt_float() : float
+- {static} fmt_timestamp() : str
++ fetch_map() : Mapping[str, str]
+}
+
+class SkeletonFactory {
+- {static} string_map : Mapping[str, str]
+- {static} list_map : Mapping[str, List[str]]
+- language : str
+---
++ get_string_map() : Mapping[str, str]
++ get_list_map() : Mapping[str, List[str]]
+}
+
+class Writer {
+- extractor: Extractor
+- skeleton_string_map : Mapping[str, str]
+- skeleton_list_map : Mapping[str, List[str]]
+---
+- header() : str
+- summary() : str
+- barplot_based_count() : Barplot
+- barplot_based_dayofweek() : Barplot
+- barplot_based_month() : Barplot
+- barplot_based_year() : Barplot
+- graph() : str
++ write() : None
+}
+
+class MarkdownBuilder {
+- expr : str
+- fmt : Mapping[str, Union[str, MarkdownBuilder]]
+- wrapper: str
+- end: str
+---
++ to_heading() : MarkdownBuilder
++ to_list() : MarkdownBuilder
++ to_blockquote() : MarkdownBuilder
+- wrap_wrapper_and_return_self() : MarkdownBuilder
++ to_bold() : MarkdownBuilder
++ to_italic() : MarkdownBuilder
++ to_emoji() : MarkdownBuilder
++ to_code() : MarkdownBuilder
+- link_wrapper_with_link() : None
++ link_url() : MarkdownBuilder
++ link_image() : MarkdownBuilder
+}
+class Barplot {
+- axes : matplotlib.axes.axes
+---
++ get_xticklables() : List[str]
++ get_xlabel() : str
++ get_ylabel() : str
++ get_annotations() : List[str]
++ set_xticklabels() : Barplot
++ set_xlabel() : Barplot
++ set_ylabel() : Barplot
++ set_annotations() : Barplot
++ save() : None
+}
+
+dates ()- DateRange  
+DateRange --o Collector
+
+user ()- Collector
+Collector .> Request : << use >>
+Collector --> Extractor : << create >>
+
+language ()- SkeletonFactory 
+
+Extractor --o Writer
+SkeletonFactory ---> Writer
+filename ()- Writer
+
+Writer ..> MarkdownBuilder : << use >>
+Writer ..> Barplot : << use >>
+
+@enduml
