@@ -1,6 +1,5 @@
 # Contribution markdown report
 [![License](https://img.shields.io/github/license/lntuition/contribution-markdown-report)](https://github.com/lntuition/contribution-markdown-report/blob/master/LICENSE)
-[![Action](https://github.com/lntuition/contribution-markdown-report/workflows/Contribution%20markdown%20report/badge.svg)](https://github.com/lntuition/contribution-markdown-report/actions?query=workflow%3A%22Contribution+markdown+report%22)
 [![codecov](https://codecov.io/gh/lntuition/contribution-markdown-report/branch/master/graph/badge.svg?token=TDAMA0FK7C)](https://codecov.io/gh/lntuition/contribution-markdown-report)
 
 Automatically generate contribution markdown report with `Python` & `Github Actions`.
