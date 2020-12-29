@@ -1,16 +1,18 @@
-CONTAINER_HOME = /action
-HOST_HOME = ${CURDIR}/contribution-markdown-report
-IMAGE = contribution-markdown-report-docker-image
+.DEFAULT_GOAL := all
+
+CONTAINER_HOME := /action
+HOST_HOME := ${CURDIR}/contribution-markdown-report
+IMAGE := contribution-markdown-report-docker-image
 
 # docker run [options] image [command] [arg ...]
 define __docker_run
 	docker run $(1) ${IMAGE} $(2)
 endef
 
-entrypoint = --entrypoint ""
-user = --user $(shell id -u):$(shell id -g)
-volume = --volume ${HOST_HOME}:${CONTAINER_HOME}
-workdir = --workdir ${CONTAINER_HOME}
+entrypoint := --entrypoint ""
+user := --user $(shell id -u):$(shell id -g)
+volume := --volume ${HOST_HOME}:${CONTAINER_HOME}
+workdir := --workdir ${CONTAINER_HOME}
 
 # build
 build:
@@ -138,3 +140,6 @@ integration: build
 		--volume ${CURDIR}/output:/output \
 		, \
 	)
+
+# all
+all: build isort black pylint mypy unit integration
