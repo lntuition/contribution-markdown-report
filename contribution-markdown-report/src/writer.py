@@ -79,7 +79,7 @@ class Writer:
                     expr=self.__skeleton_string_map[seq_key],
                     fmt=fmt,
                     end=". ",
-                ),
+                ).to_list(is_ordered=False),
             )
             text += str(
                 MarkdownBuilder(seq_expr).to_emoji(),
